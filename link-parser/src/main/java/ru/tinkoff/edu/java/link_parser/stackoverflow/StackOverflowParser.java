@@ -1,16 +1,23 @@
 package ru.tinkoff.edu.java.link_parser.stackoverflow;
 
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 import ru.tinkoff.edu.java.link_parser.base_parser.LinkParser;
 
 import java.util.List;
 
-// TODO: Add component annotation
+@Component
 public class StackOverflowParser extends LinkParser {
-    private final String STACK_OVERFLOW_HOST = "stackoverflow.com"; // TODO: change to value from properties
+    private String stackOverflowHost;
+
+    @Value("${stackoverflow.host}")
+    public void setStackOverflowHost(String stackOverflowHost) {
+        this.stackOverflowHost = stackOverflowHost;
+    }
 
     @Override
     protected String getHost() {
-        return STACK_OVERFLOW_HOST;
+        return stackOverflowHost;
     }
 
     @Override

@@ -2,13 +2,10 @@ package ru.tinkoff.edu.java.link_parser;
 
 import org.junit.Before;
 import org.junit.Test;
-import ru.tinkoff.edu.java.link_parser.base_parser.LinkParser;
-import ru.tinkoff.edu.java.link_parser.github.GitHubParser;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import ru.tinkoff.edu.java.link_parser.configuration.ApplicationConfig;
 import ru.tinkoff.edu.java.link_parser.github.GitHubParserResult;
-import ru.tinkoff.edu.java.link_parser.stackoverflow.StackOverflowParser;
 import ru.tinkoff.edu.java.link_parser.stackoverflow.StackOverflowParserResult;
-
-import java.util.ArrayList;
 
 import static junit.framework.TestCase.assertEquals;
 import static junit.framework.TestCase.assertNull;
@@ -18,12 +15,8 @@ public class LinkParserServiceTest {
 
     @Before
     public void initialize() {
-        service = new LinkParserService();
-        var parsers = new ArrayList<LinkParser>() {{
-            add(new StackOverflowParser());
-            add(new GitHubParser());
-        }};
-        service.setParsers(parsers);
+        var context = new AnnotationConfigApplicationContext(ApplicationConfig.class);
+        service = context.getBean(LinkParserService.class);
     }
 
     @Test

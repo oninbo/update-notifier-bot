@@ -2,6 +2,8 @@ package ru.tinkoff.edu.java.link_parser.github;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import ru.tinkoff.edu.java.link_parser.configuration.ApplicationConfig;
 import ru.tinkoff.edu.java.link_parser.base_parser.LinkParserWrongURLException;
 
 import static org.junit.Assert.*;
@@ -11,7 +13,8 @@ public class GitHubParserTest {
 
     @Before
     public void initialize() {
-        parser = new GitHubParser();
+        var context = new AnnotationConfigApplicationContext(ApplicationConfig.class);
+        parser = context.getBean(GitHubParser.class);
     }
 
     @Test

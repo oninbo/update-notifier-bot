@@ -2,7 +2,9 @@ package ru.tinkoff.edu.java.link_parser.stackoverflow;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import ru.tinkoff.edu.java.link_parser.base_parser.LinkParserWrongURLException;
+import ru.tinkoff.edu.java.link_parser.configuration.ApplicationConfig;
 
 import static org.junit.Assert.*;
 
@@ -11,7 +13,8 @@ public class StackOverflowParserTest {
 
     @Before
     public void initialize() {
-        parser = new StackOverflowParser();
+        var context = new AnnotationConfigApplicationContext(ApplicationConfig.class);
+        parser = context.getBean(StackOverflowParser.class);
     }
 
     @Test
