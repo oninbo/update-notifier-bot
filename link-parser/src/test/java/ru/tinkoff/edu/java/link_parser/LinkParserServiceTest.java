@@ -11,6 +11,7 @@ import ru.tinkoff.edu.java.link_parser.stackoverflow.StackOverflowParserResult;
 import java.util.ArrayList;
 
 import static junit.framework.TestCase.assertEquals;
+import static junit.framework.TestCase.assertNull;
 
 public class LinkParserServiceTest {
     private LinkParserService service;
@@ -39,5 +40,12 @@ public class LinkParserServiceTest {
         var result = new StackOverflowParserResult("42307687");
 
         assertEquals(service.parse(link), result);
+    }
+
+    @Test
+    public void shouldNotParseOtherLink() {
+        var link = "https://habr.com/ru/post/512730/";
+
+        assertNull(service.parse(link));
     }
 }
