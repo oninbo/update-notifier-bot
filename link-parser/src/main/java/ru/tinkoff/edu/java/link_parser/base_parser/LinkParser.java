@@ -9,8 +9,8 @@ public abstract class LinkParser {
     public LinkParserResult parse(String link) {
         URL url = getURL(link);
         LinkParserResult result = null;
-        String path = url.getPath();
         if (url.getHost().equals(getHost())) {
+            String path = url.getPath();
             if (isPathValid(path)) {
                 result = createResult(path);
             } else {
