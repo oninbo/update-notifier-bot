@@ -1,33 +1,32 @@
 package ru.tinkoff.edu.java.link_parser.github;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import ru.tinkoff.edu.java.link_parser.configuration.ApplicationConfig;
 import ru.tinkoff.edu.java.link_parser.base_parser.LinkParserWrongURLException;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class GitHubParserTest {
-    private GitHubParser parser;
+    private static GitHubParser parser;
 
-    @Before
-    public void initialize() {
+    @BeforeAll
+    public static void initialize() {
         var context = new AnnotationConfigApplicationContext(ApplicationConfig.class);
         parser = context.getBean(GitHubParser.class);
     }
 
-    @Test
-    public void shouldParseCorrectLinks() {
-        String[] correctLinks = {
-                "https://github.com/sanyarnd/tinkoff-java-course-2022",
-                "https://github.com/sanyarnd/tinkoff-java-course-2022/"
-        };
+    @ParameterizedTest
+    @ValueSource(strings = {
+        "https://github.com/sanyarnd/tinkoff-java-course-2022",
+        "https://github.com/sanyarnd/tinkoff-java-course-2022/"
+    })
+    public void shouldParseCorrectLinks(String correctLink) {
         var expectedResult = new GitHubParserResult("sanyarnd", "tinkoff-java-course-2022");
-        // FIXME: use parametrized tests
-        for (var link : correctLinks) {
-            assertEquals(parser.parse(link), expectedResult);
-        }
+        assertEquals(parser.parse(correctLink), expectedResult);
     }
 
     @Test

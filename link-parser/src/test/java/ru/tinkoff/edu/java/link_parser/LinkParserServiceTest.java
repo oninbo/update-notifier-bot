@@ -1,20 +1,20 @@
 package ru.tinkoff.edu.java.link_parser;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import ru.tinkoff.edu.java.link_parser.configuration.ApplicationConfig;
 import ru.tinkoff.edu.java.link_parser.github.GitHubParserResult;
 import ru.tinkoff.edu.java.link_parser.stackoverflow.StackOverflowParserResult;
 
-import static junit.framework.TestCase.assertEquals;
-import static junit.framework.TestCase.assertNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 public class LinkParserServiceTest {
-    private LinkParserService service;
+    private static LinkParserService service;
 
-    @Before
-    public void initialize() {
+    @BeforeAll
+    public static void initialize() {
         var context = new AnnotationConfigApplicationContext(ApplicationConfig.class);
         service = context.getBean(LinkParserService.class);
     }

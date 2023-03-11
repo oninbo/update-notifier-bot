@@ -1,33 +1,32 @@
 package ru.tinkoff.edu.java.link_parser.stackoverflow;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import ru.tinkoff.edu.java.link_parser.base_parser.LinkParserWrongURLException;
 import ru.tinkoff.edu.java.link_parser.configuration.ApplicationConfig;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class StackOverflowParserTest {
-    private StackOverflowParser parser;
+    private static StackOverflowParser parser;
 
-    @Before
-    public void initialize() {
+    @BeforeAll
+    public static void initialize() {
         var context = new AnnotationConfigApplicationContext(ApplicationConfig.class);
         parser = context.getBean(StackOverflowParser.class);
     }
 
-    @Test
-    public void shouldParseCorrectLinks() {
-        String[] correctLinks = {
-                "https://stackoverflow.com/questions/1642028/what-is-the-operator-in-c",
-                "https://stackoverflow.com/questions/1642028/"
-        };
+    @ParameterizedTest
+    @ValueSource(strings = {
+        "https://stackoverflow.com/questions/1642028/what-is-the-operator-in-c",
+        "https://stackoverflow.com/questions/1642028/"
+    })
+    public void shouldParseCorrectLinks(String correctLink) {
         var expectedResult = new StackOverflowParserResult("1642028");
-        // FIXME: use parametrized tests
-        for (var link : correctLinks) {
-            assertEquals(parser.parse(link), expectedResult);
-        }
+        assertEquals(parser.parse(correctLink), expectedResult);
     }
 
     @Test
