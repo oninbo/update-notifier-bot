@@ -6,6 +6,7 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.Import;
 import ru.tinkoff.edu.java.bot.configuration.ApplicationConfig;
 import ru.tinkoff.edu.java.link_parser.LinkParserService;
+import ru.tinkoff.edu.java.link_parser.LinkParserResult;
 
 @SpringBootApplication
 @EnableConfigurationProperties(ApplicationConfig.class)
@@ -19,7 +20,9 @@ public class BotApplication {
         // Проверяем, что в модуле bot доступен класс из модуля link-parser
         // В hw1 не требуется этого делать, но, возможно, понадобится в будущем, да и просто попробовать было интересно
         var linkParserService = ctx.getBean(LinkParserService.class);
-        linkParserService.parse("https://abc.xyz");
+        LinkParserResult result = linkParserService.parse("https://github.com/abc/xyz");
+        var visitor = ctx.getBean(BotLinkParserResultVisitor.class);
+        result.acceptVisitor(visitor);
 
         ApplicationConfig config = ctx.getBean(ApplicationConfig.class);
         System.out.println(config);

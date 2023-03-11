@@ -3,7 +3,6 @@ package ru.tinkoff.edu.java.link_parser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.tinkoff.edu.java.link_parser.base_parser.LinkParser;
-import ru.tinkoff.edu.java.link_parser.base_parser.LinkParserResult;
 
 import java.util.List;
 import java.util.Objects;

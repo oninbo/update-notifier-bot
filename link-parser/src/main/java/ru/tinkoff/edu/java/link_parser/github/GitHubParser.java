@@ -10,15 +10,15 @@ import java.util.List;
 public class GitHubParser extends LinkParser {
     private String gitHubHost;
 
+    @Value("${github.host}")
+    public void setGitHubHost(String gitHubHost) {
+        this.gitHubHost = gitHubHost;
+    }
+
     @Override
     protected GitHubParserResult createResult(String path) {
         List<String> segments = getURLPathSegments(path);
         return new GitHubParserResult(segments.get(0), segments.get(1));
-    }
-
-    @Value("${github.host}")
-    public void setGitHubHost(String gitHubHost) {
-        this.gitHubHost = gitHubHost;
     }
 
     @Override

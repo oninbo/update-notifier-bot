@@ -1,5 +1,7 @@
 package ru.tinkoff.edu.java.link_parser.base_parser;
 
+import ru.tinkoff.edu.java.link_parser.LinkParserResult;
+
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Arrays;
