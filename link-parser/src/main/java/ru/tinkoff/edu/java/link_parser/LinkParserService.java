@@ -1,6 +1,5 @@
 package ru.tinkoff.edu.java.link_parser;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.tinkoff.edu.java.link_parser.base_parser.LinkParser;
 
@@ -9,10 +8,9 @@ import java.util.Objects;
 
 @Service
 public class LinkParserService {
-    private List<LinkParser> parsers;
+    private final List<LinkParser> parsers;
 
-    @Autowired
-    public void setParsers(List<LinkParser> parsers) {
+    public LinkParserService(List<LinkParser> parsers) {
         this.parsers = parsers;
     }
 
