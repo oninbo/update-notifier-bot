@@ -21,8 +21,8 @@ public class BotApplication {
         // В hw1 не требуется этого делать, но, возможно, понадобится в будущем, да и просто попробовать было интересно
         var linkParserService = ctx.getBean(LinkParserService.class);
         LinkParserResult result = linkParserService.parse("https://github.com/abc/xyz");
-        var visitor = ctx.getBean(BotLinkParserResultVisitor.class);
-        result.acceptVisitor(visitor);
+        var printer = ctx.getBean(LinkParserResultPrinter.class);
+        printer.print(result);
 
         ApplicationConfig config = ctx.getBean(ApplicationConfig.class);
         System.out.println(config);
