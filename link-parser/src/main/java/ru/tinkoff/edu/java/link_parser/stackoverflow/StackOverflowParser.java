@@ -9,10 +9,9 @@ import java.util.List;
 
 @Component
 public class StackOverflowParser extends LinkParser {
-    private String stackOverflowHost;
+    private final String stackOverflowHost;
 
-    @Value("${stackoverflow.host}")
-    public void setStackOverflowHost(String stackOverflowHost) {
+    public StackOverflowParser(@Value("${stackoverflow.host}") String stackOverflowHost) {
         this.stackOverflowHost = stackOverflowHost;
     }
 

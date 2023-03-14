@@ -1,5 +1,6 @@
 package ru.tinkoff.edu.java.link_parser.configuration;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
@@ -22,12 +23,12 @@ public class ApplicationConfig {
     }
 
     @Bean
-    public GitHubParser getGitHubParser() {
-        return new GitHubParser();
+    public GitHubParser getGitHubParser(@Value("${github.host}") String gitHubHost) {
+        return new GitHubParser(gitHubHost);
     }
 
     @Bean
-    public StackOverflowParser getStackOverflowParser() {
-        return new StackOverflowParser();
+    public StackOverflowParser getStackOverflowParser(@Value("${stackoverflow.host}") String stackOverflowHost) {
+        return new StackOverflowParser(stackOverflowHost);
     }
 }

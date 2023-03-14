@@ -9,10 +9,9 @@ import java.util.List;
 
 @Component
 public class GitHubParser extends LinkParser {
-    private String gitHubHost;
+    private final String gitHubHost;
 
-    @Value("${github.host}")
-    public void setGitHubHost(String gitHubHost) {
+    public GitHubParser(@Value("${github.host}") String gitHubHost) {
         this.gitHubHost = gitHubHost;
     }
 
