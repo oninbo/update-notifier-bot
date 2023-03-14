@@ -11,12 +11,11 @@ public abstract class LinkParser {
     public LinkParserResult parse(String link) {
         URL url = getURL(link);
         LinkParserResult result = null;
-        if (url.getHost().equals(getHost())) {
-            String path = url.getPath();
-            if (isPathValid(path)) {
-                result = createResult(path);
+        if (isURLSupported(url)) {
+            if (canTakeDataFromURL(url)) {
+                result = createResult(url);
             } else {
-                throw new LinkParserWrongURLException();
+                throw new LinkParserIncorrectURLException();
             }
         }
         return result;
@@ -34,9 +33,9 @@ public abstract class LinkParser {
         return Arrays.stream(path.split("/")).filter((String s) -> !s.isBlank()).toList();
     }
 
-    protected abstract String getHost();
+    protected abstract boolean isURLSupported(URL url);
 
-    protected abstract LinkParserResult createResult(String path);
+    protected abstract boolean canTakeDataFromURL(URL url);
 
-    protected abstract boolean isPathValid(String path);
+    protected abstract LinkParserResult createResult(URL url);
 }

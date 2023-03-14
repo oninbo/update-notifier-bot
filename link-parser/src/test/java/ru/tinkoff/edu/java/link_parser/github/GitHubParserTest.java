@@ -6,7 +6,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import ru.tinkoff.edu.java.link_parser.configuration.ApplicationConfig;
-import ru.tinkoff.edu.java.link_parser.base_parser.LinkParserWrongURLException;
+import ru.tinkoff.edu.java.link_parser.base_parser.LinkParserIncorrectURLException;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -33,7 +33,7 @@ public class GitHubParserTest {
     public void shouldThrowExceptionOnWrongLinks() {
         var wrongLink =
                 "https://github.com/sanyarnd/tinkoff-java-course-2022/commit/5ad87f7f9041a4c4fc453cd77e362feda1ce89c9";
-        assertThrows(LinkParserWrongURLException.class, () -> parser.parse(wrongLink));
+        assertThrows(LinkParserIncorrectURLException.class, () -> parser.parse(wrongLink));
     }
 
     @Test

@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import ru.tinkoff.edu.java.link_parser.base_parser.LinkParser;
 
+import java.net.URL;
 import java.util.List;
 
 @Component
@@ -16,18 +17,18 @@ public class GitHubParser extends LinkParser {
     }
 
     @Override
-    protected GitHubParserResult createResult(String path) {
-        List<String> segments = getURLPathSegments(path);
+    protected GitHubParserResult createResult(URL url) {
+        List<String> segments = getURLPathSegments(url.getPath());
         return new GitHubParserResult(segments.get(0), segments.get(1));
     }
 
     @Override
-    protected String getHost() {
-        return gitHubHost;
+    protected boolean isURLSupported(URL url) {
+        return url.getHost().equals(gitHubHost);
     }
 
     @Override
-    protected boolean isPathValid(String path) {
-        return getURLPathSegments(path).size() == 2;
+    protected boolean canTakeDataFromURL(URL url) {
+        return getURLPathSegments(url.getPath()).size() == 2;
     }
 }
