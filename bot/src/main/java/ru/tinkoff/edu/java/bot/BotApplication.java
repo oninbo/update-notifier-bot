@@ -10,8 +10,6 @@ import ru.tinkoff.edu.java.link_parser.LinkParserResult;
 
 @SpringBootApplication
 @EnableConfigurationProperties(ApplicationConfig.class)
-// Не получилось использовать ComponentScan для получения бинов из link-parser, Spring в bot почему-то их не видит,
-// пришлось описывать бины в ApplicationConfig :(
 @Import(ru.tinkoff.edu.java.link_parser.configuration.ApplicationConfig.class)
 public class BotApplication {
     public static void main(String[] args) {

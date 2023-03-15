@@ -15,7 +15,6 @@ import java.util.List;
 // Если переименовать link-parser.properties в application.properties, по аналогии с bot и scrapper,
 // то в BotApplication будет читаться конфиг из bot, а там нет нужных значений
 @PropertySource("classpath:/link-parser.properties")
-// Почему не @ComponentScan см. BotApplication
 public class ApplicationConfig {
     @Bean
     public LinkParserService getLinkParserService(List<LinkParser> parsers) {
