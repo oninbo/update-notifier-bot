@@ -1,5 +1,6 @@
 package ru.tinkoff.edu.java.bot.configuration;
 
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.validation.annotation.Validated;
@@ -7,6 +8,6 @@ import org.springframework.validation.annotation.Validated;
 @Validated
 @ConfigurationProperties(prefix = "app", ignoreUnknownFields = false)
 public record ApplicationConfig(
-        @NotNull String apiErrorDescription,
-        @NotNull String serverErrorDescription
-) {}
+        @Valid @NotNull ErrorDescription errorDescription
+) {
+}

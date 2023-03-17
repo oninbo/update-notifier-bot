@@ -21,7 +21,7 @@ public class ControllerExceptionHandler {
     @ResponseStatus(value = HttpStatus.BAD_REQUEST)
     public ApiErrorResponse apiErrorResponse(Exception ex) {
         return new ApiErrorResponse(
-                config.apiErrorDescription(),
+                config.errorDescription().api(),
                 Integer.toString(HttpStatus.BAD_REQUEST.value()),
                 ex
         );
@@ -31,7 +31,7 @@ public class ControllerExceptionHandler {
     @ResponseStatus(value = HttpStatus.BAD_REQUEST)
     public ApiErrorResponse serverErrorResponse(Exception ex) {
         return new ApiErrorResponse(
-                config.serverErrorDescription(),
+                config.errorDescription().server(),
                 Integer.toString(HttpStatus.INTERNAL_SERVER_ERROR.value()),
                 ex
         );
