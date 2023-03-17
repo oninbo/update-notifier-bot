@@ -17,7 +17,7 @@ public class BotController {
     }
 
     @PostMapping("/updates")
-    public void sendUpdate(@Valid @RequestBody LinkUpdate linkUpdate) {
+    public void updates(@Valid @RequestBody LinkUpdate linkUpdate) {
         LinkParserResult result = linkParserService.parse(linkUpdate.url());
         System.out.println(result);
     }

@@ -1,5 +1,5 @@
 app:
-  error_descriptions:
+  error_description:
     # noinspection SpringBootApplicationYaml
     api: Некорректные параметры запроса
     # noinspection SpringBootApplicationYaml

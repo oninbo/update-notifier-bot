@@ -1,6 +1,7 @@
 package ru.tinkoff.edu.java.bot.advice;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -17,7 +18,11 @@ public class ControllerExceptionHandler {
         this.config = config;
     }
 
-    @ExceptionHandler(value = {LinkParserException.class, MethodArgumentNotValidException.class})
+    @ExceptionHandler(value = {
+            LinkParserException.class,
+            MethodArgumentNotValidException.class,
+            HttpMessageNotReadableException.class
+    })
     @ResponseStatus(value = HttpStatus.BAD_REQUEST)
     public ApiErrorResponse apiErrorResponse(Exception ex) {
         return new ApiErrorResponse(
