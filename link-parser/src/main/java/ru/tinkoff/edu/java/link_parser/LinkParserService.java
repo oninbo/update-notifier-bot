@@ -5,6 +5,7 @@ import ru.tinkoff.edu.java.link_parser.base_parser.LinkParser;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 @Service
 public class LinkParserService {
@@ -14,11 +15,10 @@ public class LinkParserService {
         this.parsers = parsers;
     }
 
-    public LinkParserResult parse(String link) {
+    public Optional<LinkParserResult> parse(String link) {
         return parsers.stream()
                 .map((LinkParser p) -> p.parse(link))
                 .filter(Objects::nonNull)
-                .findFirst()
-                .orElse(null);
+                .findFirst();
     }
 }
