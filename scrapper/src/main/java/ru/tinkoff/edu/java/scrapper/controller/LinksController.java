@@ -1,7 +1,7 @@
 package ru.tinkoff.edu.java.scrapper.controller;
 
 import jakarta.validation.Valid;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.web.bind.annotation.*;
 import ru.tinkoff.edu.java.scrapper.configuration.Placeholder;
@@ -9,31 +9,15 @@ import ru.tinkoff.edu.java.scrapper.dto.AddLinkRequest;
 import ru.tinkoff.edu.java.scrapper.dto.LinkResponse;
 import ru.tinkoff.edu.java.scrapper.dto.ListLinksResponse;
 import ru.tinkoff.edu.java.scrapper.dto.RemoveLinkRequest;
-import ru.tinkoff.edu.java.scrapper.service.TgChatService;
 
 @RestController
+@RequestMapping("/links")
 @EnableConfigurationProperties(Placeholder.class)
-public class ScrapperController {
-    @SuppressWarnings("SpringJavaAutowiredFieldsWarningInspection")
-    @Autowired
-    private Placeholder placeholder;
-    private final TgChatService tgChatService;
+@RequiredArgsConstructor
+public class LinksController {
+    private final Placeholder placeholder;
 
-    public ScrapperController(TgChatService tgChatService) {
-        this.tgChatService = tgChatService;
-    }
-
-    @PostMapping("/tg-chat/{id}")
-    public void addTgChat(@PathVariable(value = "id") Long id) {
-        tgChatService.add(id);
-    }
-
-    @DeleteMapping("/tg-chat/{id}")
-    public void deleteTgChat(@PathVariable(value = "id") Long id) {
-        tgChatService.delete(id);
-    }
-
-    @GetMapping("/links")
+    @GetMapping
     public ListLinksResponse getLinks() {
         return placeholder.listLinksResponse();
     }
