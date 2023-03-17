@@ -13,7 +13,7 @@ placeholder:
       - *link_response
     size: 1
 server:
-  port: 3030
+  port: 8080
 spring:
   devtools:
     livereload:

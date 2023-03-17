@@ -4,4 +4,7 @@ app:
     api: Некорректные параметры запроса
     # noinspection SpringBootApplicationYaml
     server: Ошибка сервера
-server.port: 3031
+server.port: 8080
+springdoc:
+  swagger-ui:
+    path: /swagger-ui
