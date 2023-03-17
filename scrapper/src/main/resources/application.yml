@@ -1,0 +1,16 @@
+#file: noinspection SpringBootApplicationYaml
+app:
+  error_description:
+    api: Некорректные параметры запроса
+    server: Ошибка сервера
+    tg_chat_not_found: Чат не существует
+placeholder:
+  link_response: &link_response
+    id: 1
+    url: https://github.com/sanyarnd/tinkoff-java-course-2022
+  list_links_response:
+    links:
+      - *link_response
+    size: 1
+server.port: 3030
+spring.devtools.livereload.port: 35730
