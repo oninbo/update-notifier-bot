@@ -1,0 +1,4 @@
+app:
+  api_error_description: Некорректные параметры запроса
+  server_error_description: Ошибка сервера
+server.port: 3031
