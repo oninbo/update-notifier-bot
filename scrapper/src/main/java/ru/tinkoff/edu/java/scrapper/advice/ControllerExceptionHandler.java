@@ -1,5 +1,6 @@
 package ru.tinkoff.edu.java.scrapper.advice;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -11,12 +12,9 @@ import ru.tinkoff.edu.java.scrapper.dto.ApiErrorResponse;
 import ru.tinkoff.edu.java.scrapper.repository.TgChatNotFoundException;
 
 @RestControllerAdvice
+@RequiredArgsConstructor
 public class ControllerExceptionHandler {
     private final ApplicationConfig config;
-
-    public ControllerExceptionHandler(ApplicationConfig config) {
-        this.config = config;
-    }
 
     @ExceptionHandler(value = {
             MethodArgumentNotValidException.class,
