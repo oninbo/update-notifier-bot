@@ -23,8 +23,8 @@ public class StackOverflowServiceTest {
         WebClient webClient = new WebClient(null, new WebClientSettings(null, "1"));
         ApplicationConfig applicationConfig = new ApplicationConfig(null, webClient);
 
-        StackExchangeQuestionResponse mockQuestion1 = new StackExchangeQuestionResponse(List.of("spring", "java"));
-        StackExchangeQuestionResponse mockQuestion2 = new StackExchangeQuestionResponse(List.of("android", "okhttp"));
+        StackExchangeQuestionResponse mockQuestion1 = new StackExchangeQuestionResponse(10L);
+        StackExchangeQuestionResponse mockQuestion2 = new StackExchangeQuestionResponse(20L);
         mockQuestionList = new ListStackExchangeQuestionsResponse(List.of(mockQuestion1, mockQuestion2));
 
         StackExchangeClient stackExchangeClient = (version, ids, site) -> mockQuestionList;

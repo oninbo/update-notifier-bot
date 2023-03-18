@@ -49,8 +49,8 @@ public class StackOverflowClientTest {
 
     @Test
     public void shouldGetListOfQuestions() throws InterruptedException, JsonProcessingException {
-        StackExchangeQuestionResponse mockQuestion1 = new StackExchangeQuestionResponse(List.of("spring", "java"));
-        StackExchangeQuestionResponse mockQuestion2 = new StackExchangeQuestionResponse(List.of("android", "okhttp"));
+        StackExchangeQuestionResponse mockQuestion1 = new StackExchangeQuestionResponse(10L);
+        StackExchangeQuestionResponse mockQuestion2 = new StackExchangeQuestionResponse(20L);
         ListStackExchangeQuestionsResponse mockQuestionList =
                 new ListStackExchangeQuestionsResponse(List.of(mockQuestion1, mockQuestion2));
         ObjectMapper mapper = new ObjectMapper();

@@ -35,6 +35,7 @@ public class GitHubClientTest {
     static void tearDown() throws IOException {
         mockBackEnd.shutdown();
     }
+
     @BeforeEach
     void initialize() {
         String baseUrl = String.format("http://localhost:%s", mockBackEnd.getPort());
