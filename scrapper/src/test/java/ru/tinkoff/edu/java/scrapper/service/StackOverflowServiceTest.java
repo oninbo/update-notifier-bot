@@ -19,6 +19,8 @@ import ru.tinkoff.edu.java.scrapper.dto.ListStackExchangeQuestionsResponse;
 import ru.tinkoff.edu.java.scrapper.dto.StackExchangeQuestionResponse;
 
 import java.io.IOException;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -77,6 +79,8 @@ public class StackOverflowServiceTest {
         assertEquals(result, mockQuestionList.items());
 
         RecordedRequest recordedRequest = mockBackEnd.takeRequest();
-        assertEquals("/1/questions/10%3B20?site=stackoverflow", recordedRequest.getPath());
+        String expectedPath = String.format("/1/questions/%s?site=stackoverflow",
+                URLEncoder.encode("10;20", StandardCharsets.UTF_8));
+        assertEquals(expectedPath, recordedRequest.getPath());
     }
 }
