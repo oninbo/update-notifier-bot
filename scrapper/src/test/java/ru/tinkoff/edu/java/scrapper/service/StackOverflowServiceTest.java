@@ -6,7 +6,7 @@ import ru.tinkoff.edu.java.scrapper.client.StackExchangeClient;
 import ru.tinkoff.edu.java.scrapper.client.StackOverflowClient;
 import ru.tinkoff.edu.java.scrapper.configuration.ApplicationConfig;
 import ru.tinkoff.edu.java.scrapper.configuration.WebClient;
-import ru.tinkoff.edu.java.scrapper.configuration.WebClientData;
+import ru.tinkoff.edu.java.scrapper.configuration.WebClientSettings;
 import ru.tinkoff.edu.java.scrapper.dto.ListStackExchangeQuestionsResponse;
 import ru.tinkoff.edu.java.scrapper.dto.StackExchangeQuestionResponse;
 
@@ -20,7 +20,7 @@ public class StackOverflowServiceTest {
 
     @BeforeEach
     void initialize() {
-        WebClient webClient = new WebClient(null, new WebClientData(null, "1"));
+        WebClient webClient = new WebClient(null, new WebClientSettings(null, "1"));
         ApplicationConfig applicationConfig = new ApplicationConfig(null, webClient);
 
         StackExchangeQuestionResponse mockQuestion1 = new StackExchangeQuestionResponse(List.of("spring", "java"));

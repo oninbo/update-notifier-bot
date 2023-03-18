@@ -5,7 +5,7 @@ import org.springframework.validation.annotation.Validated;
 
 @Validated
 public record WebClient(
-        @Validated @NotNull WebClientData github,
-        @Validated @NotNull WebClientData stackExchange
+        @Validated @NotNull WebClientSettings github,
+        @Validated @NotNull WebClientSettings stackExchange
 ) {
 }
