@@ -11,6 +11,8 @@ app:
     stack_exchange:
       base_url: https://api.stackexchange.com/
       api_version: 2.3
+  scheduler:
+    interval: 5000
 placeholder:
   link_response: &link_response
     id: 1

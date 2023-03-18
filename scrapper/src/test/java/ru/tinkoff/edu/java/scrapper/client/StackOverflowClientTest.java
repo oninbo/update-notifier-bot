@@ -10,9 +10,9 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import ru.tinkoff.edu.java.scrapper.configuration.ApplicationConfig;
-import ru.tinkoff.edu.java.scrapper.configuration.ClientConfiguration;
+import ru.tinkoff.edu.java.scrapper.configuration.ClientConfig;
 import ru.tinkoff.edu.java.scrapper.configuration.WebClient;
-import ru.tinkoff.edu.java.scrapper.configuration.WebClientSettings;
+import ru.tinkoff.edu.java.scrapper.configuration.WebClientConfig;
 import ru.tinkoff.edu.java.scrapper.dto.ListStackExchangeQuestionsResponse;
 import ru.tinkoff.edu.java.scrapper.dto.StackExchangeQuestionResponse;
 
@@ -41,9 +41,9 @@ public class StackOverflowClientTest {
     @BeforeEach
     void initialize() {
         String baseUrl = String.format("http://localhost:%s", mockBackEnd.getPort());
-        WebClient webClient = new WebClient(null, new WebClientSettings(baseUrl, "1"));
-        ApplicationConfig applicationConfig = new ApplicationConfig(null, webClient);
-        StackExchangeClient stackExchangeClient = new ClientConfiguration().getStackExchangeClient(applicationConfig);
+        WebClient webClient = new WebClient(null, new WebClientConfig(baseUrl, "1"));
+        ApplicationConfig applicationConfig = new ApplicationConfig(null, webClient, null);
+        StackExchangeClient stackExchangeClient = new ClientConfig().getStackExchangeClient(applicationConfig);
         stackOverflowClient = new StackOverflowClient(stackExchangeClient);
     }
 
