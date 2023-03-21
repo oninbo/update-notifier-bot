@@ -8,3 +8,6 @@ server.port: 8080
 springdoc:
   swagger-ui:
     path: /swagger-ui
+spring:
+  config:
+    import: secrets.yml

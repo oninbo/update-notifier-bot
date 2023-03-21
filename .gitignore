@@ -1,1 +1,2 @@
 target/
+/bot/src/main/resources/secrets.yml
