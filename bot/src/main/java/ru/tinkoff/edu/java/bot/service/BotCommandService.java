@@ -4,8 +4,8 @@ import com.pengrad.telegrambot.model.Message;
 import com.pengrad.telegrambot.model.MessageEntity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import ru.tinkoff.edu.java.bot.configuration.ApplicationConfig;
 import ru.tinkoff.edu.java.bot.service.bot_command.BotCommand;
 import ru.tinkoff.edu.java.bot.service.bot_command.BotCommandArguments;
 import ru.tinkoff.edu.java.bot.service.bot_command.BotCommandHandler;
@@ -16,20 +16,19 @@ import java.util.List;
 @Service
 public class BotCommandService {
     private final Logger logger;
-
     private final List<BotCommandHandler> botCommandHandlers;
     private final UserResponseService userResponseService;
-
-    @Value("${command.common.message.unsupported_command}")
-    private String commandNotSupportedMessage;
+    private final ApplicationConfig applicationConfig;
 
     public BotCommandService(
             List<BotCommandHandler> botCommandHandlers,
-            UserResponseService userResponseService
+            UserResponseService userResponseService,
+            ApplicationConfig applicationConfig
     ) {
         this.userResponseService = userResponseService;
         this.botCommandHandlers = botCommandHandlers;
-        logger = LoggerFactory.getLogger(BotCommandService.class);
+        this.applicationConfig = applicationConfig;
+        this.logger = LoggerFactory.getLogger(BotCommandService.class);
     }
 
     public void handleCommandEntity(Message message, MessageEntity messageEntity) {
@@ -48,7 +47,8 @@ public class BotCommandService {
                 .ifPresentOrElse(
                         botCommand -> handleCommand(botCommand, arguments),
                         () -> {
-                            userResponseService.sendMessage(arguments.userId(), commandNotSupportedMessage);
+                            var messageText = applicationConfig.command().common().message().unsupportedCommand();
+                            userResponseService.sendMessage(arguments.userId(), messageText);
                             handleCommand(BotCommand.HELP, arguments);
                         });
     }

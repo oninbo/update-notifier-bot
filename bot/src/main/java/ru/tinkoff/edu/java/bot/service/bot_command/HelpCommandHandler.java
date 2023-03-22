@@ -1,15 +1,15 @@
 package ru.tinkoff.edu.java.bot.service.bot_command;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
+import ru.tinkoff.edu.java.bot.configuration.ApplicationConfig;
 import ru.tinkoff.edu.java.bot.service.UserResponseService;
 
 @Component
 @RequiredArgsConstructor
 public class HelpCommandHandler implements BotCommandHandler {
     private final UserResponseService userResponseService;
-    private final Environment environment;
+    private final ApplicationConfig applicationConfig;
 
     @Override
     public void handle(BotCommandArguments arguments) {
@@ -19,7 +19,7 @@ public class HelpCommandHandler implements BotCommandHandler {
             String line = String.format(
                     formatString,
                     command.ordinal() + 1,
-                    command.getDescription(environment),
+                    command.getDescription(applicationConfig),
                     command.toString().toLowerCase(),
                     command.getArguments().map(this::formatCommandArguments).orElse("")
             );

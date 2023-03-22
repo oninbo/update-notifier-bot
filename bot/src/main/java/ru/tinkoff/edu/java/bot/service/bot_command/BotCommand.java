@@ -1,29 +1,67 @@
 package ru.tinkoff.edu.java.bot.service.bot_command;
 
-import org.springframework.core.env.Environment;
+import ru.tinkoff.edu.java.bot.configuration.ApplicationConfig;
 
 import java.util.Optional;
 
 public enum BotCommand {
-    START, // зарегистрировать пользователя
-    HELP, // вывести окно с командами
-    TRACK { // начать отслеживание ссылки
+    START {
+        @Override
+        public String getDescription(ApplicationConfig applicationConfig) {
+            return applicationConfig.command().start().description();
+        }
+    },
+    HELP {
+        @Override
+        public String getDescription(ApplicationConfig applicationConfig) {
+            return applicationConfig.command().help().description();
+        }
+    },
+    TRACK {
+
+        @Override
+        public String getDescription(ApplicationConfig applicationConfig) {
+            return applicationConfig.command().track().description();
+        }
+
+        @Override
+        public String getMessageInput(ApplicationConfig applicationConfig) {
+            return applicationConfig.command().track().message().input();
+        }
+
         @Override
         public Optional<String[]> getArguments() {
             return Optional.of(new String[]{"link"});
         }
     },
     @SuppressWarnings("SpellCheckingInspection")
-    UNTRACK { // прекратить отслеживание ссылки
+    UNTRACK {
+        @Override
+        public String getDescription(ApplicationConfig applicationConfig) {
+            return applicationConfig.command().untrack().description();
+        }
+
+        @Override
+        public String getMessageInput(ApplicationConfig applicationConfig) {
+            return applicationConfig.command().untrack().message().input();
+        }
+
         @Override
         public Optional<String[]> getArguments() {
             return Optional.of(new String[]{"link"});
         }
     },
-    LIST; // показать список отслеживаемых ссылок
+    LIST {
+        @Override
+        public String getDescription(ApplicationConfig applicationConfig) {
+            return applicationConfig.command().list().description();
+        }
+    }; // показать список отслеживаемых ссылок
 
-    public String getDescription(Environment environment) {
-        return environment.getProperty(String.format("command.%s.description", toString().toLowerCase()));
+    public abstract String getDescription(ApplicationConfig applicationConfig);
+
+    public String getMessageInput(ApplicationConfig applicationConfig) {
+        return null;
     }
 
     public Optional<String[]> getArguments() {
