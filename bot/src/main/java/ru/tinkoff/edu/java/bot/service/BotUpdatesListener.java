@@ -16,10 +16,8 @@ import java.util.Optional;
 public class BotUpdatesListener implements UpdatesListener {
     private final Logger logger;
     private final BotCommandService botCommandService;
-    private final UserResponseService userResponseService;
 
-    public BotUpdatesListener(BotCommandService botCommandService, UserResponseService userResponseService) {
-        this.userResponseService = userResponseService;
+    public BotUpdatesListener(BotCommandService botCommandService) {
         this.botCommandService = botCommandService;
         logger = LoggerFactory.getLogger(BotUpdatesListener.class);
     }
@@ -49,12 +47,7 @@ public class BotUpdatesListener implements UpdatesListener {
 
     private void processMessageEntity(MessageEntity messageEntity, Message message) {
         if (messageEntity.type() == MessageEntity.Type.bot_command) {
-            String command = message.text().substring(
-                    messageEntity.offset(),
-                    messageEntity.offset() + messageEntity.length()
-            );
-            String arguments = message.text().replace(command, "");
-            botCommandService.handleCommand(command, arguments, userResponseService.to(message.from()));
+            botCommandService.handleCommandEntity(message, messageEntity);
         }
     }
 }

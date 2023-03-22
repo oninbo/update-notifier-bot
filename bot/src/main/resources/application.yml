@@ -1,9 +1,40 @@
+#file: noinspection SpringBootApplicationYaml
 app:
   error_description:
-    # noinspection SpringBootApplicationYaml
     api: Некорректные параметры запроса
-    # noinspection SpringBootApplicationYaml
     server: Ошибка сервера
+command:
+  common:
+    message:
+      unsupported_command: Команда не поддерживается
+  start:
+    description: Зарегистрировать пользователя
+    message:
+      user_registered: >
+        Вы зарегистрированы в боте. Для получения списка команд используйте команду /help
+  help:
+    description: Вывести окно с командами
+  # noinspection SpellCheckingInspection
+  untrack:
+    description: Прекратить отслеживание ссылки
+    message:
+      no_link: |
+        В сообщении нет отслеживаемой ссылки. Отправьте команду /untrack в одном сообщении со ссылкой.
+        
+        Например,
+        /untrack https://stackoverflow.com/questions/34088780
+  track:
+    description: Начать отслеживание ссылки
+    message:
+      no_link: |
+        В сообщении нет ссылки для отслеживания. Отправьте команду /track в одном сообщении со ссылкой.
+        
+        Например,
+        /track https://stackoverflow.com/questions/34088780
+  list:
+    message:
+      no_links: У вас нет отслеживаемых ссылок
+    description: Показать список отслеживаемых ссылок
 server.port: 8080
 springdoc:
   swagger-ui:
