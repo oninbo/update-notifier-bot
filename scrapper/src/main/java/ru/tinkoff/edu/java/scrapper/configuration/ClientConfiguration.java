@@ -10,7 +10,7 @@ import ru.tinkoff.edu.java.scrapper.client.StackExchangeClient;
 import ru.tinkoff.edu.java.scrapper.client.StackOverflowClient;
 
 @Configuration
-public class ClientConfig {
+public class ClientConfiguration {
     @Bean
     public GitHubClient getGitHubClient(ApplicationConfig applicationConfig) {
         return createWebClient(GitHubClient.class, applicationConfig.webClient().github().baseUrl());

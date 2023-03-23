@@ -10,7 +10,7 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import ru.tinkoff.edu.java.scrapper.configuration.ApplicationConfig;
-import ru.tinkoff.edu.java.scrapper.configuration.ClientConfig;
+import ru.tinkoff.edu.java.scrapper.configuration.ClientConfiguration;
 import ru.tinkoff.edu.java.scrapper.configuration.WebClient;
 import ru.tinkoff.edu.java.scrapper.configuration.WebClientConfig;
 import ru.tinkoff.edu.java.scrapper.dto.GitHubRepositoryResponse;
@@ -41,7 +41,7 @@ public class GitHubClientTest {
         String baseUrl = String.format("http://localhost:%s", mockBackEnd.getPort());
         WebClient webClient = new WebClient(new WebClientConfig(baseUrl, "1"), null);
         ApplicationConfig applicationConfig = new ApplicationConfig(null, webClient, null);
-        gitHubClient = new ClientConfig().getGitHubClient(applicationConfig);
+        gitHubClient = new ClientConfiguration().getGitHubClient(applicationConfig);
     }
 
     @Test
