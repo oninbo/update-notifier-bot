@@ -38,9 +38,13 @@ app:
           Например,
           /track https://stackoverflow.com/questions/34088780
     list:
+      header: Отслеживаемые ссылки
       message:
         no_links: У вас нет отслеживаемых ссылок
       description: Показать список отслеживаемых ссылок
+  web_client:
+    scrapper:
+      base_url: http:://localhost:8081
 server.port: 8080
 springdoc:
   swagger-ui:

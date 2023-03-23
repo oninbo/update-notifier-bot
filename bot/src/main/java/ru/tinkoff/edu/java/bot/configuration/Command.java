@@ -39,7 +39,11 @@ public record Command(
     }
 
     @Validated
-    public record List(@NotBlank String description, @Valid @NotNull Message message) {
+    public record List(
+            @NotBlank String description,
+            @NotBlank String header,
+            @Valid @NotNull Message message
+    ) {
         @Validated
         public record Message(@NotBlank String noLinks) {
         }

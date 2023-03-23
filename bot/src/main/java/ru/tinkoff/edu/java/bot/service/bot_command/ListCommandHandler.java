@@ -2,10 +2,13 @@ package ru.tinkoff.edu.java.bot.service.bot_command;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
+import ru.tinkoff.edu.java.bot.client.ScrapperClient;
 import ru.tinkoff.edu.java.bot.configuration.ApplicationConfig;
+import ru.tinkoff.edu.java.bot.dto.LinkResponse;
 import ru.tinkoff.edu.java.bot.service.UserResponseService;
 import ru.tinkoff.edu.java.link_parser.LinkParserService;
 
+import java.net.URI;
 import java.util.List;
 
 
@@ -17,16 +20,20 @@ public class ListCommandHandler implements BotCommandHandler {
 
     private final ApplicationConfig applicationConfig;
 
+    private final ScrapperClient scrapperClient;
+
     @Override
     public void handle(BotCommandArguments arguments) {
-        List<String> links = getLinks();
+        List<String> links = getLinks(arguments.userId());
         if (links.isEmpty()) {
             String noLinksMessage = applicationConfig.command().list().message().noLinks();
             userResponseService.sendMessage(arguments.userId(), noLinksMessage);
             return;
         }
 
-        StringBuilder stringBuilder = new StringBuilder("Отслеживаемые ссылки:\n");
+        StringBuilder stringBuilder = new StringBuilder(
+                applicationConfig.command().list().header() + ":\n"
+        );
         for (int i = 0; i < links.size(); i++) {
             stringBuilder.append(String.format("%d. ", i + 1));
             String link = links.get(i);
@@ -47,12 +54,12 @@ public class ListCommandHandler implements BotCommandHandler {
         return botCommand == BotCommand.LIST;
     }
 
-    private List<String> getLinks() {
-        // TODO: get links from scrapper
-        return List.of(
-                "https://stackoverflow.com/questions/34088780",
-                "https://github.com/sanyarnd/tinkoff-java-course-2022"
-        );
+    private List<String> getLinks(Long id) {
+        return scrapperClient.getLinks(id)
+                .links().stream()
+                .map(LinkResponse::url)
+                .map(URI::toString)
+                .toList();
     }
 }
 

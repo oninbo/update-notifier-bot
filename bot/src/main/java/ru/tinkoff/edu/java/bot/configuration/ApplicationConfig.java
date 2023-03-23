@@ -9,8 +9,9 @@ import org.springframework.validation.annotation.Validated;
 @ConfigurationProperties(prefix = "app", ignoreUnknownFields = false)
 public record ApplicationConfig(
         @Valid @NotNull ErrorDescription errorDescription,
-        BotConfig botConfig,
-        @Valid @NotNull Command command
+        @Valid BotConfig botConfig,
+        @Valid @NotNull Command command,
+        @Valid @NotNull WebClient webClient
 ) {
 }
 
