@@ -2,6 +2,7 @@ package ru.tinkoff.edu.java.bot.service.bot_command;
 
 import ru.tinkoff.edu.java.bot.configuration.ApplicationConfig;
 
+import java.util.Arrays;
 import java.util.Optional;
 
 public enum BotCommand {
@@ -66,5 +67,18 @@ public enum BotCommand {
 
     public Optional<String[]> getArguments() {
         return Optional.empty();
+    }
+
+    public com.pengrad.telegrambot.model.BotCommand toTgCommand(ApplicationConfig applicationConfig) {
+        return new com.pengrad.telegrambot.model.BotCommand(
+                toString().toLowerCase(),
+                getDescription(applicationConfig)
+        );
+    }
+
+    public static com.pengrad.telegrambot.model.BotCommand[] getTgCommands(ApplicationConfig applicationConfig) {
+        return Arrays.stream(values())
+                .map(c -> c.toTgCommand(applicationConfig))
+                .toArray(com.pengrad.telegrambot.model.BotCommand[]::new);
     }
 }
