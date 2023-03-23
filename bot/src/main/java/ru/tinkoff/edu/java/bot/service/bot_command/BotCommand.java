@@ -57,7 +57,7 @@ public enum BotCommand {
         public String getDescription(ApplicationConfig applicationConfig) {
             return applicationConfig.command().list().description();
         }
-    }; // показать список отслеживаемых ссылок
+    };
 
     public abstract String getDescription(ApplicationConfig applicationConfig);
 
