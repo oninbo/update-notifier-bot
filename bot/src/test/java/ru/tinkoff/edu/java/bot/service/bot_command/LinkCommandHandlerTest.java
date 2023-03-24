@@ -62,7 +62,6 @@ public class LinkCommandHandlerTest {
             return null;
         }).when(userResponseService).sendMessage(anyLong(), anyString());
 
-        applicationConfig = mock(ApplicationConfig.class);
         when(applicationConfig.command()).thenReturn(mock(Command.class));
         when(applicationConfig.command().list()).thenReturn(mock(Command.List.class));
 
