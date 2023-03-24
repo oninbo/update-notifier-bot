@@ -23,7 +23,9 @@
         <maven-compiler-plugin.version>3.10.1</maven-compiler-plugin.version>
         <junit-jupiter-engine.version>5.9.2</junit-jupiter-engine.version>
         <junit-platform-surefire-provider.version>1.2.0</junit-platform-surefire-provider.version>
+        <junit.extensions.version>2.6.0</junit.extensions.version>
         <springdoc-openapi-starter-webmvc-ui.version>2.0.2</springdoc-openapi-starter-webmvc-ui.version>
+        <mockito.version>5.2.0</mockito.version>
         <okhttp.version>4.0.1</okhttp.version>
         <java-telegram-bot-api.version>6.5.0</java-telegram-bot-api.version>
         <maven.compiler.source>17</maven.compiler.source>
@@ -83,6 +85,17 @@
                 <groupId>com.github.pengrad</groupId>
                 <artifactId>java-telegram-bot-api</artifactId>
                 <version>${java-telegram-bot-api.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.mockito</groupId>
+                <artifactId>mockito-core</artifactId>
+                <version>${mockito.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.github.glytching</groupId>
+                <artifactId>junit-extensions</artifactId>
+                <version>${junit.extensions.version}</version>
+                <scope>test</scope>
             </dependency>
         </dependencies>
     </dependencyManagement>
