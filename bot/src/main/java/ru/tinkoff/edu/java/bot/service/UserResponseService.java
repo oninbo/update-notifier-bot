@@ -9,6 +9,7 @@ import com.pengrad.telegrambot.request.SendMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+import ru.tinkoff.edu.java.bot.service.log.SendResponseLog;
 
 import java.util.Optional;
 
@@ -34,7 +35,7 @@ public class UserResponseService {
     }
 
     public boolean isMessageFromBot(Message message){
-        return Optional.of(message.from())
+        return Optional.ofNullable(message.from())
                 .map(User::id)
                 .map(id -> id.equals(telegramBot.getBotId()))
                 .orElse(false);
@@ -47,7 +48,7 @@ public class UserResponseService {
                 .replyMarkup(keyboard);
         var response = telegramBot.execute(request);
         if (!response.isOk()) {
-            logger.error(response.toString());
+            logger.error(SendResponseLog.fromSendResponse(response).toString());
         }
     }
 }
