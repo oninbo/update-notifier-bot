@@ -1,17 +1,23 @@
 package ru.tinkoff.edu.java.bot.service.bot_command;
 
 import org.springframework.stereotype.Component;
+import ru.tinkoff.edu.java.bot.client.ScrapperClient;
 import ru.tinkoff.edu.java.bot.configuration.ApplicationConfig;
+import ru.tinkoff.edu.java.bot.dto.RemoveLinkRequest;
 import ru.tinkoff.edu.java.bot.service.UserResponseService;
+
+import java.net.URI;
+import java.net.URISyntaxException;
 
 @SuppressWarnings("SpellCheckingInspection")
 @Component
 public class UntrackCommandHandler extends LinkCommandHandler {
     public UntrackCommandHandler(
             UserResponseService userResponseService,
-            ApplicationConfig applicationConfig
+            ApplicationConfig applicationConfig,
+            ScrapperClient scrapperClient
     ) {
-        super(userResponseService, applicationConfig);
+        super(userResponseService, applicationConfig, scrapperClient);
     }
 
     @Override
@@ -20,8 +26,8 @@ public class UntrackCommandHandler extends LinkCommandHandler {
     }
 
     @Override
-    protected void sendLinkToScrapper(String link, Long userId) {
-        // TODO
+    protected void sendLinkToScrapper(String link, Long userId) throws URISyntaxException {
+        scrapperClient.deleteLink(userId, new RemoveLinkRequest(new URI(link)));
     }
 
     @Override

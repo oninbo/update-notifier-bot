@@ -1,16 +1,22 @@
 package ru.tinkoff.edu.java.bot.service.bot_command;
 
 import org.springframework.stereotype.Component;
+import ru.tinkoff.edu.java.bot.client.ScrapperClient;
 import ru.tinkoff.edu.java.bot.configuration.ApplicationConfig;
+import ru.tinkoff.edu.java.bot.dto.AddLinkRequest;
 import ru.tinkoff.edu.java.bot.service.UserResponseService;
+
+import java.net.URI;
+import java.net.URISyntaxException;
 
 @Component
 public class TrackCommandHandler extends LinkCommandHandler {
     public TrackCommandHandler(
             UserResponseService userResponseService,
-            ApplicationConfig applicationConfig
+            ApplicationConfig applicationConfig,
+            ScrapperClient scrapperClient
     ) {
-        super(userResponseService, applicationConfig);
+        super(userResponseService, applicationConfig, scrapperClient);
     }
 
     @Override
@@ -19,8 +25,8 @@ public class TrackCommandHandler extends LinkCommandHandler {
     }
 
     @Override
-    protected void sendLinkToScrapper(String link, Long userId) {
-        // TODO
+    protected void sendLinkToScrapper(String link, Long userId) throws URISyntaxException {
+        scrapperClient.addLink(userId, new AddLinkRequest(new URI(link)));
     }
 
     @Override

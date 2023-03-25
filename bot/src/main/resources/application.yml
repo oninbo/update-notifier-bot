@@ -9,6 +9,7 @@ app:
         bot_error: Произошла ошибка
         unsupported_command: Команда не поддерживается
         unsupported_link: Ссылка не поддерживается
+        invalid_link: Ссылка невалидна
     start:
       description: Зарегистрировать пользователя
       message:

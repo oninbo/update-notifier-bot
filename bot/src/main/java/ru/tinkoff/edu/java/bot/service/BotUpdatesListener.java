@@ -8,6 +8,8 @@ import com.pengrad.telegrambot.model.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
+import org.springframework.web.reactive.function.client.WebClientResponseException;
+import ru.tinkoff.edu.java.bot.client.WebClientErrorHandler;
 import ru.tinkoff.edu.java.bot.configuration.ApplicationConfig;
 
 import java.util.Arrays;
@@ -21,17 +23,20 @@ public class BotUpdatesListener implements UpdatesListener {
     private final BotMenuButtonService botMenuButtonService;
     private final UserResponseService userResponseService;
     private final ApplicationConfig applicationConfig;
+    private final WebClientErrorHandler webClientErrorHandler;
 
     public BotUpdatesListener(
             BotCommandService botCommandService,
             BotMenuButtonService botMenuButtonService,
             UserResponseService userResponseService,
-            ApplicationConfig applicationConfig
+            ApplicationConfig applicationConfig,
+            WebClientErrorHandler webClientErrorHandler
     ) {
         this.applicationConfig = applicationConfig;
         this.botMenuButtonService = botMenuButtonService;
         this.botCommandService = botCommandService;
         this.userResponseService = userResponseService;
+        this.webClientErrorHandler = webClientErrorHandler;
         logger = LoggerFactory.getLogger(BotUpdatesListener.class);
     }
 
@@ -40,12 +45,15 @@ public class BotUpdatesListener implements UpdatesListener {
         for (var update : updates) {
             try {
                 processUpdate(update);
+            } catch (WebClientResponseException.NotFound | WebClientResponseException.BadRequest exception) {
+                webClientErrorHandler
+                        .handleWebClientException(
+                                exception,
+                                update,
+                                () -> handleException(exception, update)
+                        );
             } catch (Exception exception) {
-                logger.error(exception.toString());
-                Optional.ofNullable(update.message())
-                        .map(Message::from)
-                        .map(User::id)
-                        .ifPresent(this::sendErrorMessage);
+                handleException(exception, update);
             }
         }
         return UpdatesListener.CONFIRMED_UPDATES_ALL;
@@ -74,5 +82,13 @@ public class BotUpdatesListener implements UpdatesListener {
                 userId,
                 applicationConfig.command().common().message().botError()
         );
+    }
+
+    private void handleException(Exception exception, Update update){
+        logger.error(exception.toString());
+        Optional.ofNullable(update.message())
+                .map(Message::from)
+                .map(User::id)
+                .ifPresent(this::sendErrorMessage);
     }
 }
