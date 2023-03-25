@@ -11,9 +11,11 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 import ru.tinkoff.edu.java.bot.client.WebClientErrorHandler;
 import ru.tinkoff.edu.java.bot.configuration.ApplicationConfig;
+import ru.tinkoff.edu.java.bot.service.log.UpdateLog;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @Component
@@ -60,7 +62,7 @@ public class BotUpdatesListener implements UpdatesListener {
     }
 
     private void processUpdate(Update update) {
-        logger.info(update.toString());
+        logger.info(UpdateLog.fromUpdate(update).toString());
         var message = Optional.ofNullable(update.message());
 
         message.map(Message::entities).ifPresentOrElse(
@@ -72,6 +74,9 @@ public class BotUpdatesListener implements UpdatesListener {
     }
 
     private void processMessageEntity(MessageEntity messageEntity, Message message) {
+        if (Objects.isNull(messageEntity.type())) {
+            return;
+        }
         switch (messageEntity.type()) {
             case bot_command -> botCommandService.handleCommandEntity(message, messageEntity);
             case url -> botMenuButtonService.handleMessage(message);
@@ -93,3 +98,4 @@ public class BotUpdatesListener implements UpdatesListener {
                 .ifPresent(this::sendErrorMessage);
     }
 }
+
