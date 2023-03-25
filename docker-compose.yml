@@ -1,0 +1,10 @@
+version: "3.9"
+services:
+  bot:
+    build:
+      dockerfile: bot/Dockerfile
+      context: .
+  scrapper:
+    build:
+      dockerfile: scrapper/Dockerfile
+      context: .
