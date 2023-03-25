@@ -62,13 +62,13 @@ public class BotUpdatesListener implements UpdatesListener {
     private void processUpdate(Update update) {
         logger.info(update.toString());
         var message = Optional.ofNullable(update.message());
-        message
-            .map(Message::entities)
-            .ifPresent(messageEntities ->
-                    Arrays.stream(messageEntities)
-                            .forEach(entity -> processMessageEntity(entity, update.message()))
-            );
-        message.ifPresent(botMenuButtonService::handleMessage);
+
+        message.map(Message::entities).ifPresentOrElse(
+                messageEntities ->
+                        Arrays.stream(messageEntities)
+                                .forEach(entity -> processMessageEntity(entity, update.message())),
+                () -> message.ifPresent(botMenuButtonService::handleMessage)
+        );
     }
 
     private void processMessageEntity(MessageEntity messageEntity, Message message) {
@@ -84,7 +84,7 @@ public class BotUpdatesListener implements UpdatesListener {
         );
     }
 
-    private void handleException(Exception exception, Update update){
+    private void handleException(Exception exception, Update update) {
         logger.error(exception.toString());
         Optional.ofNullable(update.message())
                 .map(Message::from)
