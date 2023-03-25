@@ -22,13 +22,24 @@ public class WebClientErrorHandler {
             Runnable onFailure) {
         var body = Optional.ofNullable(exception.getResponseBodyAs(ApiErrorResponse.class));
         body.ifPresentOrElse(
-                response -> Optional.ofNullable(update.message())
-                        .map(Message::from)
-                        .map(User::id)
-                        .ifPresent(
-                                userId -> userResponseService.sendMessage(userId, response.description())
-                        ),
+                response -> {
+                    try {
+                        handleResponseBody(response, update);
+                    } catch (Exception e) {
+                        onFailure.run();
+                    }
+
+                },
                 onFailure
         );
+    }
+
+    private void handleResponseBody(ApiErrorResponse response, Update update) {
+        Optional.ofNullable(update.message())
+                .map(Message::from)
+                .map(User::id)
+                .ifPresent(
+                        userId -> userResponseService.sendMessage(userId, response.description())
+                );
     }
 }
