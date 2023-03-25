@@ -4,6 +4,8 @@ services:
     build:
       dockerfile: bot/Dockerfile
       context: .
+    depends_on:
+      - scrapper
   scrapper:
     build:
       dockerfile: scrapper/Dockerfile

@@ -20,6 +20,8 @@ placeholder:
   list_links_response:
     links:
       - *link_response
+      - id: 2
+        url: https://stackoverflow.com/questions/47969389/how-can-i-cache-maven-dependencies-and-plugins-in-a-docker-multi-stage-build-lay
     size: 1
 server:
   port: 8081
