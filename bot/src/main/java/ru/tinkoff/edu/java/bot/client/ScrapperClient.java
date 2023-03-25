@@ -27,9 +27,9 @@ public interface ScrapperClient {
                             @RequestBody RemoveLinkRequest removeLinkRequest);
 
 
-    @PostExchange("tg-chat/{id}")
+    @PostExchange("/tg-chat/{id}")
     void addTgChat(@PathVariable(value = "id") Long id);
 
-    @DeleteExchange("tg-chat/{id}")
+    @DeleteExchange("/tg-chat/{id}")
     void deleteTgChat(@PathVariable(value = "id") Long id);
 }
