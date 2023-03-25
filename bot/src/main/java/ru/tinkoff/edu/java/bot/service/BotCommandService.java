@@ -2,6 +2,7 @@ package ru.tinkoff.edu.java.bot.service;
 
 import com.pengrad.telegrambot.model.Message;
 import com.pengrad.telegrambot.model.MessageEntity;
+import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -14,22 +15,12 @@ import java.util.Arrays;
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class BotCommandService {
-    private final Logger logger;
+    private final Logger logger = LoggerFactory.getLogger(BotCommandService.class);
     private final List<BotCommandHandler> botCommandHandlers;
     private final UserResponseService userResponseService;
     private final ApplicationConfig applicationConfig;
-
-    public BotCommandService(
-            List<BotCommandHandler> botCommandHandlers,
-            UserResponseService userResponseService,
-            ApplicationConfig applicationConfig
-    ) {
-        this.userResponseService = userResponseService;
-        this.botCommandHandlers = botCommandHandlers;
-        this.applicationConfig = applicationConfig;
-        this.logger = LoggerFactory.getLogger(BotCommandService.class);
-    }
 
     public void handleCommandEntity(Message message, MessageEntity messageEntity) {
         String command = message.text().substring(

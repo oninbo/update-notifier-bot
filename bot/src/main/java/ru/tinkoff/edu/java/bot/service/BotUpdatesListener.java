@@ -5,6 +5,7 @@ import com.pengrad.telegrambot.model.Message;
 import com.pengrad.telegrambot.model.MessageEntity;
 import com.pengrad.telegrambot.model.Update;
 import com.pengrad.telegrambot.model.User;
+import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -19,28 +20,14 @@ import java.util.Objects;
 import java.util.Optional;
 
 @Component
+@RequiredArgsConstructor
 public class BotUpdatesListener implements UpdatesListener {
-    private final Logger logger;
+    private final Logger logger = LoggerFactory.getLogger(BotUpdatesListener.class);
     private final BotCommandService botCommandService;
     private final BotMenuButtonService botMenuButtonService;
     private final UserResponseService userResponseService;
     private final ApplicationConfig applicationConfig;
     private final WebClientErrorHandler webClientErrorHandler;
-
-    public BotUpdatesListener(
-            BotCommandService botCommandService,
-            BotMenuButtonService botMenuButtonService,
-            UserResponseService userResponseService,
-            ApplicationConfig applicationConfig,
-            WebClientErrorHandler webClientErrorHandler
-    ) {
-        this.applicationConfig = applicationConfig;
-        this.botMenuButtonService = botMenuButtonService;
-        this.botCommandService = botCommandService;
-        this.userResponseService = userResponseService;
-        this.webClientErrorHandler = webClientErrorHandler;
-        logger = LoggerFactory.getLogger(BotUpdatesListener.class);
-    }
 
     @Override
     public int process(List<Update> updates) {

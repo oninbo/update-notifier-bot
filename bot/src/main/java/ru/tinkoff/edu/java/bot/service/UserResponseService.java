@@ -16,13 +16,11 @@ import java.util.Optional;
 @Service
 public class UserResponseService {
     private final TgBot telegramBot;
-    private final Logger logger;
-
+    private final Logger logger = LoggerFactory.getLogger(UserResponseService.class);
     private final Keyboard keyboard;
 
     public UserResponseService(TgBot telegramBot, TgKeyboardService tgKeyboardService) {
         this.telegramBot = telegramBot;
-        this.logger = LoggerFactory.getLogger(UserResponseService.class);
         this.keyboard = tgKeyboardService.createKeyboard();
     }
 

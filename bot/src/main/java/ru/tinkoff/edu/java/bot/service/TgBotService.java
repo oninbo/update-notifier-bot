@@ -3,6 +3,7 @@ package ru.tinkoff.edu.java.bot.service;
 import com.pengrad.telegrambot.TelegramBot;
 import com.pengrad.telegrambot.UpdatesListener;
 import com.pengrad.telegrambot.request.SetMyCommands;
+import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -10,24 +11,14 @@ import ru.tinkoff.edu.java.bot.configuration.ApplicationConfig;
 import ru.tinkoff.edu.java.bot.service.bot_command.BotCommand;
 
 @Service
+@RequiredArgsConstructor
 public class TgBotService {
     private final TelegramBot telegramBot;
     private final UpdatesListener updatesListener;
 
     private final ApplicationConfig applicationConfig;
 
-    private final Logger logger;
-
-    public TgBotService(
-            TelegramBot telegramBot,
-            UpdatesListener updatesListener,
-            ApplicationConfig applicationConfig
-    ) {
-        this.applicationConfig = applicationConfig;
-        this.telegramBot = telegramBot;
-        this.updatesListener = updatesListener;
-        logger = LoggerFactory.getLogger(TgBotService.class);
-    }
+    private final Logger  logger = LoggerFactory.getLogger(TgBotService.class);
 
     public void listen() {
         setCommands(applicationConfig);
