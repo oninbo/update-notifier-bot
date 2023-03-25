@@ -45,7 +45,7 @@ public class BotUpdatesListener implements UpdatesListener {
         for (var update : updates) {
             try {
                 processUpdate(update);
-            } catch (WebClientResponseException.NotFound | WebClientResponseException.BadRequest exception) {
+            } catch (WebClientResponseException.NotFound exception) {
                 webClientErrorHandler
                         .handleWebClientException(
                                 exception,

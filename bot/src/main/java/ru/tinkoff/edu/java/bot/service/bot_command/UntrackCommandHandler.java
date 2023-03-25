@@ -5,6 +5,7 @@ import ru.tinkoff.edu.java.bot.client.ScrapperClient;
 import ru.tinkoff.edu.java.bot.configuration.ApplicationConfig;
 import ru.tinkoff.edu.java.bot.dto.RemoveLinkRequest;
 import ru.tinkoff.edu.java.bot.service.UserResponseService;
+import ru.tinkoff.edu.java.link_parser.LinkParserService;
 
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -15,9 +16,10 @@ public class UntrackCommandHandler extends LinkCommandHandler {
     public UntrackCommandHandler(
             UserResponseService userResponseService,
             ApplicationConfig applicationConfig,
-            ScrapperClient scrapperClient
+            ScrapperClient scrapperClient,
+            LinkParserService linkParserService
     ) {
-        super(userResponseService, applicationConfig, scrapperClient);
+        super(userResponseService, applicationConfig, scrapperClient, linkParserService);
     }
 
     @Override
