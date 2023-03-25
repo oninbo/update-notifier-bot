@@ -16,6 +16,7 @@ app:
         user_registered: >
           Вы зарегистрированы в боте. Для получения списка команд используйте команду /help
     help:
+      header: Доступные команды
       description: Вывести окно с командами
     # noinspection SpellCheckingInspection
     untrack:

@@ -35,7 +35,10 @@ public record Command(
     }
 
     @Validated
-    public record Help(@NotBlank String description) {
+    public record Help(
+            @NotBlank String description,
+            @NotBlank String header
+    ) {
 
     }
 

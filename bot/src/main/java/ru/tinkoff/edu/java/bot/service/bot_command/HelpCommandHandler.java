@@ -13,7 +13,7 @@ public class HelpCommandHandler implements BotCommandHandler {
 
     @Override
     public void handle(BotCommandArguments arguments) {
-        StringBuilder stringBuilder = new StringBuilder("Доступные команды:\n");
+        StringBuilder stringBuilder = new StringBuilder(applicationConfig.command().help().header() + ":\n");
         String formatString = "%d. %s /%s %s\n";
         for (var command : BotCommand.values()) {
             String line = String.format(
