@@ -72,8 +72,9 @@ public class BotUpdatesListener implements UpdatesListener {
     }
 
     private void processMessageEntity(MessageEntity messageEntity, Message message) {
-        if (messageEntity.type() == MessageEntity.Type.bot_command) {
-            botCommandService.handleCommandEntity(message, messageEntity);
+        switch (messageEntity.type()) {
+            case bot_command -> botCommandService.handleCommandEntity(message, messageEntity);
+            case url -> botMenuButtonService.handleMessage(message);
         }
     }
 
