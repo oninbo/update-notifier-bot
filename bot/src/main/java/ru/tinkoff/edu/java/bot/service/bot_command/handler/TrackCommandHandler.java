@@ -9,7 +9,7 @@ import ru.tinkoff.edu.java.bot.service.bot_command.BotCommand;
 import ru.tinkoff.edu.java.bot.service.bot_command.BotCommandArguments;
 import ru.tinkoff.edu.java.bot.service.bot_command.TrackCommand;
 import ru.tinkoff.edu.java.link_parser.LinkParserService;
-import ru.tinkoff.edu.java.link_parser.base_parser.LinkParserIncorrectURIException;
+import ru.tinkoff.edu.java.link_parser.base_parser.LinkParserIncorrectLinkException;
 
 import java.net.URI;
 
@@ -29,7 +29,7 @@ public class TrackCommandHandler extends LinkCommandHandler {
     public void handle(BotCommandArguments arguments) {
         try {
             super.handle(arguments);
-        } catch (LinkParserIncorrectURIException exception) {
+        } catch (LinkParserIncorrectLinkException exception) {
             userResponseService.sendMessage(
                     arguments.userId(),
                     applicationConfig.command().common().message().invalidLink()

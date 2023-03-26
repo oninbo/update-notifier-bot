@@ -7,7 +7,7 @@ import ru.tinkoff.edu.java.bot.service.UserResponseService;
 import ru.tinkoff.edu.java.bot.service.bot_command.BotCommandArguments;
 import ru.tinkoff.edu.java.link_parser.LinkParserResult;
 import ru.tinkoff.edu.java.link_parser.LinkParserService;
-import ru.tinkoff.edu.java.link_parser.base_parser.LinkParserIncorrectURIException;
+import ru.tinkoff.edu.java.link_parser.base_parser.LinkParserIncorrectLinkException;
 
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -45,7 +45,7 @@ public abstract class LinkCommandHandler implements BotCommandHandler {
 
                 sendLinkToScrapper(link, arguments.userId());
                 sendSuccessMessage(arguments.userId());
-            } catch (URISyntaxException | LinkParserIncorrectURIException e) {
+            } catch (URISyntaxException | LinkParserIncorrectLinkException e) {
                 userResponseService.sendMessage(
                         arguments.userId(),
                         applicationConfig.command().common().message().invalidLink()

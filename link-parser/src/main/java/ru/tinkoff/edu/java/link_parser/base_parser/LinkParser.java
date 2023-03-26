@@ -18,7 +18,7 @@ public abstract class LinkParser {
             if (canTakeDataFromURI(link)) {
                 return createResult(link);
             } else {
-                throw new LinkParserIncorrectURIException();
+                throw new LinkParserIncorrectLinkException();
             }
         }
         return null;
@@ -26,13 +26,13 @@ public abstract class LinkParser {
 
     protected final List<String> getURIPathSegments(URI uri) {
         String path = Optional.ofNullable(uri.getPath())
-                .orElseThrow(LinkParserIncorrectURIException::new);
+                .orElseThrow(LinkParserIncorrectLinkException::new);
         return Arrays.stream(path.split("/")).filter((String s) -> !s.isBlank()).toList();
     }
 
     protected final String getURIHost(URI uri) {
         return Optional.ofNullable(uri.getHost())
-                .orElseThrow(LinkParserIncorrectURIException::new);
+                .orElseThrow(LinkParserIncorrectLinkException::new);
     }
 
     protected boolean isURISupported(URI uri) {
@@ -45,7 +45,7 @@ public abstract class LinkParser {
 
     private void checkLink(URI link) {
         if (Stream.of(link.getHost(), link.getPath()).anyMatch(Objects::isNull)) {
-            throw new LinkParserIncorrectURIException();
+            throw new LinkParserIncorrectLinkException();
         }
     }
 }

@@ -24,7 +24,7 @@ public class LinkParserTest {
     @Test
     public void shouldDetectInvalidLink() throws URISyntaxException {
         URI link = new URI("a");
-        assertThrows(LinkParserIncorrectURIException.class, () -> linkParser.parse(link));
+        assertThrows(LinkParserIncorrectLinkException.class, () -> linkParser.parse(link));
     }
 
     @Test

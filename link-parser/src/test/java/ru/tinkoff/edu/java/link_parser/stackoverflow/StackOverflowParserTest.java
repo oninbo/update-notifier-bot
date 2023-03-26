@@ -5,7 +5,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
-import ru.tinkoff.edu.java.link_parser.base_parser.LinkParserIncorrectURIException;
+import ru.tinkoff.edu.java.link_parser.base_parser.LinkParserIncorrectLinkException;
 import ru.tinkoff.edu.java.link_parser.configuration.ApplicationConfig;
 
 import java.net.URI;
@@ -35,7 +35,7 @@ public class StackOverflowParserTest {
     @Test
     public void shouldThrowExceptionOnWrongLinks() throws URISyntaxException {
         var wrongLink = new URI("https://stackoverflow.com/search?q=unsupported%20link");
-        assertThrows(LinkParserIncorrectURIException.class, () -> parser.parse(wrongLink));
+        assertThrows(LinkParserIncorrectLinkException.class, () -> parser.parse(wrongLink));
     }
 
     @Test
