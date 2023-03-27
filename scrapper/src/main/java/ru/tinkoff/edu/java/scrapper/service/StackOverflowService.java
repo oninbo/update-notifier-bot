@@ -16,14 +16,14 @@ public class StackOverflowService {
 
     public StackExchangeQuestionResponse getQuestionFromApi(Long id) {
         return stackOverflowClient
-                .getQuestions(stackExchangeApiVersion(), List.of(id))
+                .getStackOverflowQuestions(stackExchangeApiVersion(), List.of(id))
                 .items()
                 .get(0);
     }
 
     public List<StackExchangeQuestionResponse> getQuestionsFromApi(List<Long> ids) {
         return stackOverflowClient
-                .getQuestions(stackExchangeApiVersion(), ids)
+                .getStackOverflowQuestions(stackExchangeApiVersion(), ids)
                 .items();
     }
 

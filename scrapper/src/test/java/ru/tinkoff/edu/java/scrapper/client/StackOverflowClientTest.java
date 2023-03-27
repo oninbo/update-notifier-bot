@@ -57,7 +57,7 @@ public class StackOverflowClientTest {
         mockBackEnd.enqueue(new MockResponse()
                 .setBody(mapper.writeValueAsString(mockQuestionList))
                 .addHeader("Content-Type", "application/json"));
-        var result = stackOverflowClient.getQuestions("1", List.of(10L, 20L));
+        var result = stackOverflowClient.getStackOverflowQuestions("1", List.of(10L, 20L));
         assertEquals(result, mockQuestionList);
 
         RecordedRequest recordedRequest = mockBackEnd.takeRequest();
