@@ -6,7 +6,7 @@ import org.springframework.validation.annotation.Validated;
 import java.util.List;
 
 @Validated
-public record LinkUpdate(
+public record LinkUpdateRequest(
         Long id,
         @NotBlank String url,
         String description,
