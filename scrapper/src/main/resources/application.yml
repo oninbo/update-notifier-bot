@@ -13,14 +13,6 @@ app:
       api_version: 2.3
   scheduler:
     interval: 5000
-placeholder:
-  link_response: &link_response
-    id: 1
-    url: https://github.com/sanyarnd/tinkoff-java-course-2022
-  list_links_response:
-    links:
-      - *link_response
-    size: 1
 server:
   port: 8080
 spring:
