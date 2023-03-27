@@ -6,8 +6,7 @@ import com.pengrad.telegrambot.model.MessageEntity;
 import com.pengrad.telegrambot.model.Update;
 import com.pengrad.telegrambot.model.User;
 import lombok.RequiredArgsConstructor;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 import ru.tinkoff.edu.java.bot.client.WebClientErrorHandler;
@@ -21,8 +20,8 @@ import java.util.Optional;
 
 @Component
 @RequiredArgsConstructor
+@Slf4j
 public class BotUpdatesListener implements UpdatesListener {
-    private final Logger logger = LoggerFactory.getLogger(BotUpdatesListener.class);
     private final BotCommandService botCommandService;
     private final BotMenuButtonService botMenuButtonService;
     private final UserResponseService userResponseService;
@@ -49,7 +48,7 @@ public class BotUpdatesListener implements UpdatesListener {
     }
 
     private void processUpdate(Update update) {
-        logger.info(UpdateLog.fromUpdate(update).toString());
+        log.info(UpdateLog.fromUpdate(update).toString());
         var message = Optional.ofNullable(update.message());
 
         message.map(Message::entities).ifPresentOrElse(
@@ -78,7 +77,7 @@ public class BotUpdatesListener implements UpdatesListener {
     }
 
     private void handleException(Exception exception, Update update) {
-        logger.error(exception.toString());
+        log.error(exception.toString());
         Optional.ofNullable(update.message())
                 .map(Message::from)
                 .map(User::id)

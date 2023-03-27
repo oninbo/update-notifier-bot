@@ -6,17 +6,16 @@ import com.pengrad.telegrambot.model.request.ForceReply;
 import com.pengrad.telegrambot.model.request.Keyboard;
 import com.pengrad.telegrambot.model.request.ParseMode;
 import com.pengrad.telegrambot.request.SendMessage;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import ru.tinkoff.edu.java.bot.service.log.SendResponseLog;
 
 import java.util.Optional;
 
 @Service
+@Slf4j
 public class UserResponseService {
     private final TgBot telegramBot;
-    private final Logger logger = LoggerFactory.getLogger(UserResponseService.class);
     private final Keyboard keyboard;
 
     public UserResponseService(TgBot telegramBot, TgKeyboardService tgKeyboardService) {
@@ -46,7 +45,7 @@ public class UserResponseService {
                 .replyMarkup(keyboard);
         var response = telegramBot.execute(request);
         if (!response.isOk()) {
-            logger.error(SendResponseLog.fromSendResponse(response).toString());
+            log.error(SendResponseLog.fromSendResponse(response).toString());
         }
     }
 }
