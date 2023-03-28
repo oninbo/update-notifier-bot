@@ -7,8 +7,8 @@ import org.springframework.stereotype.Component;
 import ru.tinkoff.edu.java.scrapper.configuration.SchedulerConfig;
 
 @Component
-@RequiredArgsConstructor
 @Slf4j
+@RequiredArgsConstructor
 public class LinkUpdaterScheduler {
     private final SchedulerConfig schedulerConfig;
 

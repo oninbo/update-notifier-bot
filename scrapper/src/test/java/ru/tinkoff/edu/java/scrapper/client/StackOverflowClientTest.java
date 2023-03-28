@@ -10,7 +10,7 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import ru.tinkoff.edu.java.scrapper.configuration.ApplicationConfig;
-import ru.tinkoff.edu.java.scrapper.configuration.ClientConfig;
+import ru.tinkoff.edu.java.scrapper.configuration.ClientConfiguration;
 import ru.tinkoff.edu.java.scrapper.configuration.WebClient;
 import ru.tinkoff.edu.java.scrapper.configuration.WebClientConfig;
 import ru.tinkoff.edu.java.scrapper.dto.ListStackExchangeQuestionsResponse;
@@ -43,7 +43,7 @@ public class StackOverflowClientTest {
         String baseUrl = String.format("http://localhost:%s", mockBackEnd.getPort());
         WebClient webClient = new WebClient(null, new WebClientConfig(baseUrl, "1"));
         ApplicationConfig applicationConfig = new ApplicationConfig(null, webClient, null);
-        StackExchangeClient stackExchangeClient = new ClientConfig().getStackExchangeClient(applicationConfig);
+        StackExchangeClient stackExchangeClient = new ClientConfiguration().getStackExchangeClient(applicationConfig);
         stackOverflowClient = new StackOverflowClient(stackExchangeClient);
     }
 
@@ -57,7 +57,7 @@ public class StackOverflowClientTest {
         mockBackEnd.enqueue(new MockResponse()
                 .setBody(mapper.writeValueAsString(mockQuestionList))
                 .addHeader("Content-Type", "application/json"));
-        var result = stackOverflowClient.getQuestions("1", List.of(10L, 20L));
+        var result = stackOverflowClient.getStackOverflowQuestions("1", List.of(10L, 20L));
         assertEquals(result, mockQuestionList);
 
         RecordedRequest recordedRequest = mockBackEnd.takeRequest();

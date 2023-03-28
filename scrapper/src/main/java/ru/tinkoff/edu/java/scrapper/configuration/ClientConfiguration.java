@@ -7,18 +7,12 @@ import org.springframework.web.reactive.function.client.support.WebClientAdapter
 import org.springframework.web.service.invoker.HttpServiceProxyFactory;
 import ru.tinkoff.edu.java.scrapper.client.GitHubClient;
 import ru.tinkoff.edu.java.scrapper.client.StackExchangeClient;
-import ru.tinkoff.edu.java.scrapper.client.StackOverflowClient;
 
 @Configuration
-public class ClientConfig {
+public class ClientConfiguration {
     @Bean
     public GitHubClient getGitHubClient(ApplicationConfig applicationConfig) {
         return createWebClient(GitHubClient.class, applicationConfig.webClient().github().baseUrl());
-    }
-
-    @Bean
-    public StackOverflowClient getStackOverflowClient(StackExchangeClient stackExchangeClient) {
-        return new StackOverflowClient(stackExchangeClient);
     }
 
     @Bean

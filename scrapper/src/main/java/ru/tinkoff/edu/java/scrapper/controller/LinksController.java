@@ -2,24 +2,24 @@ package ru.tinkoff.edu.java.scrapper.controller;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.web.bind.annotation.*;
-import ru.tinkoff.edu.java.scrapper.configuration.Placeholder;
 import ru.tinkoff.edu.java.scrapper.dto.AddLinkRequest;
 import ru.tinkoff.edu.java.scrapper.dto.LinkResponse;
 import ru.tinkoff.edu.java.scrapper.dto.ListLinksResponse;
 import ru.tinkoff.edu.java.scrapper.dto.RemoveLinkRequest;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/links")
-@EnableConfigurationProperties(Placeholder.class)
 @RequiredArgsConstructor
 public class LinksController {
-    private final Placeholder placeholder;
-
     @GetMapping
     public ListLinksResponse getLinks(@RequestParam("Tg-Chat-Id") Long ignoredId) {
-        return placeholder.listLinksResponse();
+        return new ListLinksResponse(
+                List.of(new LinkResponse(1L, "https://github.com/sanyarnd/tinkoff-java-course-2022")),
+                1
+        );
     }
 
     @PostMapping
