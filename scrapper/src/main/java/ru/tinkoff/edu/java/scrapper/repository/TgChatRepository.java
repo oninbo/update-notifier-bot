@@ -1,6 +1,7 @@
 package ru.tinkoff.edu.java.scrapper.repository;
 
 import org.springframework.stereotype.Repository;
+import ru.tinkoff.edu.java.scrapper.exception.TgChatNotFoundException;
 
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;

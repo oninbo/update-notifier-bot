@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import ru.tinkoff.edu.java.scrapper.configuration.ApplicationConfig;
 import ru.tinkoff.edu.java.scrapper.dto.ApiErrorResponse;
-import ru.tinkoff.edu.java.scrapper.repository.TgChatNotFoundException;
+import ru.tinkoff.edu.java.scrapper.exception.TgChatNotFoundException;
 
 @RestControllerAdvice
 @RequiredArgsConstructor
