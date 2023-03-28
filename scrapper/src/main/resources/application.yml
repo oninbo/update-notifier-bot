@@ -1,0 +1,24 @@
+#file: noinspection SpringBootApplicationYaml
+app:
+  error_description:
+    api: Некорректные параметры запроса
+    server: Ошибка сервера
+    tg_chat_not_found: Чат не существует
+  web_client:
+    github:
+      base_url: https://api.github.com/
+      api_version: 2022-11-28
+    stack_exchange:
+      base_url: https://api.stackexchange.com/
+      api_version: 2.3
+  scheduler:
+    interval: 5000
+server:
+  port: 8080
+spring:
+  devtools:
+    livereload:
+      port: 35730
+springdoc:
+  swagger-ui:
+    path: /swagger-ui

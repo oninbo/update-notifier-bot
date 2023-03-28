@@ -22,6 +22,8 @@
         <maven-compiler-plugin.version>3.10.1</maven-compiler-plugin.version>
         <junit-jupiter-engine.version>5.9.2</junit-jupiter-engine.version>
         <junit-platform-surefire-provider.version>1.2.0</junit-platform-surefire-provider.version>
+        <springdoc-openapi-starter-webmvc-ui.version>2.0.2</springdoc-openapi-starter-webmvc-ui.version>
+        <okhttp.version>4.0.1</okhttp.version>
         <maven.compiler.source>17</maven.compiler.source>
         <maven.compiler.target>17</maven.compiler.target>
     </properties>
@@ -63,6 +65,17 @@
                 <artifactId>annotations</artifactId>
                 <version>${org.jetbrains.annotations.version}</version>
                 <scope>provided</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.springdoc</groupId>
+                <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
+                <version>${springdoc-openapi-starter-webmvc-ui.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.squareup.okhttp3</groupId>
+                <artifactId>mockwebserver</artifactId>
+                <version>${okhttp.version}</version>
+                <scope>test</scope>
             </dependency>
         </dependencies>
     </dependencyManagement>

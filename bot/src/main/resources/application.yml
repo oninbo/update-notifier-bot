@@ -1,0 +1,10 @@
+app:
+  error_description:
+    # noinspection SpringBootApplicationYaml
+    api: Некорректные параметры запроса
+    # noinspection SpringBootApplicationYaml
+    server: Ошибка сервера
+server.port: 8080
+springdoc:
+  swagger-ui:
+    path: /swagger-ui
