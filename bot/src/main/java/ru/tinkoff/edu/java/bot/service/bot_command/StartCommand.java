@@ -9,4 +9,9 @@ public non-sealed class StartCommand extends BotCommand {
     public String getDescription(ApplicationConfig applicationConfig) {
         return applicationConfig.command().start().description();
     }
+
+    @Override
+    public String getCommandName() {
+        return "start";
+    }
 }

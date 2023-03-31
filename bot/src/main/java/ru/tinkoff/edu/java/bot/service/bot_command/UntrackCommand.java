@@ -22,4 +22,9 @@ public non-sealed class UntrackCommand extends BotCommand {
     public Optional<String[]> getArguments() {
         return Optional.of(new String[]{"link"});
     }
+
+    @Override
+    public String getCommandName() {
+        return "untrack";
+    }
 }

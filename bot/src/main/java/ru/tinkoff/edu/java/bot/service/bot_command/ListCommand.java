@@ -9,4 +9,9 @@ public non-sealed class ListCommand extends BotCommand {
     public String getDescription(ApplicationConfig applicationConfig) {
         return applicationConfig.command().list().description();
     }
+
+    @Override
+    public String getCommandName() {
+        return "list";
+    }
 }

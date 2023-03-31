@@ -9,4 +9,9 @@ public non-sealed class HelpCommand extends BotCommand{
     public String getDescription(ApplicationConfig applicationConfig) {
         return applicationConfig.command().help().description();
     }
+
+    @Override
+    public String getCommandName() {
+        return "help";
+    }
 }

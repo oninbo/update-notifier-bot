@@ -27,9 +27,7 @@ public abstract sealed class BotCommand permits
         );
     }
 
-    public String getCommandName() {
-        return getClass().getSimpleName().toLowerCase().replace("command", "");
-    }
+    public abstract String getCommandName();
 
     public static com.pengrad.telegrambot.model.BotCommand[] getTgCommands(
             ApplicationConfig applicationConfig,

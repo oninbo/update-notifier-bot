@@ -8,7 +8,6 @@ import java.util.Optional;
 
 @Component
 public non-sealed class TrackCommand extends BotCommand {
-
     @Override
     public String getDescription(ApplicationConfig applicationConfig) {
         return applicationConfig.command().track().description();
@@ -22,5 +21,10 @@ public non-sealed class TrackCommand extends BotCommand {
     @Override
     public Optional<String[]> getArguments() {
         return Optional.of(new String[]{"link"});
+    }
+
+    @Override
+    public String getCommandName() {
+        return "track";
     }
 }
