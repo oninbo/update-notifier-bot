@@ -6,23 +6,23 @@ import ru.tinkoff.edu.java.bot.configuration.ApplicationConfig;
 import java.util.List;
 import java.util.Optional;
 
-public abstract class BotCommand {
+public abstract sealed class BotCommand {
     @Component
-    public static class START extends BotCommand {
+    public static non-sealed class START extends BotCommand {
         @Override
         public String getDescription(ApplicationConfig applicationConfig) {
             return applicationConfig.command().start().description();
         }
     }
     @Component
-    public static class HELP extends BotCommand{
+    public static non-sealed class HELP extends BotCommand{
         @Override
         public String getDescription(ApplicationConfig applicationConfig) {
             return applicationConfig.command().help().description();
         }
     }
     @Component
-    public static class TRACK extends BotCommand {
+    public static non-sealed class TRACK extends BotCommand {
 
         @Override
         public String getDescription(ApplicationConfig applicationConfig) {
@@ -41,7 +41,7 @@ public abstract class BotCommand {
     }
     @Component
     @SuppressWarnings("SpellCheckingInspection")
-    public static class UNTRACK extends BotCommand {
+    public static non-sealed class UNTRACK extends BotCommand {
         @Override
         public String getDescription(ApplicationConfig applicationConfig) {
             return applicationConfig.command().untrack().description();
@@ -58,7 +58,7 @@ public abstract class BotCommand {
         }
     }
     @Component
-    public static class LIST extends BotCommand {
+    public static non-sealed class LIST extends BotCommand {
         @Override
         public String getDescription(ApplicationConfig applicationConfig) {
             return applicationConfig.command().list().description();
