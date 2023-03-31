@@ -6,5 +6,5 @@ import org.springframework.validation.annotation.Validated;
 import java.time.Duration;
 
 @Validated
-public record Scheduler(@NotNull Duration interval) {
+public record Scheduler(@NotNull HumanReadableDuration interval) {
 }
