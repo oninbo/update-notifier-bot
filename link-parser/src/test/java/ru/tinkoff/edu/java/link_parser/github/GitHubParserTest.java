@@ -8,6 +8,9 @@ import org.springframework.context.annotation.AnnotationConfigApplicationContext
 import ru.tinkoff.edu.java.link_parser.configuration.ApplicationConfig;
 import ru.tinkoff.edu.java.link_parser.base_parser.LinkParserIncorrectURIException;
 
+import java.net.URI;
+import java.net.URISyntaxException;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 public class GitHubParserTest {
@@ -24,21 +27,22 @@ public class GitHubParserTest {
         "https://github.com/sanyarnd/tinkoff-java-course-2022",
         "https://github.com/sanyarnd/tinkoff-java-course-2022/"
     })
-    public void shouldParseCorrectLinks(String correctLink) {
+    public void shouldParseCorrectLinks(String correctLink) throws URISyntaxException {
         var expectedResult = new GitHubParserResult("sanyarnd", "tinkoff-java-course-2022");
-        assertEquals(parser.parse(correctLink), expectedResult);
+        assertEquals(parser.parse(new URI(correctLink)), expectedResult);
     }
 
     @Test
-    public void shouldThrowExceptionOnWrongLinks() {
-        var wrongLink =
-                "https://github.com/sanyarnd/tinkoff-java-course-2022/commit/5ad87f7f9041a4c4fc453cd77e362feda1ce89c9";
+    public void shouldThrowExceptionOnWrongLinks() throws URISyntaxException {
+        var wrongLink = new URI(
+                "https://github.com/sanyarnd/tinkoff-java-course-2022/commit/5ad87f7f9041a4c4fc453cd77e362feda1ce89c9"
+        );
         assertThrows(LinkParserIncorrectURIException.class, () -> parser.parse(wrongLink));
     }
 
     @Test
-    public void shouldReturnNullOnNotGitHubLink() {
-        var notGitHubLink = "https://stackoverflow.com/questions/1642028/what-is-the-operator-in-c";
+    public void shouldReturnNullOnNotGitHubLink() throws URISyntaxException {
+        var notGitHubLink = new URI("https://stackoverflow.com/questions/1642028/what-is-the-operator-in-c");
         assertNull(parser.parse(notGitHubLink));
     }
 }

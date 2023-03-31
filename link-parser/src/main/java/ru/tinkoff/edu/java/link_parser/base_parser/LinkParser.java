@@ -3,37 +3,31 @@ package ru.tinkoff.edu.java.link_parser.base_parser;
 import ru.tinkoff.edu.java.link_parser.LinkParserResult;
 
 import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 public abstract class LinkParser {
-    public LinkParserResult parse(String link) {
-        return parse(getURI(link));
-    }
-
     public LinkParserResult parse(URI link) {
-        LinkParserResult result = null;
         if (isURISupported(link)) {
             if (canTakeDataFromURI(link)) {
-                result = createResult(link);
+                return createResult(link);
             } else {
                 throw new LinkParserIncorrectURIException();
             }
         }
-        return result;
+        return null;
     }
 
-    protected final URI getURI(String link) {
-        try {
-            return new URI(link);
-        } catch (URISyntaxException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    protected final List<String> getURIPathSegments(String path) {
+    protected final List<String> getURIPathSegments(URI uri) {
+        String path = Optional.ofNullable(uri.getPath())
+                .orElseThrow(LinkParserIncorrectURIException::new);
         return Arrays.stream(path.split("/")).filter((String s) -> !s.isBlank()).toList();
+    }
+
+    protected final String getURIHost(URI uri) {
+        return Optional.ofNullable(uri.getHost())
+                .orElseThrow(LinkParserIncorrectURIException::new);
     }
 
     protected abstract boolean isURISupported(URI uri);

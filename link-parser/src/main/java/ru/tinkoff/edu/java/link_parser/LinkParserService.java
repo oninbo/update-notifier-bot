@@ -16,13 +16,6 @@ public class LinkParserService {
         this.parsers = parsers;
     }
 
-    public Optional<LinkParserResult> parse(String link) {
-        return parsers.stream()
-                .map((LinkParser p) -> p.parse(link))
-                .filter(Objects::nonNull)
-                .findFirst();
-    }
-
     public Optional<LinkParserResult> parse(URI link) {
         return parsers.stream()
                 .map((LinkParser p) -> p.parse(link))

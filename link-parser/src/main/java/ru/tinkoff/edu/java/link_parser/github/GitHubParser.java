@@ -17,17 +17,17 @@ public class GitHubParser extends LinkParser {
 
     @Override
     protected GitHubParserResult createResult(URI uri) {
-        List<String> segments = getURIPathSegments(uri.getPath());
+        List<String> segments = getURIPathSegments(uri);
         return new GitHubParserResult(segments.get(0), segments.get(1));
     }
 
     @Override
     protected boolean isURISupported(URI uri) {
-        return uri.getHost().equals(gitHubHost);
+        return getURIHost(uri).equals(gitHubHost);
     }
 
     @Override
     protected boolean canTakeDataFromURI(URI uri) {
-        return getURIPathSegments(uri.getPath()).size() == 2;
+        return getURIPathSegments(uri).size() == 2;
     }
 }

@@ -17,18 +17,18 @@ public class StackOverflowParser extends LinkParser {
 
     @Override
     protected StackOverflowParserResult createResult(URI uri) {
-        List<String> segments = getURIPathSegments(uri.getPath());
+        List<String> segments = getURIPathSegments(uri);
         return new StackOverflowParserResult(segments.get(1));
     }
 
     @Override
     protected boolean isURISupported(URI uri) {
-        return uri.getHost().equals(stackOverflowHost);
+        return getURIHost(uri).equals(stackOverflowHost);
     }
 
     @Override
     protected boolean canTakeDataFromURI(URI uri) {
-        List<String> segments = getURIPathSegments(uri.getPath());
+        List<String> segments = getURIPathSegments(uri);
         return segments.size() >= 2 && segments.get(0).equals("questions");
     }
 }

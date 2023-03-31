@@ -7,6 +7,8 @@ import ru.tinkoff.edu.java.link_parser.configuration.ApplicationConfig;
 import ru.tinkoff.edu.java.link_parser.github.GitHubParserResult;
 import ru.tinkoff.edu.java.link_parser.stackoverflow.StackOverflowParserResult;
 
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -21,24 +23,26 @@ public class LinkParserServiceTest {
     }
 
     @Test
-    public void shouldParseGitHubLink() {
-        var link = "https://github.com/sanyarnd/tinkoff-java-course-2022";
+    public void shouldParseGitHubLink() throws URISyntaxException {
+        var link = new URI("https://github.com/sanyarnd/tinkoff-java-course-2022");
         var result = new GitHubParserResult("sanyarnd", "tinkoff-java-course-2022");
 
         assertEquals(service.parse(link), Optional.of(result));
     }
 
     @Test
-    public void shouldParseStackOverflowLink() {
-        var link = "https://stackoverflow.com/questions/42307687/get-complete-jdk-source-code-in-intellij-or-other-ide";
+    public void shouldParseStackOverflowLink() throws URISyntaxException {
+        var link = new URI(
+                "https://stackoverflow.com/questions/42307687/get-complete-jdk-source-code-in-intellij-or-other-ide"
+        );
         var result = new StackOverflowParserResult("42307687");
 
         assertEquals(service.parse(link), Optional.of(result));
     }
 
     @Test
-    public void shouldNotParseOtherLink() {
-        var link = "https://habr.com/ru/post/512730/";
+    public void shouldNotParseOtherLink() throws URISyntaxException {
+        var link = new URI("https://habr.com/ru/post/512730/");
 
         assertTrue(service.parse(link).isEmpty());
     }

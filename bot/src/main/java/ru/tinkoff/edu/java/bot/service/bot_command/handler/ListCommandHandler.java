@@ -27,7 +27,7 @@ public class ListCommandHandler implements BotCommandHandler {
 
     @Override
     public void handle(BotCommandArguments arguments) {
-        List<String> links = getLinks(arguments.userId());
+        List<URI> links = getLinks(arguments.userId());
         if (links.isEmpty()) {
             String noLinksMessage = applicationConfig.command().list().message().noLinks();
             userResponseService.sendMessage(arguments.userId(), noLinksMessage);
@@ -39,8 +39,8 @@ public class ListCommandHandler implements BotCommandHandler {
         );
         for (int i = 0; i < links.size(); i++) {
             stringBuilder.append(String.format("%d. ", i + 1));
-            String link = links.get(i);
-            var linkParseResultPresenter = new LinkParseResultPresenter(stringBuilder, link);
+            URI link = links.get(i);
+            var linkParseResultPresenter = new LinkParseResultPresenter(stringBuilder, link.toString());
             linkParserService.parse(link).ifPresentOrElse(
                     linkParserResult -> linkParserResult.acceptVisitor(linkParseResultPresenter),
                     () -> stringBuilder.append(link)
@@ -57,11 +57,10 @@ public class ListCommandHandler implements BotCommandHandler {
         return botCommand instanceof ListCommand;
     }
 
-    private List<String> getLinks(Long id) {
+    private List<URI> getLinks(Long id) {
         return scrapperClient.getLinks(id)
                 .links().stream()
                 .map(LinkResponse::url)
-                .map(URI::toString)
                 .toList();
     }
 }
