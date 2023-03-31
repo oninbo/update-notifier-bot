@@ -12,8 +12,8 @@ public abstract sealed class BotCommand permits
         UntrackCommand {
     public abstract String getDescription(ApplicationConfig applicationConfig);
 
-    public String getMessageInput(ApplicationConfig applicationConfig) {
-        return null;
+    public Optional<String> getMessageInput(ApplicationConfig applicationConfig) {
+        return Optional.empty();
     }
 
     public Optional<String[]> getArguments() {

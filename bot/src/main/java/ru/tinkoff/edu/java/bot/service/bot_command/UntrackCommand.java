@@ -14,8 +14,8 @@ public non-sealed class UntrackCommand extends BotCommand {
     }
 
     @Override
-    public String getMessageInput(ApplicationConfig applicationConfig) {
-        return applicationConfig.command().untrack().message().input();
+    public Optional<String> getMessageInput(ApplicationConfig applicationConfig) {
+        return Optional.of(applicationConfig.command().untrack().message().input());
     }
 
     @Override

@@ -52,7 +52,7 @@ public class BotMenuButtonService {
         } else {
             userResponseService.sendMessageForceReply(
                     arguments.userId(),
-                    botCommand.getMessageInput(applicationConfig)
+                    botCommand.getMessageInput(applicationConfig).orElseThrow()
             );
         }
     }
@@ -62,7 +62,7 @@ public class BotMenuButtonService {
         Optional<BotCommand> botCommand = botCommands
                 .stream()
                 .filter(
-                        value -> Optional.ofNullable(value.getMessageInput(applicationConfig))
+                        value -> value.getMessageInput(applicationConfig)
                                 .map(i -> i.equals(text))
                                 .orElse(false)
                 )

@@ -15,8 +15,8 @@ public non-sealed class TrackCommand extends BotCommand {
     }
 
     @Override
-    public String getMessageInput(ApplicationConfig applicationConfig) {
-        return applicationConfig.command().track().message().input();
+    public Optional<String> getMessageInput(ApplicationConfig applicationConfig) {
+        return Optional.of(applicationConfig.command().track().message().input());
     }
 
     @Override
