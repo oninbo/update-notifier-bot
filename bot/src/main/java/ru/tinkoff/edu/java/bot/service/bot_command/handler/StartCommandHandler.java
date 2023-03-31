@@ -1,10 +1,13 @@
-package ru.tinkoff.edu.java.bot.service.bot_command;
+package ru.tinkoff.edu.java.bot.service.bot_command.handler;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import ru.tinkoff.edu.java.bot.client.ScrapperClient;
 import ru.tinkoff.edu.java.bot.configuration.ApplicationConfig;
 import ru.tinkoff.edu.java.bot.service.UserResponseService;
+import ru.tinkoff.edu.java.bot.service.bot_command.BotCommand;
+import ru.tinkoff.edu.java.bot.service.bot_command.BotCommandArguments;
+import ru.tinkoff.edu.java.bot.service.bot_command.StartCommand;
 
 @Component
 @RequiredArgsConstructor
@@ -22,6 +25,6 @@ public class StartCommandHandler implements BotCommandHandler{
 
     @Override
     public boolean canHandle(BotCommand botCommand) {
-        return botCommand instanceof BotCommand.Start;
+        return botCommand instanceof StartCommand;
     }
 }

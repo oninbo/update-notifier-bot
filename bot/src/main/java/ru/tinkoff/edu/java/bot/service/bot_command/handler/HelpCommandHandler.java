@@ -1,9 +1,12 @@
-package ru.tinkoff.edu.java.bot.service.bot_command;
+package ru.tinkoff.edu.java.bot.service.bot_command.handler;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import ru.tinkoff.edu.java.bot.configuration.ApplicationConfig;
 import ru.tinkoff.edu.java.bot.service.UserResponseService;
+import ru.tinkoff.edu.java.bot.service.bot_command.BotCommand;
+import ru.tinkoff.edu.java.bot.service.bot_command.BotCommandArguments;
+import ru.tinkoff.edu.java.bot.service.bot_command.HelpCommand;
 
 import java.util.List;
 
@@ -24,7 +27,7 @@ public class HelpCommandHandler implements BotCommandHandler {
                     formatString,
                     i + 1,
                     command.getDescription(applicationConfig),
-                    command.toString().toLowerCase(),
+                    command.getCommandName(),
                     command.getArguments().map(this::formatCommandArguments).orElse("")
             );
             stringBuilder.append(line);
@@ -35,7 +38,7 @@ public class HelpCommandHandler implements BotCommandHandler {
 
     @Override
     public boolean canHandle(BotCommand botCommand) {
-        return botCommand instanceof BotCommand.Help;
+        return botCommand instanceof HelpCommand;
     }
 
     private String formatCommandArguments(String[] commandArguments) {

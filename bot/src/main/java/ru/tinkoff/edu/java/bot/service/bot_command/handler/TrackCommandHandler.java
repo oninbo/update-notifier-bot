@@ -1,10 +1,13 @@
-package ru.tinkoff.edu.java.bot.service.bot_command;
+package ru.tinkoff.edu.java.bot.service.bot_command.handler;
 
 import org.springframework.stereotype.Component;
 import ru.tinkoff.edu.java.bot.client.ScrapperClient;
 import ru.tinkoff.edu.java.bot.configuration.ApplicationConfig;
 import ru.tinkoff.edu.java.bot.dto.AddLinkRequest;
 import ru.tinkoff.edu.java.bot.service.UserResponseService;
+import ru.tinkoff.edu.java.bot.service.bot_command.BotCommand;
+import ru.tinkoff.edu.java.bot.service.bot_command.BotCommandArguments;
+import ru.tinkoff.edu.java.bot.service.bot_command.TrackCommand;
 import ru.tinkoff.edu.java.link_parser.LinkParserService;
 import ru.tinkoff.edu.java.link_parser.base_parser.LinkParserIncorrectURLException;
 
@@ -37,7 +40,7 @@ public class TrackCommandHandler extends LinkCommandHandler {
 
     @Override
     public boolean canHandle(BotCommand botCommand) {
-        return botCommand instanceof BotCommand.Track;
+        return botCommand instanceof TrackCommand;
     }
 
     @Override

@@ -1,9 +1,10 @@
-package ru.tinkoff.edu.java.bot.service.bot_command;
+package ru.tinkoff.edu.java.bot.service.bot_command.handler;
 
 import lombok.RequiredArgsConstructor;
 import ru.tinkoff.edu.java.bot.client.ScrapperClient;
 import ru.tinkoff.edu.java.bot.configuration.ApplicationConfig;
 import ru.tinkoff.edu.java.bot.service.UserResponseService;
+import ru.tinkoff.edu.java.bot.service.bot_command.BotCommandArguments;
 import ru.tinkoff.edu.java.link_parser.LinkParserResult;
 import ru.tinkoff.edu.java.link_parser.LinkParserService;
 import ru.tinkoff.edu.java.link_parser.base_parser.LinkParserIncorrectURLException;

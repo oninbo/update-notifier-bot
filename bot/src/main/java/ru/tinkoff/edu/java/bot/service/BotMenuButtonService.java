@@ -6,9 +6,8 @@ import org.springframework.stereotype.Service;
 import ru.tinkoff.edu.java.bot.configuration.ApplicationConfig;
 import ru.tinkoff.edu.java.bot.service.bot_command.BotCommand;
 import ru.tinkoff.edu.java.bot.service.bot_command.BotCommandArguments;
-import ru.tinkoff.edu.java.bot.service.bot_command.BotCommandHandler;
+import ru.tinkoff.edu.java.bot.service.bot_command.handler.BotCommandHandler;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;

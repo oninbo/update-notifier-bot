@@ -8,7 +8,8 @@ import org.springframework.stereotype.Service;
 import ru.tinkoff.edu.java.bot.configuration.ApplicationConfig;
 import ru.tinkoff.edu.java.bot.service.bot_command.BotCommand;
 import ru.tinkoff.edu.java.bot.service.bot_command.BotCommandArguments;
-import ru.tinkoff.edu.java.bot.service.bot_command.BotCommandHandler;
+import ru.tinkoff.edu.java.bot.service.bot_command.HelpCommand;
+import ru.tinkoff.edu.java.bot.service.bot_command.handler.BotCommandHandler;
 
 import java.util.List;
 
@@ -20,7 +21,7 @@ public class BotCommandService {
     private final UserResponseService userResponseService;
     private final ApplicationConfig applicationConfig;
     private final List<BotCommand> botCommands;
-    private final BotCommand.Help helpCommand;
+    private final HelpCommand helpCommand;
 
     public void handleCommandEntity(Message message, MessageEntity messageEntity) {
         String command = message.text().substring(
@@ -31,10 +32,10 @@ public class BotCommandService {
         log.info("command=" + command + ", text=" + text);
 
         var arguments = new BotCommandArguments(text, message.from().id());
-        String commandString = command.substring(1).toUpperCase();
+        String commandString = command.substring(1).toLowerCase();
         botCommands
                 .stream()
-                .filter(v -> v.toString().equals(commandString))
+                .filter(v -> v.getCommandName().equals(commandString))
                 .findFirst()
                 .ifPresentOrElse(
                         botCommand -> handleCommand(botCommand, arguments),

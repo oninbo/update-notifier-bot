@@ -1,10 +1,12 @@
-package ru.tinkoff.edu.java.bot.service.bot_command;
+package ru.tinkoff.edu.java.bot.service.bot_command.handler;
 
 import org.springframework.stereotype.Component;
 import ru.tinkoff.edu.java.bot.client.ScrapperClient;
 import ru.tinkoff.edu.java.bot.configuration.ApplicationConfig;
 import ru.tinkoff.edu.java.bot.dto.RemoveLinkRequest;
 import ru.tinkoff.edu.java.bot.service.UserResponseService;
+import ru.tinkoff.edu.java.bot.service.bot_command.BotCommand;
+import ru.tinkoff.edu.java.bot.service.bot_command.UntrackCommand;
 import ru.tinkoff.edu.java.link_parser.LinkParserService;
 
 import java.net.URI;
@@ -24,7 +26,7 @@ public class UntrackCommandHandler extends LinkCommandHandler {
 
     @Override
     public boolean canHandle(BotCommand botCommand) {
-        return botCommand instanceof BotCommand.Untrack;
+        return botCommand instanceof UntrackCommand;
     }
 
     @Override

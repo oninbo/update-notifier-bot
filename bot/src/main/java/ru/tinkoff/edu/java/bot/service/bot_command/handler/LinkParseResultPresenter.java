@@ -1,4 +1,4 @@
-package ru.tinkoff.edu.java.bot.service.bot_command;
+package ru.tinkoff.edu.java.bot.service.bot_command.handler;
 
 import lombok.RequiredArgsConstructor;
 import ru.tinkoff.edu.java.link_parser.LinkParserResultVisitor;
