@@ -24,7 +24,7 @@ public class UntrackCommandHandler extends LinkCommandHandler {
 
     @Override
     public boolean canHandle(BotCommand botCommand) {
-        return botCommand instanceof BotCommand.UNTRACK;
+        return botCommand instanceof BotCommand.Untrack;
     }
 
     @Override

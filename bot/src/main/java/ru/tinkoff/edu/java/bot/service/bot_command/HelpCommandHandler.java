@@ -35,7 +35,7 @@ public class HelpCommandHandler implements BotCommandHandler {
 
     @Override
     public boolean canHandle(BotCommand botCommand) {
-        return botCommand instanceof BotCommand.HELP;
+        return botCommand instanceof BotCommand.Help;
     }
 
     private String formatCommandArguments(String[] commandArguments) {

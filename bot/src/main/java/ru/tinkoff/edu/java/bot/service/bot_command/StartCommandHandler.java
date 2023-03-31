@@ -22,6 +22,6 @@ public class StartCommandHandler implements BotCommandHandler{
 
     @Override
     public boolean canHandle(BotCommand botCommand) {
-        return botCommand instanceof BotCommand.START;
+        return botCommand instanceof BotCommand.Start;
     }
 }

@@ -10,7 +10,6 @@ import ru.tinkoff.edu.java.bot.service.bot_command.BotCommand;
 import ru.tinkoff.edu.java.bot.service.bot_command.BotCommandArguments;
 import ru.tinkoff.edu.java.bot.service.bot_command.BotCommandHandler;
 
-import java.util.Arrays;
 import java.util.List;
 
 @Service
@@ -21,7 +20,7 @@ public class BotCommandService {
     private final UserResponseService userResponseService;
     private final ApplicationConfig applicationConfig;
     private final List<BotCommand> botCommands;
-    private final BotCommand.HELP helpCommand;
+    private final BotCommand.Help helpCommand;
 
     public void handleCommandEntity(Message message, MessageEntity messageEntity) {
         String command = message.text().substring(

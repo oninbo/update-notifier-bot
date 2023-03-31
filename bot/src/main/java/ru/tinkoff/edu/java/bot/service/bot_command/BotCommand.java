@@ -3,26 +3,25 @@ package ru.tinkoff.edu.java.bot.service.bot_command;
 import org.springframework.stereotype.Component;
 import ru.tinkoff.edu.java.bot.configuration.ApplicationConfig;
 
-import java.util.List;
 import java.util.Optional;
 
 public abstract sealed class BotCommand {
     @Component
-    public static non-sealed class START extends BotCommand {
+    public static non-sealed class Start extends BotCommand {
         @Override
         public String getDescription(ApplicationConfig applicationConfig) {
             return applicationConfig.command().start().description();
         }
     }
     @Component
-    public static non-sealed class HELP extends BotCommand{
+    public static non-sealed class Help extends BotCommand{
         @Override
         public String getDescription(ApplicationConfig applicationConfig) {
             return applicationConfig.command().help().description();
         }
     }
     @Component
-    public static non-sealed class TRACK extends BotCommand {
+    public static non-sealed class Track extends BotCommand {
 
         @Override
         public String getDescription(ApplicationConfig applicationConfig) {
@@ -41,7 +40,7 @@ public abstract sealed class BotCommand {
     }
     @Component
     @SuppressWarnings("SpellCheckingInspection")
-    public static non-sealed class UNTRACK extends BotCommand {
+    public static non-sealed class Untrack extends BotCommand {
         @Override
         public String getDescription(ApplicationConfig applicationConfig) {
             return applicationConfig.command().untrack().description();
@@ -58,7 +57,7 @@ public abstract sealed class BotCommand {
         }
     }
     @Component
-    public static non-sealed class LIST extends BotCommand {
+    public static non-sealed class List extends BotCommand {
         @Override
         public String getDescription(ApplicationConfig applicationConfig) {
             return applicationConfig.command().list().description();
@@ -84,7 +83,7 @@ public abstract sealed class BotCommand {
 
     public static com.pengrad.telegrambot.model.BotCommand[] getTgCommands(
             ApplicationConfig applicationConfig,
-            List<BotCommand> botCommands) {
+            java.util.List<BotCommand> botCommands) {
         return botCommands
                 .stream()
                 .map(c -> c.toTgCommand(applicationConfig))
