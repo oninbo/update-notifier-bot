@@ -14,7 +14,7 @@ import java.net.URISyntaxException;
 import java.util.Optional;
 
 /**
- * Класс для обработки ссылки, которую отправляет пользователь как текстовое сообщение в боте
+ * Класс для обработки команды, которая принимает ссылку от пользователя
  */
 @RequiredArgsConstructor
 public abstract class LinkCommandHandler implements BotCommandHandler {
@@ -24,7 +24,7 @@ public abstract class LinkCommandHandler implements BotCommandHandler {
     private final LinkParserService linkParserService;
 
     /**
-     * Обрабатывает данные из сообщения пользователя
+     * Обрабатывает сообщение с командой
      * @param arguments данные из сообщения пользователя
      */
     @Override
