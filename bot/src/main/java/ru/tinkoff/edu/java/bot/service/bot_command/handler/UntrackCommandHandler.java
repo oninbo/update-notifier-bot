@@ -10,7 +10,6 @@ import ru.tinkoff.edu.java.bot.service.bot_command.UntrackCommand;
 import ru.tinkoff.edu.java.link_parser.LinkParserService;
 
 import java.net.URI;
-import java.net.URISyntaxException;
 
 @SuppressWarnings("SpellCheckingInspection")
 @Component
@@ -30,8 +29,8 @@ public class UntrackCommandHandler extends LinkCommandHandler {
     }
 
     @Override
-    protected void sendLinkToScrapper(String link, Long userId) throws URISyntaxException {
-        scrapperClient.deleteLink(userId, new RemoveLinkRequest(new URI(link)));
+    protected void sendLinkToScrapper(URI link, Long userId) {
+        scrapperClient.deleteLink(userId, new RemoveLinkRequest(link));
     }
 
     @Override

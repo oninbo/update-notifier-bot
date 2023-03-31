@@ -4,7 +4,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import ru.tinkoff.edu.java.link_parser.base_parser.LinkParser;
 
-import java.net.URL;
+import java.net.URI;
 import java.util.List;
 
 @Component
@@ -16,19 +16,19 @@ public class StackOverflowParser extends LinkParser {
     }
 
     @Override
-    protected StackOverflowParserResult createResult(URL url) {
-        List<String> segments = getURLPathSegments(url.getPath());
+    protected StackOverflowParserResult createResult(URI uri) {
+        List<String> segments = getURIPathSegments(uri.getPath());
         return new StackOverflowParserResult(segments.get(1));
     }
 
     @Override
-    protected boolean isURLSupported(URL url) {
-        return url.getHost().equals(stackOverflowHost);
+    protected boolean isURISupported(URI uri) {
+        return uri.getHost().equals(stackOverflowHost);
     }
 
     @Override
-    protected boolean canTakeDataFromURL(URL url) {
-        List<String> segments = getURLPathSegments(url.getPath());
+    protected boolean canTakeDataFromURI(URI uri) {
+        List<String> segments = getURIPathSegments(uri.getPath());
         return segments.size() >= 2 && segments.get(0).equals("questions");
     }
 }

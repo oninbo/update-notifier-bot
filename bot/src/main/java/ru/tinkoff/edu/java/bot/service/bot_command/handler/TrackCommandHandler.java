@@ -9,10 +9,9 @@ import ru.tinkoff.edu.java.bot.service.bot_command.BotCommand;
 import ru.tinkoff.edu.java.bot.service.bot_command.BotCommandArguments;
 import ru.tinkoff.edu.java.bot.service.bot_command.TrackCommand;
 import ru.tinkoff.edu.java.link_parser.LinkParserService;
-import ru.tinkoff.edu.java.link_parser.base_parser.LinkParserIncorrectURLException;
+import ru.tinkoff.edu.java.link_parser.base_parser.LinkParserIncorrectURIException;
 
 import java.net.URI;
-import java.net.URISyntaxException;
 
 @Component
 public class TrackCommandHandler extends LinkCommandHandler {
@@ -30,7 +29,7 @@ public class TrackCommandHandler extends LinkCommandHandler {
     public void handle(BotCommandArguments arguments) {
         try {
             super.handle(arguments);
-        } catch (LinkParserIncorrectURLException exception) {
+        } catch (LinkParserIncorrectURIException exception) {
             userResponseService.sendMessage(
                     arguments.userId(),
                     applicationConfig.command().common().message().invalidLink()
@@ -44,8 +43,8 @@ public class TrackCommandHandler extends LinkCommandHandler {
     }
 
     @Override
-    protected void sendLinkToScrapper(String link, Long userId) throws URISyntaxException {
-        scrapperClient.addLink(userId, new AddLinkRequest(new URI(link)));
+    protected void sendLinkToScrapper(URI link, Long userId) {
+        scrapperClient.addLink(userId, new AddLinkRequest(link));
     }
 
     @Override
