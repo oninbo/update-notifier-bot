@@ -74,7 +74,7 @@ public abstract class LinkCommandHandler implements BotCommandHandler {
     protected abstract String noLinkMessage();
 
     /**
-     * Попытать распарсить ссылку
+     * Попытаться распарсить ссылку
      * @param link ссылка
      * @return результат парсинга ссылки
      */
