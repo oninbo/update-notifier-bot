@@ -20,6 +20,8 @@ public class BotCommandService {
     private final List<BotCommandHandler> botCommandHandlers;
     private final UserResponseService userResponseService;
     private final ApplicationConfig applicationConfig;
+    private final List<BotCommand> botCommands;
+    private final BotCommand.HELP helpCommand;
 
     public void handleCommandEntity(Message message, MessageEntity messageEntity) {
         String command = message.text().substring(
@@ -31,7 +33,8 @@ public class BotCommandService {
 
         var arguments = new BotCommandArguments(text, message.from().id());
         String commandString = command.substring(1).toUpperCase();
-        Arrays.stream(BotCommand.values())
+        botCommands
+                .stream()
                 .filter(v -> v.toString().equals(commandString))
                 .findFirst()
                 .ifPresentOrElse(
@@ -39,7 +42,7 @@ public class BotCommandService {
                         () -> {
                             var messageText = applicationConfig.command().common().message().unsupportedCommand();
                             userResponseService.sendMessage(arguments.userId(), messageText);
-                            handleCommand(BotCommand.HELP, arguments);
+                            handleCommand(helpCommand, arguments);
                         });
     }
 

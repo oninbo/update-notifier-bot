@@ -51,7 +51,7 @@ public class ListCommandHandler implements BotCommandHandler {
 
     @Override
     public boolean canHandle(BotCommand botCommand) {
-        return botCommand == BotCommand.LIST;
+        return botCommand instanceof BotCommand.LIST;
     }
 
     private List<String> getLinks(Long id) {

@@ -37,7 +37,7 @@ public class TrackCommandHandler extends LinkCommandHandler {
 
     @Override
     public boolean canHandle(BotCommand botCommand) {
-        return botCommand == BotCommand.TRACK;
+        return botCommand instanceof BotCommand.TRACK;
     }
 
     @Override

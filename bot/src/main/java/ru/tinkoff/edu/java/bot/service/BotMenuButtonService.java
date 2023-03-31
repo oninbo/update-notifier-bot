@@ -19,6 +19,7 @@ public class BotMenuButtonService {
     private final ApplicationConfig applicationConfig;
     private final List<BotCommandHandler> botCommandHandlers;
     private final UserResponseService userResponseService;
+    private final List<BotCommand> botCommands;
 
     public void handleMessage(Message message) {
         var replyMessage = Optional.ofNullable(message.replyToMessage());
@@ -30,7 +31,8 @@ public class BotMenuButtonService {
             return;
         }
 
-        Arrays.stream(BotCommand.values())
+        botCommands
+                .stream()
                 .filter(v -> v.getDescription(applicationConfig).equals(message.text()))
                 .findFirst()
                 .ifPresent(
@@ -58,7 +60,8 @@ public class BotMenuButtonService {
 
     private void handleReply(Message message) {
         String text = message.replyToMessage().text();
-        Optional<BotCommand> botCommand = Arrays.stream(BotCommand.values())
+        Optional<BotCommand> botCommand = botCommands
+                .stream()
                 .filter(
                         value -> Optional.ofNullable(value.getMessageInput(applicationConfig))
                                 .map(i -> i.equals(text))
