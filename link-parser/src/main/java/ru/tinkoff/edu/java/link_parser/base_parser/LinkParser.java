@@ -13,7 +13,7 @@ public abstract class LinkParser {
     private final List<String> supportedURISchemas = List.of("http", "https");
 
     public LinkParserResult parse(URI link) {
-        checkURI(link);
+        checkLink(link);
         if (isURISupported(link)) {
             if (canTakeDataFromURI(link)) {
                 return createResult(link);
@@ -43,8 +43,8 @@ public abstract class LinkParser {
 
     protected abstract LinkParserResult createResult(URI uri);
 
-    private void checkURI(URI uri) {
-        if (Stream.of(uri.getHost(), uri.getPath()).anyMatch(Objects::isNull)) {
+    private void checkLink(URI link) {
+        if (Stream.of(link.getHost(), link.getPath()).anyMatch(Objects::isNull)) {
             throw new LinkParserIncorrectURIException();
         }
     }
