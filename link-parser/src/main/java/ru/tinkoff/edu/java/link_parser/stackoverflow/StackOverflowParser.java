@@ -23,7 +23,7 @@ public class StackOverflowParser extends LinkParser {
 
     @Override
     protected boolean isURISupported(URI uri) {
-        return getURIHost(uri).equals(stackOverflowHost);
+        return super.isURISupported(uri) && getURIHost(uri).equals(stackOverflowHost);
     }
 
     @Override

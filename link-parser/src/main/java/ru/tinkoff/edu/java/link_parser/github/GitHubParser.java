@@ -23,7 +23,7 @@ public class GitHubParser extends LinkParser {
 
     @Override
     protected boolean isURISupported(URI uri) {
-        return getURIHost(uri).equals(gitHubHost);
+        return super.isURISupported(uri) && getURIHost(uri).equals(gitHubHost);
     }
 
     @Override

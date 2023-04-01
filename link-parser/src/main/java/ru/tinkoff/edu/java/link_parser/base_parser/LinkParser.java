@@ -5,10 +5,15 @@ import ru.tinkoff.edu.java.link_parser.LinkParserResult;
 import java.net.URI;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Stream;
 
 public abstract class LinkParser {
+    private final List<String> supportedURISchemas = List.of("http", "https");
+
     public LinkParserResult parse(URI link) {
+        checkURI(link);
         if (isURISupported(link)) {
             if (canTakeDataFromURI(link)) {
                 return createResult(link);
@@ -30,9 +35,17 @@ public abstract class LinkParser {
                 .orElseThrow(LinkParserIncorrectURIException::new);
     }
 
-    protected abstract boolean isURISupported(URI uri);
+    protected boolean isURISupported(URI uri) {
+        return supportedURISchemas.stream().anyMatch(s -> s.equals(uri.getScheme()));
+    }
 
     protected abstract boolean canTakeDataFromURI(URI uri);
 
     protected abstract LinkParserResult createResult(URI uri);
+
+    private void checkURI(URI uri) {
+        if (Stream.of(uri.getHost(), uri.getPath()).anyMatch(Objects::isNull)) {
+            throw new LinkParserIncorrectURIException();
+        }
+    }
 }
