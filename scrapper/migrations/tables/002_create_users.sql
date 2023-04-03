@@ -1,7 +1,6 @@
 CREATE TABLE users (
    id uuid NOT NULL DEFAULT gen_random_uuid(),
    chat_id bigint NOT NULL,
-   created_at timestamp NOT NULL,
    CONSTRAINT unique_chat_id UNIQUE (chat_id),
    CONSTRAINT users_pk PRIMARY KEY (id)
 );
