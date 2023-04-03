@@ -6,6 +6,7 @@ CREATE TABLE users (
    CONSTRAINT users_pk PRIMARY KEY (id)
 );
 
+-- noinspection SqlAddNotNullColumn
 ALTER TABLE links
-    ADD COLUMN user_id uuid,
+    ADD COLUMN user_id uuid NOT NULL,
     ADD CONSTRAINT user_id_fk FOREIGN KEY (user_id) REFERENCES users (id);

@@ -14,4 +14,6 @@ ALTER TABLE links
         REFERENCES stackoverflow_questions (id),
 
     ADD CONSTRAINT points_to_one_resource
-        CHECK ( num_nonnulls(stackoverflow_question_id, github_repository_id) = 1 );
+        CHECK ( num_nonnulls(stackoverflow_question_id, github_repository_id) = 1 ),
+
+    ADD CONSTRAINT unique_stackoverflow_question_id_user_id UNIQUE (user_id, stackoverflow_question_id);
