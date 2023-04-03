@@ -12,9 +12,9 @@ app:
       base_url: https://api.stackexchange.com/
       api_version: 2.3
   scheduler:
-    interval: 5000
+    interval: 1m 5s
 server:
-  port: 8080
+  port: 8081
 spring:
   devtools:
     livereload:

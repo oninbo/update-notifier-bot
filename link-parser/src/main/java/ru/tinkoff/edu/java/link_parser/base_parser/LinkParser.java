@@ -2,40 +2,50 @@ package ru.tinkoff.edu.java.link_parser.base_parser;
 
 import ru.tinkoff.edu.java.link_parser.LinkParserResult;
 
-import java.net.MalformedURLException;
-import java.net.URL;
+import java.net.URI;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.stream.Stream;
 
 public abstract class LinkParser {
-    public LinkParserResult parse(String link) {
-        URL url = getURL(link);
-        LinkParserResult result = null;
-        if (isURLSupported(url)) {
-            if (canTakeDataFromURL(url)) {
-                result = createResult(url);
+    private final List<String> supportedURISchemas = List.of("http", "https");
+
+    public LinkParserResult parse(URI link) {
+        checkLink(link);
+        if (isURISupported(link)) {
+            if (canTakeDataFromURI(link)) {
+                return createResult(link);
             } else {
-                throw new LinkParserIncorrectURLException();
+                throw new LinkParserIncorrectLinkException();
             }
         }
-        return result;
+        return null;
     }
 
-    protected final URL getURL(String link) {
-        try {
-            return new URL(link);
-        } catch (MalformedURLException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    protected final List<String> getURLPathSegments(String path) {
+    protected final List<String> getURIPathSegments(URI uri) {
+        String path = Optional.ofNullable(uri.getPath())
+                .orElseThrow(LinkParserIncorrectLinkException::new);
         return Arrays.stream(path.split("/")).filter((String s) -> !s.isBlank()).toList();
     }
 
-    protected abstract boolean isURLSupported(URL url);
+    protected final String getURIHost(URI uri) {
+        return Optional.ofNullable(uri.getHost())
+                .orElseThrow(LinkParserIncorrectLinkException::new);
+    }
 
-    protected abstract boolean canTakeDataFromURL(URL url);
+    protected boolean isURISupported(URI uri) {
+        return supportedURISchemas.stream().anyMatch(s -> s.equals(uri.getScheme()));
+    }
 
-    protected abstract LinkParserResult createResult(URL url);
+    protected abstract boolean canTakeDataFromURI(URI uri);
+
+    protected abstract LinkParserResult createResult(URI uri);
+
+    private void checkLink(URI link) {
+        if (Stream.of(link.getHost(), link.getPath()).anyMatch(Objects::isNull)) {
+            throw new LinkParserIncorrectLinkException();
+        }
+    }
 }
