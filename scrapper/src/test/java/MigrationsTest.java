@@ -12,8 +12,8 @@ public class MigrationsTest {
     @SneakyThrows
     public void shouldCreateTables() {
         try (
-                var databaseConnection = IntegrationEnvironment.getDatabaseConnection();
-                var statement = databaseConnection.createStatement()
+            var databaseConnection = IntegrationEnvironment.getDatabaseConnection();
+            var statement = databaseConnection.createStatement()
         ) {
             String sql = """
                     SELECT tablename
