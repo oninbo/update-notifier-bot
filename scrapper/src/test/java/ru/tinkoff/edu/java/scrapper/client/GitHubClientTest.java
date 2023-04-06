@@ -19,6 +19,8 @@ import ru.tinkoff.edu.java.scrapper.dto.GitHubUserResponse;
 import java.io.IOException;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 public class GitHubClientTest {
 
@@ -40,7 +42,8 @@ public class GitHubClientTest {
     void initialize() {
         String baseUrl = String.format("http://localhost:%s", mockBackEnd.getPort());
         WebClient webClient = new WebClient(new WebClientConfig(baseUrl, "1"), null);
-        ApplicationConfig applicationConfig = new ApplicationConfig(null, webClient, null);
+        ApplicationConfig applicationConfig = mock(ApplicationConfig.class);
+        when(applicationConfig.webClient()).thenReturn(webClient);
         gitHubClient = new ClientConfiguration().getGitHubClient(applicationConfig);
     }
 

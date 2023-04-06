@@ -13,6 +13,8 @@ import ru.tinkoff.edu.java.scrapper.dto.StackExchangeQuestionResponse;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 public class StackOverflowServiceTest {
     public StackOverflowService stackOverflowService;
@@ -21,7 +23,8 @@ public class StackOverflowServiceTest {
     @BeforeEach
     void initialize() {
         WebClient webClient = new WebClient(null, new WebClientConfig(null, "1"));
-        ApplicationConfig applicationConfig = new ApplicationConfig(null, webClient, null);
+        ApplicationConfig applicationConfig = mock(ApplicationConfig.class);
+        when(applicationConfig.webClient()).thenReturn(webClient);
 
         StackExchangeQuestionResponse mockQuestion1 = new StackExchangeQuestionResponse(10L);
         StackExchangeQuestionResponse mockQuestion2 = new StackExchangeQuestionResponse(20L);

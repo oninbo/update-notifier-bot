@@ -46,10 +46,7 @@ public class LinksRepository implements BaseRepository<Link, LinkAddParams> {
     private RowMapper<Link> rowMapper() {
         return (ResultSet rs, int rowNum) -> new Link(
                 rs.getObject("id", UUID.class),
-                rs.getObject("url", URI.class),
-                rs.getObject("tg_chat_id", UUID.class),
-                rs.getObject("github_repository_id", UUID.class),
-                rs.getObject("stackoverflow_question_id", UUID.class)
+                rs.getObject("url", URI.class)
         );
     }
 }

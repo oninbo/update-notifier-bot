@@ -10,6 +10,8 @@ import ru.tinkoff.edu.java.scrapper.dto.GitHubRepositoryResponse;
 import ru.tinkoff.edu.java.scrapper.dto.GitHubUserResponse;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 public class GitHubServiceTest {
     public GitHubService gitHubService;
@@ -21,7 +23,8 @@ public class GitHubServiceTest {
         mockRepository = new GitHubRepositoryResponse("mock_project", mockUser);
         GitHubClient gitHubClient = (owner, repo, version) -> mockRepository;
         WebClient webClient = new WebClient(new WebClientConfig(null, "1"), null);
-        ApplicationConfig applicationConfig = new ApplicationConfig(null, webClient, null);
+        ApplicationConfig applicationConfig = mock(ApplicationConfig.class);
+        when(applicationConfig.webClient()).thenReturn(webClient);
         gitHubService = new GitHubService(gitHubClient, applicationConfig);
     }
 

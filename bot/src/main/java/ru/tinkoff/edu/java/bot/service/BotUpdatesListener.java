@@ -48,7 +48,7 @@ public class BotUpdatesListener implements UpdatesListener {
     }
 
     private void processUpdate(Update update) {
-        log.info(UpdateLog.fromUpdate(update).toString());
+        log.info(new UpdateLog(update).toString());
         var message = Optional.ofNullable(update.message());
 
         message.map(Message::entities).ifPresentOrElse(

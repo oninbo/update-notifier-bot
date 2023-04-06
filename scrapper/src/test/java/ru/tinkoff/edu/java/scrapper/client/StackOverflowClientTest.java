@@ -22,6 +22,8 @@ import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 public class StackOverflowClientTest {
 
@@ -42,7 +44,8 @@ public class StackOverflowClientTest {
     void initialize() {
         String baseUrl = String.format("http://localhost:%s", mockBackEnd.getPort());
         WebClient webClient = new WebClient(null, new WebClientConfig(baseUrl, "1"));
-        ApplicationConfig applicationConfig = new ApplicationConfig(null, webClient, null);
+        ApplicationConfig applicationConfig = mock(ApplicationConfig.class);
+        when(applicationConfig.webClient()).thenReturn(webClient);
         StackExchangeClient stackExchangeClient = new ClientConfiguration().getStackExchangeClient(applicationConfig);
         stackOverflowClient = new StackOverflowClient(stackExchangeClient);
     }
