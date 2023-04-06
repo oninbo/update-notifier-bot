@@ -1,32 +1,61 @@
 package ru.tinkoff.edu.java.scrapper.repository;
 
+import lombok.RequiredArgsConstructor;
+import org.jetbrains.annotations.NotNull;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
+import ru.tinkoff.edu.java.scrapper.dto.TgChat;
+import ru.tinkoff.edu.java.scrapper.dto.TgChatAddParams;
 import ru.tinkoff.edu.java.scrapper.exception.TgChatNotFoundException;
 
-import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.List;
+import java.util.UUID;
 
 @Repository
-public class TgChatRepository {
-    private final Set<Long> ids;
+@RequiredArgsConstructor
+public class TgChatRepository implements BaseRepository<TgChat, TgChatAddParams> {
+    private final JdbcTemplate jdbcTemplate;
 
-    public TgChatRepository() {
-        this.ids = new ConcurrentHashMap<Long, Integer>().keySet(0);
+    @Override
+    public TgChat add(TgChatAddParams addParams) {
+        return jdbcTemplate
+                .query(
+                        "INSERT INTO tg_chats (chat_id) VALUES (?) RETURNING *",
+                        new TgChatRowMapper(),
+                        addParams.chatId()
+                )
+                .get(0);
     }
 
-    public void add(long id) {
-        ids.add(id);
-    }
-
-    public void delete(long id) {
-        ids.remove(id);
-    }
-
-    public long find(long id) {
-        if (ids.contains(id)) {
-            return id;
-        } else {
+    public TgChat find(Long chatId) {
+        var result = jdbcTemplate.query(
+                "SELECT * FROM tg_chats WHERE chat_id = (?)",
+                new TgChatRowMapper(),
+                chatId
+        );
+        if (result.isEmpty()) {
             throw new TgChatNotFoundException();
         }
+        return result.get(0);
+    }
+
+    @Override
+    public List<TgChat> findAll() {
+        return jdbcTemplate.query("SELECT * FROM tg_chats", new TgChatRowMapper());
+    }
+
+    @Override
+    public void remove(UUID id) {
+        jdbcTemplate.update("DELETE FROM tg_chats WHERE id = (?)", id);
+    }
+}
+
+class TgChatRowMapper implements RowMapper<TgChat> {
+    @Override
+    public TgChat mapRow(@NotNull ResultSet rs, int rowNum) throws SQLException {
+        return new TgChat(rs.getObject("id", UUID.class), rs.getLong("chat_id"));
     }
 }

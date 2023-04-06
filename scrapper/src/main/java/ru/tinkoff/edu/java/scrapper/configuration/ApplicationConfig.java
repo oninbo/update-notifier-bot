@@ -10,6 +10,7 @@ import org.springframework.validation.annotation.Validated;
 public record ApplicationConfig(
         @Valid @NotNull ErrorDescription errorDescription,
         @Valid @NotNull WebClient webClient,
-        @Valid @NotNull Scheduler scheduler
+        @Valid @NotNull Scheduler scheduler,
+        @Valid @NotNull Database database
 ) {
 }
