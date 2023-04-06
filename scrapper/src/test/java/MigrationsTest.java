@@ -35,7 +35,7 @@ public class MigrationsTest {
                     "github_repositories",
                     "links",
                     "stackoverflow_questions",
-                    "users"
+                    "tg_chats"
             );
             assertIterableEquals(expected, tableNames);
         }
