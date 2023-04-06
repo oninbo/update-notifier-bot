@@ -21,7 +21,7 @@ public class GitHubRepositoriesRepository implements BaseRepository<GitHubReposi
     public GitHubRepository add(GitHubRepositoryAddParams gitHubRepositoryAddParams) {
         return jdbcTemplate
                 .query(
-                        "INSERT INTO github_repositories (user_name, name) VALUES (?, ?) RETURNING *",
+                        "INSERT INTO github_repositories (username, name) VALUES (?, ?) RETURNING *",
                         rowMapper(),
                         gitHubRepositoryAddParams.username(),
                         gitHubRepositoryAddParams.name()
@@ -42,7 +42,7 @@ public class GitHubRepositoriesRepository implements BaseRepository<GitHubReposi
     private RowMapper<GitHubRepository> rowMapper() {
         return (ResultSet rs, int rowNum) -> new GitHubRepository(
                 rs.getObject("id", UUID.class),
-                rs.getString("user_name"),
+                rs.getString("username"),
                 rs.getString("name"),
                 rs.getObject("updated_at", OffsetDateTime.class)
         );
