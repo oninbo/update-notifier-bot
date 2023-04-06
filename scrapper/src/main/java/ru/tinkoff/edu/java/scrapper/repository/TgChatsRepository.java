@@ -30,7 +30,7 @@ public class TgChatsRepository implements BaseRepository<TgChat, TgChatAddParams
 
     public TgChat find(Long chatId) {
         var result = jdbcTemplate.query(
-                "SELECT * FROM tg_chats WHERE chat_id = (?)",
+                "SELECT * FROM tg_chats WHERE chat_id = ?",
                 rowMapper(),
                 chatId
         );
@@ -47,7 +47,7 @@ public class TgChatsRepository implements BaseRepository<TgChat, TgChatAddParams
 
     @Override
     public void remove(UUID id) {
-        jdbcTemplate.update("DELETE FROM tg_chats WHERE id = (?)", id);
+        jdbcTemplate.update("DELETE FROM tg_chats WHERE id = ?", id);
     }
 
     private RowMapper<TgChat> rowMapper() {
