@@ -2,6 +2,7 @@ package ru.tinkoff.edu.java.scrapper.repository;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.ResultSetExtractor;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 import ru.tinkoff.edu.java.scrapper.dto.Link;
@@ -23,14 +24,15 @@ public class LinksRepository implements BaseRepository<Link, LinkAddParams> {
                 INSERT INTO links (url, tg_chat_id, github_repository_id, stackoverflow_question_id)
                 VALUES (?, ?, ?, ?) RETURNING *
                 """;
-        return jdbcTemplate.query(
-                sql,
-                rowMapper(),
-                linkAddParams.url(),
-                linkAddParams.tgChatId(),
-                linkAddParams.githubRepositoryId(),
-                linkAddParams.stackoverflowId()
-                ).get(0);
+        return jdbcTemplate
+                .query(
+                        sql,
+                        rs -> { rs.next(); return resultSetExtractor().extractData(rs); },
+                        linkAddParams.url().toString(),
+                        linkAddParams.tgChatId(),
+                        linkAddParams.githubRepositoryId(),
+                        linkAddParams.stackoverflowId()
+                );
     }
 
     @Override
@@ -44,9 +46,14 @@ public class LinksRepository implements BaseRepository<Link, LinkAddParams> {
     }
 
     private RowMapper<Link> rowMapper() {
-        return (ResultSet rs, int rowNum) -> new Link(
+        return (ResultSet rs, int rowNum) -> resultSetExtractor().extractData(rs);
+    }
+
+    // TODO: return Link
+    private ResultSetExtractor<Link> resultSetExtractor() {
+        return (ResultSet rs) -> new Link(
                 rs.getObject("id", UUID.class),
-                rs.getObject("url", URI.class)
+                URI.create(rs.getString("url"))
         );
     }
 }

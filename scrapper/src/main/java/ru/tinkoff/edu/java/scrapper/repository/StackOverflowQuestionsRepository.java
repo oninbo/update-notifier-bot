@@ -2,6 +2,7 @@ package ru.tinkoff.edu.java.scrapper.repository;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.ResultSetExtractor;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 import ru.tinkoff.edu.java.scrapper.dto.StackOverflowQuestion;
@@ -22,10 +23,9 @@ public class StackOverflowQuestionsRepository implements BaseRepository<StackOve
         return jdbcTemplate
                 .query(
                         "INSERT INTO stackoverflow_questions (question_id) VALUES (?)",
-                        rowMapper(),
+                        resultSetExtractor(),
                         stackOverflowQuestionAddParams.questionId()
-                )
-                .get(0);
+                );
     }
 
     @Override
@@ -39,7 +39,11 @@ public class StackOverflowQuestionsRepository implements BaseRepository<StackOve
     }
 
     private RowMapper<StackOverflowQuestion> rowMapper() {
-        return (ResultSet rs, int rowNum) -> new StackOverflowQuestion(
+        return (ResultSet rs, int rowNum) -> resultSetExtractor().extractData(rs);
+    }
+
+    private ResultSetExtractor<StackOverflowQuestion> resultSetExtractor() {
+        return (ResultSet rs) -> new StackOverflowQuestion(
                 rs.getObject("id", UUID.class),
                 rs.getLong("question_id"),
                 rs.getObject("updated_at", OffsetDateTime.class)

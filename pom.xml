@@ -29,6 +29,7 @@
         <mockito.version>5.2.0</mockito.version>
         <okhttp.version>4.0.1</okhttp.version>
         <java-telegram-bot-api.version>6.5.0</java-telegram-bot-api.version>
+        <hibernate.version>6.2.0.Final</hibernate.version>
         <maven.compiler.source>17</maven.compiler.source>
         <maven.compiler.target>17</maven.compiler.target>
     </properties>
@@ -104,6 +105,12 @@
                 <version>${testcontainers.version}</version>
                 <type>pom</type>
                 <scope>import</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>org.hibernate</groupId>
+                <artifactId>hibernate-core</artifactId>
+                <version>${hibernate.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

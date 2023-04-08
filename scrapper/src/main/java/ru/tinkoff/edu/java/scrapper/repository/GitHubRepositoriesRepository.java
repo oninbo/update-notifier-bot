@@ -2,6 +2,7 @@ package ru.tinkoff.edu.java.scrapper.repository;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.ResultSetExtractor;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 import ru.tinkoff.edu.java.scrapper.dto.GitHubRepository;
@@ -22,11 +23,10 @@ public class GitHubRepositoriesRepository implements BaseRepository<GitHubReposi
         return jdbcTemplate
                 .query(
                         "INSERT INTO github_repositories (username, name) VALUES (?, ?) RETURNING *",
-                        rowMapper(),
+                        resultSetExtractor(),
                         gitHubRepositoryAddParams.username(),
                         gitHubRepositoryAddParams.name()
-                )
-                .get(0);
+                );
     }
 
     @Override
@@ -40,7 +40,11 @@ public class GitHubRepositoriesRepository implements BaseRepository<GitHubReposi
     }
 
     private RowMapper<GitHubRepository> rowMapper() {
-        return (ResultSet rs, int rowNum) -> new GitHubRepository(
+        return (ResultSet rs, int rowNum) -> resultSetExtractor().extractData(rs);
+    }
+
+    private ResultSetExtractor<GitHubRepository> resultSetExtractor() {
+        return (ResultSet rs) -> new GitHubRepository(
                 rs.getObject("id", UUID.class),
                 rs.getString("username"),
                 rs.getString("name"),

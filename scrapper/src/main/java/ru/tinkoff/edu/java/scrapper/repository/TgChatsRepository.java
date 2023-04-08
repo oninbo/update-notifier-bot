@@ -2,6 +2,7 @@ package ru.tinkoff.edu.java.scrapper.repository;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.ResultSetExtractor;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 import ru.tinkoff.edu.java.scrapper.dto.TgChat;
@@ -22,10 +23,9 @@ public class TgChatsRepository implements BaseRepository<TgChat, TgChatAddParams
         return jdbcTemplate
                 .query(
                         "INSERT INTO tg_chats (chat_id) VALUES (?) RETURNING *",
-                        rowMapper(),
+                        resultSetExtractor(),
                         addParams.chatId()
-                )
-                .get(0);
+                );
     }
 
     public TgChat find(Long chatId) {
@@ -51,9 +51,13 @@ public class TgChatsRepository implements BaseRepository<TgChat, TgChatAddParams
     }
 
     private RowMapper<TgChat> rowMapper() {
-        return (ResultSet rs, int rowNum) -> new TgChat(
+        return (ResultSet rs, int rowNum) -> resultSetExtractor().extractData(rs);
+    }
+
+    private ResultSetExtractor<TgChat> resultSetExtractor() {
+        return (ResultSet rs) -> new TgChat(
                 rs.getObject("id", UUID.class),
-                rs.getLong("chat_id")
+                rs.getLong("tg_chat")
         );
     }
 }
