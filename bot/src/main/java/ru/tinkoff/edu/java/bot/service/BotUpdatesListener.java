@@ -33,7 +33,7 @@ public class BotUpdatesListener implements UpdatesListener {
         for (var update : updates) {
             try {
                 processUpdate(update);
-            } catch (WebClientResponseException.NotFound exception) {
+            } catch (WebClientResponseException exception) {
                 webClientErrorHandler
                         .handleWebClientException(
                                 exception,

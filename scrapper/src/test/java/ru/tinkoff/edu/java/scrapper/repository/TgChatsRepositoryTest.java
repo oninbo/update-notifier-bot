@@ -71,8 +71,9 @@ public class TgChatsRepositoryTest {
             jdbcTemplate.update("INSERT INTO tg_chats (chat_id) VALUES (?) ON CONFLICT DO NOTHING", charId);
         }
         var chatId = chatIds.get(0);
-        TgChat tgChat = tgChatsRepository.find(chatId);
-        assertEquals(chatId, tgChat.chatId());
+        var tgChatResult = tgChatsRepository.find(chatId);
+        assertTrue(tgChatResult.isPresent());
+        assertEquals(chatId, tgChatResult.get().chatId());
     }
 
     @Test

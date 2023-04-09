@@ -16,10 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.tinkoff.edu.java.scrapper.configuration.JdbcConfig;
 import ru.tinkoff.edu.java.scrapper.configuration.TestDataSourceConfig;
 import ru.tinkoff.edu.java.scrapper.configuration.TransactionConfig;
-import ru.tinkoff.edu.java.scrapper.dto.GitHubRepository;
-import ru.tinkoff.edu.java.scrapper.dto.Link;
-import ru.tinkoff.edu.java.scrapper.dto.LinkAddParams;
-import ru.tinkoff.edu.java.scrapper.dto.TgChat;
+import ru.tinkoff.edu.java.scrapper.dto.*;
 
 import java.net.URI;
 import java.util.List;
@@ -50,6 +47,9 @@ public class LinksRepositoryTest {
     @Mock
     GitHubRepository gitHubRepository;
 
+    @Mock
+    StackOverflowQuestion stackOverflowQuestion;
+
     @Random
     URI url;
 
@@ -60,20 +60,13 @@ public class LinksRepositoryTest {
                 UUID.class
         );
         when(tgChat.id()).thenReturn(tgChatId);
-        var gitHubRepositoryId = jdbcTemplate.queryForObject(
-                """
-                        INSERT INTO github_repositories (username, name)
-                        VALUES ('test_user', 'test_project') RETURNING id
-                        """,
-                UUID.class
-        );
-        when(gitHubRepository.id()).thenReturn(gitHubRepositoryId);
     }
 
     @Test
     @Transactional
     @Rollback
     public void shouldAddLink() {
+        insertGitHubRepository();
         var link = linksRepository.add(new LinkAddParams(url, tgChat, gitHubRepository));
         assertEquals(url, link.url());
 
@@ -89,6 +82,7 @@ public class LinksRepositoryTest {
     @Transactional
     @Rollback
     public void shouldFindAllLinks() {
+        insertGitHubRepository();
         var linkId = insertLink();
         var foundLinks = linksRepository.findAll();
         assertIterableEquals(List.of(new Link(linkId, url)), foundLinks);
@@ -97,7 +91,58 @@ public class LinksRepositoryTest {
     @Test
     @Transactional
     @Rollback
+    public void shouldFindAllLinksByTgChatId() {
+        insertGitHubRepository();
+        var linkId = insertLink();
+        var foundLinks = linksRepository.findAll(tgChat.id());
+        assertIterableEquals(List.of(new Link(linkId, url)), foundLinks);
+    }
+
+    @Test
+    @Transactional
+    @Rollback
+    public void shouldFindLinkWithGitHubRepository() {
+        insertGitHubRepository();
+        var linkId = insertLink();
+        var foundLink = linksRepository.find(tgChat, gitHubRepository);
+        assertTrue(foundLink.isPresent());
+        assertEquals(new Link(linkId, url), foundLink.get());
+    }
+
+    @Test
+    @Transactional
+    @Rollback
+    public void shouldFindLinkWithStackOverflowQuestion() {
+        var stackOverflowQuestionId = jdbcTemplate.queryForObject(
+                """
+                        INSERT INTO stackoverflow_questions (question_id)
+                        VALUES (1) RETURNING id
+                        """,
+                UUID.class
+        );
+        when(stackOverflowQuestion.id()).thenReturn(stackOverflowQuestionId);
+
+        var linkId = jdbcTemplate.queryForObject(
+                """
+                        INSERT INTO links (url, tg_chat_id, stackoverflow_question_id)
+                        VALUES (?, ?, ?) RETURNING id
+                        """,
+                UUID.class,
+                url.toString(),
+                tgChat.id(),
+                stackOverflowQuestion.id()
+        );
+
+        var foundLink = linksRepository.find(tgChat, stackOverflowQuestion);
+        assertTrue(foundLink.isPresent());
+        assertEquals(new Link(linkId, url), foundLink.get());
+    }
+
+    @Test
+    @Transactional
+    @Rollback
     public void shouldRemoveLink() {
+        insertGitHubRepository();
         var id = insertLink();
         linksRepository.remove(id);
 
@@ -116,5 +161,16 @@ public class LinksRepositoryTest {
                 tgChat.id(),
                 gitHubRepository.id()
         );
+    }
+
+    private void insertGitHubRepository() {
+        var gitHubRepositoryId = jdbcTemplate.queryForObject(
+                """
+                        INSERT INTO github_repositories (username, name)
+                        VALUES ('test_user', 'test_project') RETURNING id
+                        """,
+                UUID.class
+        );
+        when(gitHubRepository.id()).thenReturn(gitHubRepositoryId);
     }
 }

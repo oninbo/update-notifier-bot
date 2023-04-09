@@ -11,6 +11,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.OffsetDateTime;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Repository
@@ -34,6 +35,15 @@ public class StackOverflowQuestionsRepository implements BaseRepository<StackOve
     @Override
     public List<StackOverflowQuestion> findAll() {
         return jdbcTemplate.query("SELECT * FROM stackoverflow_questions", rowMapper());
+    }
+
+    public Optional<StackOverflowQuestion> find(Long questionId) {
+        var result = jdbcTemplate.query(
+                "SELECT * FROM stackoverflow_questions WHERE question_id = ?",
+                rowMapper(),
+                questionId
+        );
+        return result.isEmpty() ? Optional.empty() : Optional.of(result.get(0));
     }
 
     @Override

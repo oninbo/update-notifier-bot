@@ -17,6 +17,7 @@ import ru.tinkoff.edu.java.scrapper.dto.GitHubRepository;
 import ru.tinkoff.edu.java.scrapper.dto.GitHubRepositoryAddParams;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -65,6 +66,15 @@ public class GitHubRepositoriesRepositoryTest {
         var id = insertGitHubRepository();
         var foundIds = gitHubRepositoriesRepository.findAll().stream().map(GitHubRepository::id).toList();
         assertIterableEquals(List.of(id), foundIds);
+    }
+
+    @Test
+    @Transactional
+    @Rollback
+    public void shouldFindAllGitHubRepository() {
+        var id = insertGitHubRepository();
+        var foundId = gitHubRepositoriesRepository.find(username, name).map(GitHubRepository::id);
+        assertEquals(Optional.of(id), foundId);
     }
 
     @Test

@@ -6,11 +6,11 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 import ru.tinkoff.edu.java.scrapper.dto.TgChat;
 import ru.tinkoff.edu.java.scrapper.dto.TgChatAddParams;
-import ru.tinkoff.edu.java.scrapper.exception.TgChatNotFoundException;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Repository
@@ -31,16 +31,13 @@ public class TgChatsRepository implements BaseRepository<TgChat, TgChatAddParams
                 );
     }
 
-    public TgChat find(Long chatId) {
+    public Optional<TgChat> find(Long chatId) {
         var result = jdbcTemplate.query(
                 "SELECT * FROM tg_chats WHERE chat_id = ?",
                 rowMapper(),
                 chatId
         );
-        if (result.isEmpty()) {
-            throw new TgChatNotFoundException();
-        }
-        return result.get(0);
+        return result.isEmpty() ? Optional.empty() : Optional.of(result.get(0));
     }
 
     @Override

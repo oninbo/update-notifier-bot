@@ -1,7 +1,7 @@
 package ru.tinkoff.edu.java.scrapper.service;
 
 public interface TgChatsService {
-    void add(long id);
+    void addTgChat(long id);
 
-    void delete(long id);
+    void deleteTgChat(long id);
 }

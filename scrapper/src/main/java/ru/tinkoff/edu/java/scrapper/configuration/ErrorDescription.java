@@ -7,6 +7,12 @@ import org.springframework.validation.annotation.Validated;
 public record ErrorDescription(
         @NotBlank String api,
         @NotBlank String server,
-        @NotBlank String tgChatNotFound
+        @NotBlank String tgChatNotFound,
+        @NotBlank String tgChatExists,
+        @NotBlank String gitHubRepositoryNotFound,
+        @NotBlank String stackOverFlowQuestionNotFound,
+        @NotBlank String linkNotSupported,
+        @NotBlank String linkExists,
+        @NotBlank String linkNotFound
 ) {
 }

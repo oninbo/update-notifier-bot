@@ -11,6 +11,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.OffsetDateTime;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Repository
@@ -30,6 +31,16 @@ public class GitHubRepositoriesRepository implements BaseRepository<GitHubReposi
                         gitHubRepositoryAddParams.username(),
                         gitHubRepositoryAddParams.name()
                 );
+    }
+
+    public Optional<GitHubRepository> find(String username, String name) {
+        var result = jdbcTemplate.query(
+                "SELECT * FROM github_repositories WHERE name = ? AND username = ?",
+                rowMapper(),
+                name,
+                username
+        );
+        return result.isEmpty() ? Optional.empty() : Optional.of(result.get(0));
     }
 
     @Override

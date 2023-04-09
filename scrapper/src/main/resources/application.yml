@@ -4,6 +4,7 @@ app:
     api: Некорректные параметры запроса
     server: Ошибка сервера
     tg_chat_not_found: Чат не существует
+    tg_chat_exists: Вы уже зарегистрированы
   web_client:
     github:
       base_url: https://api.github.com/

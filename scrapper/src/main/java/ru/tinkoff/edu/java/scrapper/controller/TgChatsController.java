@@ -12,11 +12,11 @@ public class TgChatsController {
 
     @PostMapping("/{id}")
     public void addTgChat(@PathVariable(value = "id") Long id) {
-        tgChatsService.add(id);
+        tgChatsService.addTgChat(id);
     }
 
     @DeleteMapping("/{id}")
     public void deleteTgChat(@PathVariable(value = "id") Long id) {
-        tgChatsService.delete(id);
+        tgChatsService.deleteTgChat(id);
     }
 }
