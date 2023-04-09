@@ -13,8 +13,13 @@ import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.transaction.annotation.Transactional;
-import ru.tinkoff.edu.java.scrapper.configuration.TransactionConfiguration;
-import ru.tinkoff.edu.java.scrapper.dto.*;
+import ru.tinkoff.edu.java.scrapper.configuration.JdbcConfig;
+import ru.tinkoff.edu.java.scrapper.configuration.TestDataSourceConfig;
+import ru.tinkoff.edu.java.scrapper.configuration.TransactionConfig;
+import ru.tinkoff.edu.java.scrapper.dto.GitHubRepository;
+import ru.tinkoff.edu.java.scrapper.dto.Link;
+import ru.tinkoff.edu.java.scrapper.dto.LinkAddParams;
+import ru.tinkoff.edu.java.scrapper.dto.TgChat;
 
 import java.net.URI;
 import java.util.List;
@@ -24,7 +29,12 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(SpringExtension.class)
-@ContextConfiguration(classes = {TransactionConfiguration.class, LinksRepository.class})
+@ContextConfiguration(classes = {
+        TransactionConfig.class,
+        LinksRepository.class,
+        TestDataSourceConfig.class,
+        JdbcConfig.class
+})
 @ExtendWith(RandomBeansExtension.class)
 @ExtendWith(MockitoExtension.class)
 public class LinksRepositoryTest {
@@ -67,12 +77,12 @@ public class LinksRepositoryTest {
         var link = linksRepository.add(new LinkAddParams(url, tgChat, gitHubRepository));
         assertEquals(url, link.url());
 
-        var linkTgChatId = jdbcTemplate.queryForObject("SELECT tg_chat_id from links", UUID.class);
-        assertEquals(tgChat.id(), linkTgChatId);
-
-        var gitHubRepositoryId =
-                jdbcTemplate.queryForObject("SELECT github_repository_id from links", UUID.class);
-        assertEquals(gitHubRepository.id(), gitHubRepositoryId);
+        var sqlRowSet = jdbcTemplate
+                .queryForRowSet("SELECT tg_chat_id, github_repository_id from links");
+        assertTrue(sqlRowSet.next());
+        assertEquals(tgChat.id().toString(), sqlRowSet.getString("tg_chat_id"));
+        assertEquals(gitHubRepository.id().toString(), sqlRowSet.getString("github_repository_id"));
+        assertFalse(sqlRowSet.next());
     }
 
     @Test

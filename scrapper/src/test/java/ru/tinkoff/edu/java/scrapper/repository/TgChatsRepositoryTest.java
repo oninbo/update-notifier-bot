@@ -10,7 +10,9 @@ import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.transaction.annotation.Transactional;
-import ru.tinkoff.edu.java.scrapper.configuration.TransactionConfiguration;
+import ru.tinkoff.edu.java.scrapper.configuration.JdbcConfig;
+import ru.tinkoff.edu.java.scrapper.configuration.TestDataSourceConfig;
+import ru.tinkoff.edu.java.scrapper.configuration.TransactionConfig;
 import ru.tinkoff.edu.java.scrapper.dto.TgChat;
 import ru.tinkoff.edu.java.scrapper.dto.TgChatAddParams;
 
@@ -20,7 +22,12 @@ import java.util.UUID;
 import static org.junit.jupiter.api.Assertions.*;
 
 @ExtendWith(SpringExtension.class)
-@ContextConfiguration(classes = {TransactionConfiguration.class, TgChatsRepository.class})
+@ContextConfiguration(classes = {
+        TransactionConfig.class,
+        TgChatsRepository.class,
+        TestDataSourceConfig.class,
+        JdbcConfig.class
+})
 @ExtendWith(RandomBeansExtension.class)
 public class TgChatsRepositoryTest {
     @Autowired

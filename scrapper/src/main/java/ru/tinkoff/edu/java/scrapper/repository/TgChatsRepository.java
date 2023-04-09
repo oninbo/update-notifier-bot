@@ -2,7 +2,6 @@ package ru.tinkoff.edu.java.scrapper.repository;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.ResultSetExtractor;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 import ru.tinkoff.edu.java.scrapper.dto.TgChat;
@@ -10,6 +9,7 @@ import ru.tinkoff.edu.java.scrapper.dto.TgChatAddParams;
 import ru.tinkoff.edu.java.scrapper.exception.TgChatNotFoundException;
 
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.List;
 import java.util.UUID;
 
@@ -23,7 +23,10 @@ public class TgChatsRepository implements BaseRepository<TgChat, TgChatAddParams
         return jdbcTemplate
                 .query(
                         "INSERT INTO tg_chats (chat_id) VALUES (?) RETURNING *",
-                        resultSetExtractor(),
+                        rs -> {
+                            rs.next();
+                            return extractTgChat(rs);
+                        },
                         addParams.chatId()
                 );
     }
@@ -51,13 +54,13 @@ public class TgChatsRepository implements BaseRepository<TgChat, TgChatAddParams
     }
 
     private RowMapper<TgChat> rowMapper() {
-        return (ResultSet rs, int rowNum) -> resultSetExtractor().extractData(rs);
+        return (ResultSet rs, int rowNum) -> extractTgChat(rs);
     }
 
-    private ResultSetExtractor<TgChat> resultSetExtractor() {
-        return (ResultSet rs) -> new TgChat(
+    private TgChat extractTgChat(ResultSet rs) throws SQLException {
+        return new TgChat(
                 rs.getObject("id", UUID.class),
-                rs.getLong("tg_chat")
+                rs.getLong("chat_id")
         );
     }
 }

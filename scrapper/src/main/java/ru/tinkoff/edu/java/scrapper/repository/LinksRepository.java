@@ -2,7 +2,6 @@ package ru.tinkoff.edu.java.scrapper.repository;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.ResultSetExtractor;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 import ru.tinkoff.edu.java.scrapper.dto.Link;
@@ -10,6 +9,7 @@ import ru.tinkoff.edu.java.scrapper.dto.LinkAddParams;
 
 import java.net.URI;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.List;
 import java.util.UUID;
 
@@ -27,7 +27,10 @@ public class LinksRepository implements BaseRepository<Link, LinkAddParams> {
         return jdbcTemplate
                 .query(
                         sql,
-                        rs -> { rs.next(); return resultSetExtractor().extractData(rs); },
+                        rs -> {
+                            rs.next();
+                            return extractLink(rs);
+                        },
                         linkAddParams.url().toString(),
                         linkAddParams.tgChatId(),
                         linkAddParams.githubRepositoryId(),
@@ -46,12 +49,11 @@ public class LinksRepository implements BaseRepository<Link, LinkAddParams> {
     }
 
     private RowMapper<Link> rowMapper() {
-        return (ResultSet rs, int rowNum) -> resultSetExtractor().extractData(rs);
+        return (ResultSet rs, int rowNum) -> extractLink(rs);
     }
 
-    // TODO: return Link
-    private ResultSetExtractor<Link> resultSetExtractor() {
-        return (ResultSet rs) -> new Link(
+    private Link extractLink(ResultSet rs) throws SQLException {
+        return new Link(
                 rs.getObject("id", UUID.class),
                 URI.create(rs.getString("url"))
         );
