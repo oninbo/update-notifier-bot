@@ -10,11 +10,13 @@ import ru.tinkoff.edu.java.link_parser.github.GitHubParserResult;
 import ru.tinkoff.edu.java.link_parser.stackoverflow.StackOverflowParserResult;
 import ru.tinkoff.edu.java.scrapper.configuration.ApplicationConfig;
 import ru.tinkoff.edu.java.scrapper.dto.*;
-import ru.tinkoff.edu.java.scrapper.exception.*;
-import ru.tinkoff.edu.java.scrapper.repository.GitHubRepositoriesRepository;
+import ru.tinkoff.edu.java.scrapper.exception.LinkExistsException;
+import ru.tinkoff.edu.java.scrapper.exception.LinkNotFoundException;
+import ru.tinkoff.edu.java.scrapper.exception.LinkNotSupportedException;
+import ru.tinkoff.edu.java.scrapper.exception.TgChatNotFoundException;
 import ru.tinkoff.edu.java.scrapper.repository.LinksRepository;
-import ru.tinkoff.edu.java.scrapper.repository.StackOverflowQuestionsRepository;
 import ru.tinkoff.edu.java.scrapper.repository.TgChatsRepository;
+import ru.tinkoff.edu.java.scrapper.service.FindOrDoService;
 import ru.tinkoff.edu.java.scrapper.service.LinksService;
 
 import java.net.URI;
@@ -27,10 +29,10 @@ import java.util.function.Supplier;
 class JdbcLinksService implements LinksService {
     private final LinksRepository linksRepository;
     private final TgChatsRepository tgChatsRepository;
-    private final GitHubRepositoriesRepository gitHubRepositoriesRepository;
-    private final StackOverflowQuestionsRepository stackOverflowQuestionsRepository;
     private final ApplicationConfig applicationConfig;
     private final LinkParserService linkParserService;
+    private final FindOrDoService<GitHubRepository, GitHubParserResult> gitHubRepositoriesService;
+    private final FindOrDoService<StackOverflowQuestion, StackOverflowParserResult> stackOverflowQuestionsService;
 
     @Override
     public List<Link> getLinks(Long chatId) {
@@ -98,56 +100,6 @@ class JdbcLinksService implements LinksService {
         return linkParserResult.get();
     }
 
-    private GitHubRepository findOrThrowGitHubRepository(GitHubParserResult gitHubParserResult) {
-        var result = findGitHubRepository(gitHubParserResult);
-        if (result.isEmpty()) {
-            throw new GitHubRepositoryNotFoundException(applicationConfig);
-        }
-        return result.get();
-    }
-
-    private StackOverflowQuestion findOrThrowStackOverflowQuestion(StackOverflowParserResult stackOverflowParserResult) {
-        var result = findStackOverflowQuestion(stackOverflowParserResult);
-        if (result.isEmpty()) {
-            throw new StackOverflowQuestionNotFoundException(applicationConfig);
-        }
-        return result.get();
-    }
-
-    private GitHubRepository findOrCreateGitHubRepository(GitHubParserResult gitHubParserResult) {
-        var result = findGitHubRepository(gitHubParserResult);
-        return result.orElseGet(() -> gitHubRepositoriesRepository.add(
-                new GitHubRepositoryAddParams(
-                        gitHubParserResult.userName(),
-                        gitHubParserResult.projectName()
-                )
-        ));
-    }
-
-    private StackOverflowQuestion findOrCreateStackOverflowQuestion(
-            StackOverflowParserResult stackOverflowParserResult
-    ) {
-        var result = findStackOverflowQuestion(stackOverflowParserResult);
-        return result.orElseGet(() -> stackOverflowQuestionsRepository.add(
-                stackOverflowParserResult.questionId()
-        ));
-    }
-
-    private Optional<StackOverflowQuestion> findStackOverflowQuestion(
-            StackOverflowParserResult stackOverflowParserResult
-    ) {
-        return stackOverflowQuestionsRepository.find(stackOverflowParserResult.questionId());
-    }
-
-    private Optional<GitHubRepository> findGitHubRepository(
-            GitHubParserResult gitHubParserResult
-    ) {
-        return gitHubRepositoriesRepository.find(
-                        gitHubParserResult.userName(),
-                        gitHubParserResult.projectName()
-        );
-    }
-
     @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
     class LinkBuilder implements LinkParserResultVisitor {
         private final URI url;
@@ -165,12 +117,16 @@ class JdbcLinksService implements LinksService {
 
         @Override
         public void visit(GitHubParserResult gitHubParserResult) {
-            onBuild = () -> addLink(tgChat, url, findOrCreateGitHubRepository(gitHubParserResult));
+            onBuild = () -> addLink(tgChat, url, gitHubRepositoriesService.findOrCreate(gitHubParserResult));
         }
 
         @Override
         public void visit(StackOverflowParserResult stackOverflowParserResult) {
-            onBuild = () -> addLink(tgChat, url, findOrCreateStackOverflowQuestion(stackOverflowParserResult));
+            onBuild = () -> addLink(
+                    tgChat,
+                    url,
+                    stackOverflowQuestionsService.findOrCreate(stackOverflowParserResult)
+            );
         }
     }
 
@@ -190,14 +146,14 @@ class JdbcLinksService implements LinksService {
 
         @Override
         public void visit(GitHubParserResult gitHubParserResult) {
-            onFind = () -> linksRepository.find(tgChat, findOrThrowGitHubRepository(gitHubParserResult));
+            onFind = () -> linksRepository.find(tgChat, gitHubRepositoriesService.findOrThrow(gitHubParserResult));
         }
 
         @Override
         public void visit(StackOverflowParserResult stackOverflowParserResult) {
             onFind = () -> linksRepository.find(
                     tgChat,
-                    findOrThrowStackOverflowQuestion(stackOverflowParserResult)
+                    stackOverflowQuestionsService.findOrThrow(stackOverflowParserResult)
             );
         }
     }
