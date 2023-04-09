@@ -32,6 +32,10 @@ public class StackOverflowQuestionsRepository implements BaseRepository<StackOve
                 );
     }
 
+    public StackOverflowQuestion add(Long questionId) {
+        return add(new StackOverflowQuestionAddParams(questionId));
+    }
+
     @Override
     public List<StackOverflowQuestion> findAll() {
         return jdbcTemplate.query("SELECT * FROM stackoverflow_questions", rowMapper());

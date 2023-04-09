@@ -98,25 +98,54 @@ class JdbcLinksService implements LinksService {
         return linkParserResult.get();
     }
 
-    private GitHubRepository findGitHubRepository(GitHubParserResult gitHubParserResult) {
-        var result = gitHubRepositoriesRepository.find(
-                gitHubParserResult.userName(),
-                gitHubParserResult.projectName()
-        );
+    private GitHubRepository findOrThrowGitHubRepository(GitHubParserResult gitHubParserResult) {
+        var result = findGitHubRepository(gitHubParserResult);
         if (result.isEmpty()) {
             throw new GitHubRepositoryNotFoundException(applicationConfig);
         }
         return result.get();
     }
 
-    private StackOverflowQuestion findStackOverflowQuestion(StackOverflowParserResult stackOverflowParserResult) {
-        var result = stackOverflowQuestionsRepository.find(
-                Long.parseLong(stackOverflowParserResult.questionId())
-        );
+    private StackOverflowQuestion findOrThrowStackOverflowQuestion(StackOverflowParserResult stackOverflowParserResult) {
+        var result = findStackOverflowQuestion(stackOverflowParserResult);
         if (result.isEmpty()) {
             throw new StackOverflowQuestionNotFoundException(applicationConfig);
         }
         return result.get();
+    }
+
+    private GitHubRepository findOrCreateGitHubRepository(GitHubParserResult gitHubParserResult) {
+        var result = findGitHubRepository(gitHubParserResult);
+        return result.orElseGet(() -> gitHubRepositoriesRepository.add(
+                new GitHubRepositoryAddParams(
+                        gitHubParserResult.userName(),
+                        gitHubParserResult.projectName()
+                )
+        ));
+    }
+
+    private StackOverflowQuestion findOrCreateStackOverflowQuestion(
+            StackOverflowParserResult stackOverflowParserResult
+    ) {
+        var result = findStackOverflowQuestion(stackOverflowParserResult);
+        return result.orElseGet(() -> stackOverflowQuestionsRepository.add(
+                stackOverflowParserResult.questionId()
+        ));
+    }
+
+    private Optional<StackOverflowQuestion> findStackOverflowQuestion(
+            StackOverflowParserResult stackOverflowParserResult
+    ) {
+        return stackOverflowQuestionsRepository.find(stackOverflowParserResult.questionId());
+    }
+
+    private Optional<GitHubRepository> findGitHubRepository(
+            GitHubParserResult gitHubParserResult
+    ) {
+        return gitHubRepositoriesRepository.find(
+                        gitHubParserResult.userName(),
+                        gitHubParserResult.projectName()
+        );
     }
 
     @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
@@ -136,12 +165,12 @@ class JdbcLinksService implements LinksService {
 
         @Override
         public void visit(GitHubParserResult gitHubParserResult) {
-            onBuild = () -> addLink(tgChat, url, findGitHubRepository(gitHubParserResult));
+            onBuild = () -> addLink(tgChat, url, findOrCreateGitHubRepository(gitHubParserResult));
         }
 
         @Override
         public void visit(StackOverflowParserResult stackOverflowParserResult) {
-            onBuild = () -> addLink(tgChat, url, findStackOverflowQuestion(stackOverflowParserResult));
+            onBuild = () -> addLink(tgChat, url, findOrCreateStackOverflowQuestion(stackOverflowParserResult));
         }
     }
 
@@ -161,12 +190,15 @@ class JdbcLinksService implements LinksService {
 
         @Override
         public void visit(GitHubParserResult gitHubParserResult) {
-            onFind = () -> linksRepository.find(tgChat, findGitHubRepository(gitHubParserResult));
+            onFind = () -> linksRepository.find(tgChat, findOrThrowGitHubRepository(gitHubParserResult));
         }
 
         @Override
         public void visit(StackOverflowParserResult stackOverflowParserResult) {
-            onFind = () -> linksRepository.find(tgChat, findStackOverflowQuestion(stackOverflowParserResult));
+            onFind = () -> linksRepository.find(
+                    tgChat,
+                    findOrThrowStackOverflowQuestion(stackOverflowParserResult)
+            );
         }
     }
 }
