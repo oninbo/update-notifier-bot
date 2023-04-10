@@ -1,7 +1,7 @@
 CREATE TABLE links (
     id uuid NOT NULL DEFAULT gen_random_uuid(),
     url text NOT NULL,
-    created_at timestamp NOT NULL DEFAULT now(),
+    created_at timestamptz NOT NULL DEFAULT now(),
     tg_chat_id uuid NOT NULL,
     github_repository_id uuid,
     stackoverflow_question_id uuid,
