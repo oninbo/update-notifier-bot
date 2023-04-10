@@ -82,7 +82,7 @@ public class JdbcGitHubRepositoriesService implements
 
     @Override
     public void updateUpdatedAt() {
-// TODO
+        // TODO
     }
 
     private OffsetDateTime fetchedUpdatedAt(GitHubRepository gitHubRepository) {
