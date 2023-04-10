@@ -1,13 +1,15 @@
 package ru.tinkoff.edu.java.scrapper.repository;
 
 import lombok.RequiredArgsConstructor;
+import org.jetbrains.annotations.NotNull;
+import org.springframework.jdbc.core.BatchPreparedStatementSetter;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
-import ru.tinkoff.edu.java.scrapper.dto.Link;
 import ru.tinkoff.edu.java.scrapper.dto.StackOverflowQuestion;
 import ru.tinkoff.edu.java.scrapper.dto.StackOverflowQuestionAddParams;
 
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.OffsetDateTime;
@@ -53,20 +55,6 @@ public class StackOverflowQuestionsRepository implements BaseRepository<StackOve
         );
     }
 
-    public Optional<StackOverflowQuestion> find(Link link) {
-        var result = jdbcTemplate.query(
-                """
-                SELECT stackoverflow_questions.*
-                FROM stackoverflow_questions
-                JOIN links l on stackoverflow_questions.id = l.stackoverflow_question_id
-                WHERE l.id = ?
-                """,
-                rowMapper(),
-                link.id()
-        );
-        return result.isEmpty() ? Optional.empty() : Optional.of(result.get(0));
-    }
-
     public Optional<StackOverflowQuestion> find(Long questionId) {
         var result = jdbcTemplate.query(
                 "SELECT * FROM stackoverflow_questions WHERE question_id = ?",
@@ -76,9 +64,22 @@ public class StackOverflowQuestionsRepository implements BaseRepository<StackOve
         return result.isEmpty() ? Optional.empty() : Optional.of(result.get(0));
     }
 
-    public void update(StackOverflowQuestion stackOverflowQuestion, OffsetDateTime updatedAt) {
-        var id = stackOverflowQuestion.id();
-        jdbcTemplate.update("UPDATE stackoverflow_questions SET updated_at = ? WHERE id = ?", updatedAt, id);
+    public void updateUpdatedAt(List<StackOverflowQuestion> questions, OffsetDateTime updatedAt) {
+        jdbcTemplate.batchUpdate(
+                "UPDATE stackoverflow_questions SET updated_at = ? WHERE id = ?",
+                new BatchPreparedStatementSetter() {
+
+                    public void setValues(@NotNull PreparedStatement ps, int i)
+                            throws SQLException {
+                        ps.setObject(1, updatedAt);
+                        ps.setObject(2, questions.get(i).id());
+                    }
+
+                    public int getBatchSize() {
+                        return questions.size();
+                    }
+                }
+        );
     }
 
     @Override

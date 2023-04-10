@@ -80,12 +80,17 @@ public class JdbcGitHubRepositoriesService implements
         );
     }
 
+    @Override
+    public void updateUpdatedAt() {
+// TODO
+    }
+
     private OffsetDateTime fetchedUpdatedAt(GitHubRepository gitHubRepository) {
         GitHubRepositoryResponse response = gitHubClient.getRepository(
                 gitHubRepository.username(),
                 gitHubRepository.name(),
-                    applicationConfig.webClient().github().apiVersion()
-            );
+                applicationConfig.webClient().github().apiVersion()
+        );
         return ObjectUtils.max(response.updatedAt(), response.pushedAt());
     }
 }

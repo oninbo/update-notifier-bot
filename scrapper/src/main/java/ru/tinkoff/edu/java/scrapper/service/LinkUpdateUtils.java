@@ -42,8 +42,7 @@ public class LinkUpdateUtils {
                         new LinkUpdate(
                                 link.id(),
                                 link.url(),
-                                links.stream().map(LinkWithChatId::chatId).toList(),
-                                fetchedUpdatedAt
+                                links.stream().map(LinkWithChatId::chatId).toList()
                         )
                 );
             }

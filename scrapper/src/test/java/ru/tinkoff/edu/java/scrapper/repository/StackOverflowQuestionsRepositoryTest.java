@@ -16,6 +16,7 @@ import ru.tinkoff.edu.java.scrapper.configuration.TransactionConfig;
 import ru.tinkoff.edu.java.scrapper.dto.StackOverflowQuestion;
 import ru.tinkoff.edu.java.scrapper.dto.StackOverflowQuestionAddParams;
 
+import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.UUID;
 
@@ -38,6 +39,9 @@ public class StackOverflowQuestionsRepositoryTest {
 
     @Random
     Long questionId;
+
+    @Random
+    OffsetDateTime updatedAt;
 
     @Test
     @Transactional
@@ -76,6 +80,20 @@ public class StackOverflowQuestionsRepositoryTest {
         var ids = jdbcTemplate
                 .queryForList("SELECT id from stackoverflow_questions where id = ?", UUID.class, id);
         assertTrue(ids.isEmpty());
+    }
+
+    @Test
+    @Transactional
+    @Rollback
+    public void shouldUpdateUpdatedAt() {
+        var id = insertStackOverflowQuestion();
+        updatedAt = updatedAt.withNano(0);
+        var question = new StackOverflowQuestion(id, questionId, updatedAt);
+        stackOverflowQuestionsRepository.updateUpdatedAt(List.of(question), updatedAt);
+        var result = jdbcTemplate
+                .queryForObject("SELECT updated_at from stackoverflow_questions", OffsetDateTime.class);
+        assertNotNull(result);
+        assertTrue(updatedAt.isEqual(result));
     }
 
     private UUID insertStackOverflowQuestion() {

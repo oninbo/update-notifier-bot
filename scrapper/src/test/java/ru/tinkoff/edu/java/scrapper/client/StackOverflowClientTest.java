@@ -44,7 +44,7 @@ public class StackOverflowClientTest {
     void initialize() {
         String baseUrl = String.format("http://localhost:%s", mockBackEnd.getPort());
         WebClient webClient = mock(WebClient.class);
-        when(webClient.github()).thenReturn(new WebClientConfig(baseUrl, "1"));
+        when(webClient.stackExchange()).thenReturn(new WebClientConfig(baseUrl, "1"));
         ApplicationConfig applicationConfig = mock(ApplicationConfig.class);
         when(applicationConfig.webClient()).thenReturn(webClient);
         StackExchangeClient stackExchangeClient = new ClientConfiguration().getStackExchangeClient(applicationConfig);
@@ -53,8 +53,8 @@ public class StackOverflowClientTest {
 
     @Test
     public void shouldGetListOfQuestions() throws InterruptedException, JsonProcessingException {
-        StackExchangeQuestionResponse mockQuestion1 = new StackExchangeQuestionResponse(10L);
-        StackExchangeQuestionResponse mockQuestion2 = new StackExchangeQuestionResponse(20L);
+        StackExchangeQuestionResponse mockQuestion1 = new StackExchangeQuestionResponse(10L, null, null);
+        StackExchangeQuestionResponse mockQuestion2 = new StackExchangeQuestionResponse(20L, null, null);
         ListStackExchangeQuestionsResponse mockQuestionList =
                 new ListStackExchangeQuestionsResponse(List.of(mockQuestion1, mockQuestion2));
         ObjectMapper mapper = new ObjectMapper();

@@ -78,10 +78,10 @@ public class JdbcStackOverflowQuestionsService implements
             );
             List<LinkUpdate> batchResult = LinkUpdateUtils.getUpdates(
                     batch,
-                    q -> fetchedBatch.items().stream()
-                            .filter(item -> item.questionId().equals(q.questionId()))
+                    question -> fetchedBatch.items().stream()
+                            .filter(item -> item.questionId().equals(question.questionId()))
                             .findFirst()
-                            .map(s -> ObjectUtils.max(s.lastActivityDate(), s.lastEditDate()))
+                            .map(sq -> ObjectUtils.max(sq.lastActivityDate(), sq.lastEditDate()))
                             .orElse(null),
                     linksRepository::findAllWithChatId,
                     StackOverflowQuestion::updatedAt
@@ -89,5 +89,10 @@ public class JdbcStackOverflowQuestionsService implements
             result.addAll(batchResult);
         }
         return result;
+    }
+
+    @Override
+    public void updateUpdatedAt() {
+// TODO
     }
 }
