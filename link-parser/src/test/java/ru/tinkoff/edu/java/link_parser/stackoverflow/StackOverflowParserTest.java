@@ -28,7 +28,7 @@ public class StackOverflowParserTest {
         "https://stackoverflow.com/questions/1642028/"
     })
     public void shouldParseCorrectLinks(String correctLink) throws URISyntaxException {
-        var expectedResult = new StackOverflowParserResult("1642028");
+        var expectedResult = new StackOverflowParserResult(1642028L);
         assertEquals(parser.parse(new URI(correctLink)), expectedResult);
     }
 

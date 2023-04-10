@@ -35,7 +35,7 @@ public class LinkParserServiceTest {
         var link = new URI(
                 "https://stackoverflow.com/questions/42307687/get-complete-jdk-source-code-in-intellij-or-other-ide"
         );
-        var result = new StackOverflowParserResult("42307687");
+        var result = new StackOverflowParserResult(42307687L);
 
         assertEquals(service.parse(link), Optional.of(result));
     }
