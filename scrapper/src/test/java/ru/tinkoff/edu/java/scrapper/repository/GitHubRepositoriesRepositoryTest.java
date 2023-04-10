@@ -67,6 +67,25 @@ public class GitHubRepositoriesRepositoryTest {
         var foundIds = gitHubRepositoriesRepository.findAll().stream().map(GitHubRepository::id).toList();
         assertIterableEquals(List.of(id), foundIds);
     }
+    @Test
+    @Transactional
+    @Rollback
+    public void shouldFindAllGitHubRepositoriesWithLinks() {
+        var gitHubRepositoryId = insertGitHubRepository();
+        var foundIds = gitHubRepositoriesRepository.findAllWithLinks().stream().map(GitHubRepository::id).toList();
+        assertIterableEquals(List.of(), foundIds);
+
+        var tgChatId = jdbcTemplate
+                .queryForObject("INSERT INTO tg_chats (chat_id) VALUES (1) RETURNING id", UUID.class);
+        jdbcTemplate.update(
+                "INSERT INTO links (url, tg_chat_id, github_repository_id) VALUES (?, ?, ?)",
+                "test",
+                tgChatId,
+                gitHubRepositoryId
+        );
+        foundIds = gitHubRepositoriesRepository.findAllWithLinks().stream().map(GitHubRepository::id).toList();
+        assertIterableEquals(List.of(gitHubRepositoryId), foundIds);
+    }
 
     @Test
     @Transactional

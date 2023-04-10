@@ -1,6 +1,7 @@
 package ru.tinkoff.edu.java.scrapper.service.jdbc;
 
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 import ru.tinkoff.edu.java.link_parser.github.GitHubParserResult;
@@ -8,16 +9,26 @@ import ru.tinkoff.edu.java.scrapper.client.GitHubClient;
 import ru.tinkoff.edu.java.scrapper.configuration.ApplicationConfig;
 import ru.tinkoff.edu.java.scrapper.dto.GitHubRepository;
 import ru.tinkoff.edu.java.scrapper.dto.GitHubRepositoryAddParams;
+import ru.tinkoff.edu.java.scrapper.dto.GitHubRepositoryResponse;
+import ru.tinkoff.edu.java.scrapper.dto.LinkUpdate;
 import ru.tinkoff.edu.java.scrapper.exception.GitHubRepositoryNotFoundException;
 import ru.tinkoff.edu.java.scrapper.repository.GitHubRepositoriesRepository;
+import ru.tinkoff.edu.java.scrapper.repository.LinksRepository;
 import ru.tinkoff.edu.java.scrapper.service.FindOrDoService;
+import ru.tinkoff.edu.java.scrapper.service.LinkUpdateUtils;
+import ru.tinkoff.edu.java.scrapper.service.UpdatesService;
 
+import java.time.OffsetDateTime;
+import java.util.List;
 import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
-public class JdbcGitHubRepositoriesService implements FindOrDoService<GitHubRepository, GitHubParserResult> {
+public class JdbcGitHubRepositoriesService implements
+        FindOrDoService<GitHubRepository, GitHubParserResult>,
+        UpdatesService {
     private final GitHubRepositoriesRepository gitHubRepositoriesRepository;
+    private final LinksRepository linksRepository;
     private final ApplicationConfig applicationConfig;
     private final GitHubClient gitHubClient;
 
@@ -57,5 +68,28 @@ public class JdbcGitHubRepositoriesService implements FindOrDoService<GitHubRepo
         } catch (WebClientResponseException.NotFound exception) {
             throw new GitHubRepositoryNotFoundException(applicationConfig);
         }
+    }
+
+    @Override
+    public List<LinkUpdate> getUpdates() {
+        return LinkUpdateUtils.getUpdates(
+                gitHubRepositoriesRepository.findAllWithLinks(),
+                this::fetchedUpdatedAt,
+                linksRepository::findAllWithChatId,
+                GitHubRepository::updatedAt,
+                (repo, fetchedUpdatedAt) -> {
+                    gitHubRepositoriesRepository.update(repo.id(), fetchedUpdatedAt);
+                    return null;
+                }
+        );
+    }
+
+    private OffsetDateTime fetchedUpdatedAt(GitHubRepository gitHubRepository) {
+        GitHubRepositoryResponse response = gitHubClient.getRepository(
+                gitHubRepository.username(),
+                gitHubRepository.name(),
+                    applicationConfig.webClient().github().apiVersion()
+            );
+        return ObjectUtils.max(response.updatedAt(), response.pushedAt());
     }
 }

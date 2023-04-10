@@ -42,7 +42,7 @@ public class ListCommandHandler implements BotCommandHandler {
             URI link = links.get(i);
             var linkParseResultPresenter = new LinkParseResultPresenter(stringBuilder, link.toString());
             linkParserService.parse(link).ifPresentOrElse(
-                    linkParserResult -> linkParserResult.acceptVisitor(linkParseResultPresenter),
+                    linkParseResultPresenter::present,
                     () -> stringBuilder.append(link)
             );
             stringBuilder.append("\n");

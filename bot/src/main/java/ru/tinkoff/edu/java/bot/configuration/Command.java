@@ -21,7 +21,6 @@ public record Command(
         public record Message(
                 @NotBlank String botError,
                 @NotBlank String unsupportedCommand,
-                @NotBlank String unsupportedLink,
                 @NotBlank String invalidLink
         ) {
         }

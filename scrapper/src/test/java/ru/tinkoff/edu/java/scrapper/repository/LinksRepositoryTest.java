@@ -91,10 +91,10 @@ public class LinksRepositoryTest {
     @Test
     @Transactional
     @Rollback
-    public void shouldFindAllLinksByTgChatId() {
+    public void shouldFindAllLinksByTgChat() {
         insertGitHubRepository();
         var linkId = insertLink();
-        var foundLinks = linksRepository.findAll(tgChat.id());
+        var foundLinks = linksRepository.findAll(tgChat);
         assertIterableEquals(List.of(new Link(linkId, url)), foundLinks);
     }
 

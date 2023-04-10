@@ -38,7 +38,7 @@ public abstract class LinkCommandHandler implements BotCommandHandler {
                 if (tryParseLink(link).isEmpty()) {
                     userResponseService.sendMessage(
                             arguments.userId(),
-                            applicationConfig.command().common().message().unsupportedLink()
+                            applicationConfig.message().unsupportedLink()
                     );
                     return;
                 }

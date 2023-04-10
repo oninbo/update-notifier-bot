@@ -41,7 +41,8 @@ public class GitHubClientTest {
     @BeforeEach
     void initialize() {
         String baseUrl = String.format("http://localhost:%s", mockBackEnd.getPort());
-        WebClient webClient = new WebClient(new WebClientConfig(baseUrl, "1"), null);
+        WebClient webClient = mock(WebClient.class);
+        when(webClient.github()).thenReturn(new WebClientConfig(baseUrl, "1"));
         ApplicationConfig applicationConfig = mock(ApplicationConfig.class);
         when(applicationConfig.webClient()).thenReturn(webClient);
         gitHubClient = new ClientConfiguration().getGitHubClient(applicationConfig);
@@ -50,7 +51,9 @@ public class GitHubClientTest {
     @Test
     public void shouldGetGitHubRepository() throws InterruptedException, JsonProcessingException {
         GitHubUserResponse mockUser = new GitHubUserResponse("mock_user", 1L);
-        GitHubRepositoryResponse mockRepository = new GitHubRepositoryResponse("mock_project", mockUser);
+        GitHubRepositoryResponse mockRepository = mock(GitHubRepositoryResponse.class);
+        when(mockRepository.name()).thenReturn("mock_project");
+        when(mockRepository.owner()).thenReturn(mockUser);
         ObjectMapper mapper = new ObjectMapper();
         mockBackEnd.enqueue(new MockResponse()
                 .setBody(mapper.writeValueAsString(mockRepository))

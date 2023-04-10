@@ -5,6 +5,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.support.WebClientAdapter;
 import org.springframework.web.service.invoker.HttpServiceProxyFactory;
+import ru.tinkoff.edu.java.scrapper.client.BotClient;
 import ru.tinkoff.edu.java.scrapper.client.GitHubClient;
 import ru.tinkoff.edu.java.scrapper.client.StackExchangeClient;
 
@@ -18,6 +19,11 @@ public class ClientConfiguration {
     @Bean
     public StackExchangeClient getStackExchangeClient(ApplicationConfig applicationConfig) {
         return createWebClient(StackExchangeClient.class, applicationConfig.webClient().stackExchange().baseUrl());
+    }
+
+    @Bean
+    public BotClient getBotClient(ApplicationConfig applicationConfig) {
+        return createWebClient(BotClient.class, applicationConfig.webClient().botBaseUrl());
     }
 
     private <T> T createWebClient(Class<T> clientClass, String baseUrl) {

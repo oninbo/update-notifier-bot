@@ -5,10 +5,11 @@ import org.springframework.validation.annotation.Validated;
 
 import java.net.URI;
 import java.util.List;
+import java.util.UUID;
 
 @Validated
 public record LinkUpdate(
-        Long id,
+        UUID id,
         @NotBlank URI url,
         String description,
         List<Long> tgChatIds

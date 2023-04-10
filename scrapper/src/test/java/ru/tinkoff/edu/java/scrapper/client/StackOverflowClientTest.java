@@ -43,7 +43,8 @@ public class StackOverflowClientTest {
     @BeforeEach
     void initialize() {
         String baseUrl = String.format("http://localhost:%s", mockBackEnd.getPort());
-        WebClient webClient = new WebClient(null, new WebClientConfig(baseUrl, "1"));
+        WebClient webClient = mock(WebClient.class);
+        when(webClient.github()).thenReturn(new WebClientConfig(baseUrl, "1"));
         ApplicationConfig applicationConfig = mock(ApplicationConfig.class);
         when(applicationConfig.webClient()).thenReturn(webClient);
         StackExchangeClient stackExchangeClient = new ClientConfiguration().getStackExchangeClient(applicationConfig);

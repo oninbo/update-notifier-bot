@@ -65,8 +65,42 @@ public class LinksRepository implements BaseRepository<Link, LinkAddParams> {
         return jdbcTemplate.query("SELECT * FROM links", rowMapper());
     }
 
-    public List<Link> findAll(UUID tgChatId) {
-        return jdbcTemplate.query("SELECT * FROM links WHERE tg_chat_id = ?", rowMapper(), tgChatId);
+    public List<Link> findAll(TgChat tgChat) {
+        return jdbcTemplate.query("SELECT * FROM links WHERE tg_chat_id = ?", rowMapper(), tgChat.id());
+    }
+
+    public List<LinkWithChatId> findAllWithChatId(GitHubRepository gitHubRepository) {
+        return jdbcTemplate.query(
+                """
+                SELECT links.*, tc.chat_id
+                FROM links
+                JOIN tg_chats tc on tc.id = links.tg_chat_id
+                WHERE github_repository_id = ?
+                """,
+                (rs, n) -> new LinkWithChatId(
+                        rs.getObject("id", UUID.class),
+                        URI.create(rs.getString("url")),
+                        rs.getLong("chat_id")
+                ),
+                gitHubRepository.id()
+        );
+    }
+
+    public List<LinkWithChatId> findAllWithChatId(StackOverflowQuestion stackOverflowQuestion) {
+        return jdbcTemplate.query(
+                """
+                SELECT links.*, tc.chat_id
+                FROM links
+                JOIN tg_chats tc on tc.id = links.tg_chat_id
+                WHERE stackoverflow_question_id = ?
+                """,
+                (rs, n) -> new LinkWithChatId(
+                        rs.getObject("id", UUID.class),
+                        URI.create(rs.getString("url")),
+                        rs.getLong("chat_id")
+                ),
+                stackOverflowQuestion.id()
+        );
     }
 
     @Override
