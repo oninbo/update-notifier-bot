@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
+import ru.tinkoff.edu.java.scrapper.dto.Link;
 import ru.tinkoff.edu.java.scrapper.dto.StackOverflowQuestion;
 import ru.tinkoff.edu.java.scrapper.dto.StackOverflowQuestionAddParams;
 
@@ -41,6 +42,31 @@ public class StackOverflowQuestionsRepository implements BaseRepository<StackOve
         return jdbcTemplate.query("SELECT * FROM stackoverflow_questions", rowMapper());
     }
 
+    public List<StackOverflowQuestion> findAllWithLinks() {
+        return jdbcTemplate.query("""
+                        SELECT sq.*
+                        FROM links
+                        JOIN stackoverflow_questions sq on sq.id = links.stackoverflow_question_id
+                        GROUP BY sq.id, sq.question_id, sq.created_at, sq.updated_at
+                        """,
+                rowMapper()
+        );
+    }
+
+    public Optional<StackOverflowQuestion> find(Link link) {
+        var result = jdbcTemplate.query(
+                """
+                SELECT stackoverflow_questions.*
+                FROM stackoverflow_questions
+                JOIN links l on stackoverflow_questions.id = l.stackoverflow_question_id
+                WHERE l.id = ?
+                """,
+                rowMapper(),
+                link.id()
+        );
+        return result.isEmpty() ? Optional.empty() : Optional.of(result.get(0));
+    }
+
     public Optional<StackOverflowQuestion> find(Long questionId) {
         var result = jdbcTemplate.query(
                 "SELECT * FROM stackoverflow_questions WHERE question_id = ?",
@@ -48,6 +74,11 @@ public class StackOverflowQuestionsRepository implements BaseRepository<StackOve
                 questionId
         );
         return result.isEmpty() ? Optional.empty() : Optional.of(result.get(0));
+    }
+
+    public void update(StackOverflowQuestion stackOverflowQuestion, OffsetDateTime updatedAt) {
+        var id = stackOverflowQuestion.id();
+        jdbcTemplate.update("UPDATE stackoverflow_questions SET updated_at = ? WHERE id = ?", updatedAt, id);
     }
 
     @Override

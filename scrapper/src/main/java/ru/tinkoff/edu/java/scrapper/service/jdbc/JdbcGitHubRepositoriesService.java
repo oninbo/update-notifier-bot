@@ -76,11 +76,7 @@ public class JdbcGitHubRepositoriesService implements
                 gitHubRepositoriesRepository.findAllWithLinks(),
                 this::fetchedUpdatedAt,
                 linksRepository::findAllWithChatId,
-                GitHubRepository::updatedAt,
-                (repo, fetchedUpdatedAt) -> {
-                    gitHubRepositoriesRepository.update(repo.id(), fetchedUpdatedAt);
-                    return null;
-                }
+                GitHubRepository::updatedAt
         );
     }
 

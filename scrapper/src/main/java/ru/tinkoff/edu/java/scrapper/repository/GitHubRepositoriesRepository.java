@@ -6,6 +6,7 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 import ru.tinkoff.edu.java.scrapper.dto.GitHubRepository;
 import ru.tinkoff.edu.java.scrapper.dto.GitHubRepositoryAddParams;
+import ru.tinkoff.edu.java.scrapper.dto.Link;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -43,6 +44,20 @@ public class GitHubRepositoriesRepository implements BaseRepository<GitHubReposi
                 rowMapper(),
                 name,
                 username
+        );
+        return result.isEmpty() ? Optional.empty() : Optional.of(result.get(0));
+    }
+
+    public Optional<GitHubRepository> find(Link link) {
+        var result = jdbcTemplate.query(
+                """
+                SELECT *
+                FROM github_repositories
+                JOIN links l on github_repositories.id = l.github_repository_id
+                WHERE l.id = ?
+                """,
+                rowMapper(),
+                link.id()
         );
         return result.isEmpty() ? Optional.empty() : Optional.of(result.get(0));
     }

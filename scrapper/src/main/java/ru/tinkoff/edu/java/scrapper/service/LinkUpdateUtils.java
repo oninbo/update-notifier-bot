@@ -8,7 +8,6 @@ import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.function.BiFunction;
 import java.util.function.Function;
 
 public class LinkUpdateUtils {
@@ -16,8 +15,7 @@ public class LinkUpdateUtils {
             Iterable<T> updated,
             Function<T, OffsetDateTime> getFetchedUpdatedAt,
             Function<T, List<LinkWithChatId>> getLinks,
-            Function<T, OffsetDateTime> getUpdatedAt,
-            BiFunction<T, OffsetDateTime, Void> updateUpdatedAt
+            Function<T, OffsetDateTime> getUpdatedAt
     ) {
         List<LinkUpdate> linkUpdates = new ArrayList<>();
         for (var u : updated) {
@@ -44,14 +42,10 @@ public class LinkUpdateUtils {
                         new LinkUpdate(
                                 link.id(),
                                 link.url(),
-                                null,
-                                links.stream().map(LinkWithChatId::chatId).toList()
+                                links.stream().map(LinkWithChatId::chatId).toList(),
+                                fetchedUpdatedAt
                         )
                 );
-            }
-
-            if (!Objects.equals(updatedAt, fetchedUpdatedAt)) {
-                updateUpdatedAt.apply(u, fetchedUpdatedAt);
             }
         }
         return linkUpdates;

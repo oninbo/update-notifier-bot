@@ -6,4 +6,5 @@ import java.util.List;
 
 public interface UpdatesService {
     List<LinkUpdate> getUpdates();
+    // TODO: void updateUpdatedAt(List<LinkUpdate> linkUpdates);
 }
