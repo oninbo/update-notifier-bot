@@ -2,7 +2,9 @@ package ru.tinkoff.edu.java.scrapper.service.jdbc;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.web.reactive.function.client.WebClientResponseException;
 import ru.tinkoff.edu.java.link_parser.github.GitHubParserResult;
+import ru.tinkoff.edu.java.scrapper.client.GitHubClient;
 import ru.tinkoff.edu.java.scrapper.configuration.ApplicationConfig;
 import ru.tinkoff.edu.java.scrapper.dto.GitHubRepository;
 import ru.tinkoff.edu.java.scrapper.dto.GitHubRepositoryAddParams;
@@ -17,6 +19,7 @@ import java.util.Optional;
 public class JdbcGitHubRepositoriesService implements FindOrDoService<GitHubRepository, GitHubParserResult> {
     private final GitHubRepositoriesRepository gitHubRepositoriesRepository;
     private final ApplicationConfig applicationConfig;
+    private final GitHubClient gitHubClient;
 
     @Override
     public GitHubRepository findOrThrow(GitHubParserResult findParams) {
@@ -26,7 +29,7 @@ public class JdbcGitHubRepositoriesService implements FindOrDoService<GitHubRepo
     @Override
     public GitHubRepository findOrCreate(GitHubParserResult findParams) {
         return find(findParams).orElse(
-                gitHubRepositoriesRepository.add(
+                create(
                         new GitHubRepositoryAddParams(
                                 findParams.userName(),
                                 findParams.projectName()
@@ -37,5 +40,22 @@ public class JdbcGitHubRepositoriesService implements FindOrDoService<GitHubRepo
 
     public Optional<GitHubRepository> find(GitHubParserResult findParams) {
         return gitHubRepositoriesRepository.find(findParams.userName(), findParams.userName());
+    }
+
+    public GitHubRepository create(GitHubRepositoryAddParams gitHubRepositoryAddParams) {
+        checkIfGitHubRepositoryExists(gitHubRepositoryAddParams);
+        return gitHubRepositoriesRepository.add(gitHubRepositoryAddParams);
+    }
+
+    private void checkIfGitHubRepositoryExists(GitHubRepositoryAddParams gitHubRepositoryAddParams) {
+        try {
+            gitHubClient.getRepository(
+                    gitHubRepositoryAddParams.username(),
+                    gitHubRepositoryAddParams.name(),
+                    applicationConfig.webClient().github().apiVersion()
+            );
+        } catch (WebClientResponseException.NotFound exception) {
+            throw new GitHubRepositoryNotFoundException(applicationConfig);
+        }
     }
 }
