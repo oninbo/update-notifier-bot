@@ -21,6 +21,8 @@ import java.util.List;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = {
@@ -88,7 +90,7 @@ public class StackOverflowQuestionsRepositoryTest {
     public void shouldUpdateUpdatedAt() {
         var id = insertStackOverflowQuestion();
         updatedAt = updatedAt.withNano(0);
-        var question = new StackOverflowQuestion(id, questionId, updatedAt);
+        StackOverflowQuestion question = when(mock(StackOverflowQuestion.class).id()).thenReturn(id).getMock();
         stackOverflowQuestionsRepository.updateUpdatedAt(List.of(question), updatedAt);
         var result = jdbcTemplate
                 .queryForObject("SELECT updated_at from stackoverflow_questions", OffsetDateTime.class);

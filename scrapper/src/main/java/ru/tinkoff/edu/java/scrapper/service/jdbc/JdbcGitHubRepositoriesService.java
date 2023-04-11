@@ -26,7 +26,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class JdbcGitHubRepositoriesService implements
         FindOrDoService<GitHubRepository, GitHubParserResult>,
-        UpdatesService {
+        UpdatesService <GitHubRepository> {
     private final GitHubRepositoriesRepository gitHubRepositoriesRepository;
     private final LinksRepository linksRepository;
     private final ApplicationConfig applicationConfig;
@@ -71,18 +71,25 @@ public class JdbcGitHubRepositoriesService implements
     }
 
     @Override
-    public List<LinkUpdate> getUpdates() {
+    public List<LinkUpdate> getUpdates(List<GitHubRepository> repositories) {
         return LinkUpdateUtils.getUpdates(
-                gitHubRepositoriesRepository.findAllWithLinks(),
+                repositories,
                 this::fetchedUpdatedAt,
                 linksRepository::findAllWithChatId,
-                GitHubRepository::updatedAt
+                GitHubRepository::updatedAt,
+                GitHubRepository::createdAt
         );
     }
 
     @Override
-    public void updateUpdatedAt() {
-        // TODO
+    public void updateUpdatedAt(List<GitHubRepository> repos, OffsetDateTime updatedAt) {
+        gitHubRepositoriesRepository.updateUpdatedAt(repos, updatedAt);
+    }
+
+
+    @Override
+    public List<GitHubRepository> getObjectsForUpdate() {
+        return gitHubRepositoriesRepository.findAllWithLinks();
     }
 
     private OffsetDateTime fetchedUpdatedAt(GitHubRepository gitHubRepository) {

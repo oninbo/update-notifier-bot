@@ -36,10 +36,6 @@ public class GitHubRepositoriesRepository implements BaseRepository<GitHubReposi
                 );
     }
 
-    public void update(UUID id, OffsetDateTime updatedAt) {
-        jdbcTemplate.update("UPDATE github_repositories SET updated_at = ? WHERE id = ?", updatedAt, id);
-    }
-
     public Optional<GitHubRepository> find(String username, String name) {
         var result = jdbcTemplate.query(
                 "SELECT * FROM github_repositories WHERE name = ? AND username = ?",
@@ -96,7 +92,8 @@ public class GitHubRepositoriesRepository implements BaseRepository<GitHubReposi
                 rs.getObject("id", UUID.class),
                 rs.getString("username"),
                 rs.getString("name"),
-                rs.getObject("updated_at", OffsetDateTime.class)
+                rs.getObject("updated_at", OffsetDateTime.class),
+                rs.getObject("created_at", OffsetDateTime.class)
         );
     }
 }

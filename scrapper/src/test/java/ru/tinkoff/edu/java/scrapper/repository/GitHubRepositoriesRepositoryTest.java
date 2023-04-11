@@ -16,11 +16,14 @@ import ru.tinkoff.edu.java.scrapper.configuration.TransactionConfig;
 import ru.tinkoff.edu.java.scrapper.dto.GitHubRepository;
 import ru.tinkoff.edu.java.scrapper.dto.GitHubRepositoryAddParams;
 
+import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = {
@@ -42,6 +45,9 @@ public class GitHubRepositoriesRepositoryTest {
 
     @Random
     String name;
+
+    @Random
+    OffsetDateTime updatedAt;
 
     @Test
     @Transactional
@@ -106,6 +112,20 @@ public class GitHubRepositoriesRepositoryTest {
         var ids = jdbcTemplate
                 .queryForList("SELECT id from github_repositories where id = ?", UUID.class, id);
         assertTrue(ids.isEmpty());
+    }
+
+    @Test
+    @Transactional
+    @Rollback
+    public void shouldUpdateUpdatedAt() {
+        var id = insertGitHubRepository();
+        updatedAt = updatedAt.withNano(0);
+        GitHubRepository repository = when(mock(GitHubRepository.class).id()).thenReturn(id).getMock();
+        gitHubRepositoriesRepository.updateUpdatedAt(List.of(repository), updatedAt);
+        var result = jdbcTemplate
+                .queryForObject("SELECT updated_at from github_repositories", OffsetDateTime.class);
+        assertNotNull(result);
+        assertTrue(updatedAt.isEqual(result));
     }
 
     private UUID insertGitHubRepository() {

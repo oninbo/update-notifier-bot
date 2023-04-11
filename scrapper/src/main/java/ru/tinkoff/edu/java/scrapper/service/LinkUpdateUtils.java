@@ -15,7 +15,8 @@ public class LinkUpdateUtils {
             Iterable<T> updated,
             Function<T, OffsetDateTime> getFetchedUpdatedAt,
             Function<T, List<LinkWithChatId>> getLinks,
-            Function<T, OffsetDateTime> getUpdatedAt
+            Function<T, OffsetDateTime> getUpdatedAt,
+            Function<T, OffsetDateTime> getCreatedAt
     ) {
         List<LinkUpdate> linkUpdates = new ArrayList<>();
         for (var u : updated) {
@@ -25,12 +26,11 @@ public class LinkUpdateUtils {
                 continue;
             }
 
-            var updatedAt = getUpdatedAt.apply(u);
+            var updatedAt = ObjectUtils.max(getUpdatedAt.apply(u), getCreatedAt.apply(u));
 
-            // Если в бд updated_at null, ничего не делаем
             // Если в бд updated_at равен дате из api, ничего не делаем
             // Если в бд updated_at меньше даты из api, записываем ссылку, чтобы отправить уведомление об обновлении
-            if (ObjectUtils.compare(updatedAt, fetchedUpdatedAt, true) < 0) {
+            if (updatedAt.isBefore(fetchedUpdatedAt)) {
                 var links = getLinks.apply(u);
 
                 if (links.isEmpty()) {

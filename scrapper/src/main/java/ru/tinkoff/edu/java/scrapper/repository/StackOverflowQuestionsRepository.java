@@ -95,7 +95,8 @@ public class StackOverflowQuestionsRepository implements BaseRepository<StackOve
         return new StackOverflowQuestion(
                 rs.getObject("id", UUID.class),
                 rs.getLong("question_id"),
-                rs.getObject("updated_at", OffsetDateTime.class)
+                rs.getObject("updated_at", OffsetDateTime.class),
+                rs.getObject("created_at", OffsetDateTime.class)
         );
     }
 }

@@ -16,6 +16,7 @@ import ru.tinkoff.edu.java.scrapper.service.FindOrDoService;
 import ru.tinkoff.edu.java.scrapper.service.LinkUpdateUtils;
 import ru.tinkoff.edu.java.scrapper.service.UpdatesService;
 
+import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -24,7 +25,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class JdbcStackOverflowQuestionsService implements
         FindOrDoService<StackOverflowQuestion, StackOverflowParserResult>,
-        UpdatesService {
+        UpdatesService <StackOverflowQuestion> {
     private final StackOverflowQuestionsRepository stackOverflowQuestionsRepository;
     private final LinksRepository linksRepository;
     private final StackOverflowClient stackOverflowClient;
@@ -66,9 +67,8 @@ public class JdbcStackOverflowQuestionsService implements
     }
 
     @Override
-    public List<LinkUpdate> getUpdates() {
+    public List<LinkUpdate> getUpdates(List<StackOverflowQuestion> questions) {
         int batchSize = 100;
-        List<StackOverflowQuestion> questions = stackOverflowQuestionsRepository.findAllWithLinks();
         List<LinkUpdate> result = new ArrayList<>();
         for (int i = 0; i < questions.size(); i += batchSize) {
             var batch = questions.subList(i, Math.min(i + batchSize, questions.size()));
@@ -84,7 +84,8 @@ public class JdbcStackOverflowQuestionsService implements
                             .map(sq -> ObjectUtils.max(sq.lastActivityDate(), sq.lastEditDate()))
                             .orElse(null),
                     linksRepository::findAllWithChatId,
-                    StackOverflowQuestion::updatedAt
+                    StackOverflowQuestion::updatedAt,
+                    StackOverflowQuestion::createdAt
             );
             result.addAll(batchResult);
         }
@@ -92,7 +93,12 @@ public class JdbcStackOverflowQuestionsService implements
     }
 
     @Override
-    public void updateUpdatedAt() {
-// TODO
+    public void updateUpdatedAt(List<StackOverflowQuestion> questions, OffsetDateTime updatedAt) {
+        stackOverflowQuestionsRepository.updateUpdatedAt(questions, updatedAt);
+    }
+
+    @Override
+    public List<StackOverflowQuestion> getObjectsForUpdate() {
+        return stackOverflowQuestionsRepository.findAllWithLinks();
     }
 }
