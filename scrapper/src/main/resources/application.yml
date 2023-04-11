@@ -3,7 +3,7 @@ app:
   error_description:
     api: Некорректные параметры запроса
     server: Ошибка сервера
-    tg_chat_not_found: Чат не существует
+    tg_chat_not_found: Вы не зарегистрированы. Зарегистрируйтесь с помощью команды /start
     tg_chat_exists: Вы уже зарегистрированы
     stackoverflow_question_not_found: Вопроса на Stack Overflow не существует
     github_repository_not_found: GitHub репозитория не существует
@@ -19,7 +19,8 @@ app:
       api_version: 2.3
     bot_base_url: http://localhost:8080
   scheduler:
-    interval: 1m 5s
+    interval: 1h
+    batch_size: 100
   database:
     driver: org.postgresql.Driver
     url: jdbc:postgresql://localhost:5432/scrapper

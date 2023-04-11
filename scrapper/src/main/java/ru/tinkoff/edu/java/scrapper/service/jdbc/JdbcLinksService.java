@@ -3,6 +3,7 @@ package ru.tinkoff.edu.java.scrapper.service.jdbc;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.tinkoff.edu.java.link_parser.LinkParserResult;
 import ru.tinkoff.edu.java.link_parser.LinkParserResultVisitor;
 import ru.tinkoff.edu.java.link_parser.LinkParserService;
@@ -16,10 +17,10 @@ import ru.tinkoff.edu.java.scrapper.exception.LinkNotSupportedException;
 import ru.tinkoff.edu.java.scrapper.exception.TgChatNotFoundException;
 import ru.tinkoff.edu.java.scrapper.repository.LinksRepository;
 import ru.tinkoff.edu.java.scrapper.repository.TgChatsRepository;
-import ru.tinkoff.edu.java.scrapper.service.FindOrDoService;
 import ru.tinkoff.edu.java.scrapper.service.LinksService;
 
 import java.net.URI;
+import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Supplier;
@@ -31,8 +32,8 @@ class JdbcLinksService implements LinksService {
     private final TgChatsRepository tgChatsRepository;
     private final ApplicationConfig applicationConfig;
     private final LinkParserService linkParserService;
-    private final FindOrDoService<GitHubRepository, GitHubParserResult> gitHubRepositoriesService;
-    private final FindOrDoService<StackOverflowQuestion, StackOverflowParserResult> stackOverflowQuestionsService;
+    private final JdbcGitHubRepositoriesService gitHubRepositoriesService;
+    private final JdbcStackOverflowQuestionsService stackOverflowQuestionsService;
 
     @Override
     public List<Link> getLinks(Long chatId) {
@@ -52,13 +53,17 @@ class JdbcLinksService implements LinksService {
         return linkBuilder.build();
     }
 
+    @Transactional
     public Link addLink(TgChat tgChat, URI url, GitHubRepository gitHubRepository) {
         checkIfLinkExists(linksRepository.find(tgChat, gitHubRepository));
+        gitHubRepositoriesService.updateUpdatedAt(List.of(gitHubRepository), OffsetDateTime.now());
         return linksRepository.add(new LinkAddParams(url, tgChat, gitHubRepository));
     }
 
+    @Transactional
     public Link addLink(TgChat tgChat, URI url, StackOverflowQuestion stackOverflowQuestion) {
         checkIfLinkExists(linksRepository.find(tgChat, stackOverflowQuestion));
+        stackOverflowQuestionsService.updateUpdatedAt(List.of(stackOverflowQuestion), OffsetDateTime.now());
         return linksRepository.add(new LinkAddParams(url, tgChat, stackOverflowQuestion));
     }
 

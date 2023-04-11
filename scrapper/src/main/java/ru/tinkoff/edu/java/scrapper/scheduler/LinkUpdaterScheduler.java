@@ -6,6 +6,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import ru.tinkoff.edu.java.scrapper.client.BotClient;
+import ru.tinkoff.edu.java.scrapper.configuration.ApplicationConfig;
 import ru.tinkoff.edu.java.scrapper.configuration.SchedulerConfig;
 import ru.tinkoff.edu.java.scrapper.dto.LinkUpdate;
 import ru.tinkoff.edu.java.scrapper.service.UpdatesService;
@@ -19,6 +20,7 @@ import java.util.List;
 public class LinkUpdaterScheduler {
     @SuppressWarnings("unused")
     private final SchedulerConfig schedulerConfig;
+    private final ApplicationConfig applicationConfig;
     private final List<UpdatesService<?>> updatesServices;
     private final BotClient botClient;
 
@@ -29,15 +31,9 @@ public class LinkUpdaterScheduler {
 
     @Transactional
     public <T> void processUpdates(UpdatesService<T> updatesService) {
-        OffsetDateTime updatedAt = OffsetDateTime.now();
-
-        List<LinkUpdate> linkUpdates = updatesService.getUpdates(updatesService.getObjectsForCheck());
-
-        updatesService.updateUpdatedAt(
-                updatesService.getObjectsForUpdate(),
-                updatedAt
-        );
-
+        var objects = updatesService.getObjectsForUpdate(applicationConfig.scheduler().batchSize());
+        List<LinkUpdate> linkUpdates = updatesService.getUpdates(objects);
+        updatesService.updateUpdatedAt(objects, OffsetDateTime.now());
         linkUpdates.forEach(botClient::sendUpdates);
     }
 }

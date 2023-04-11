@@ -44,14 +44,18 @@ public class StackOverflowQuestionsRepository implements BaseRepository<StackOve
         return jdbcTemplate.query("SELECT * FROM stackoverflow_questions", rowMapper());
     }
 
-    public List<StackOverflowQuestion> findAllWithLinks() {
-        return jdbcTemplate.query("""
+    public List<StackOverflowQuestion> findAllWithLinks(int limit) {
+        return jdbcTemplate.query(
+                """
                         SELECT sq.*
                         FROM links
                         JOIN stackoverflow_questions sq on sq.id = links.stackoverflow_question_id
                         GROUP BY sq.id, sq.question_id, sq.created_at, sq.updated_at
+                        ORDER BY sq.updated_at NULLS FIRST
+                        LIMIT ?
                         """,
-                rowMapper()
+                rowMapper(),
+                limit
         );
     }
 

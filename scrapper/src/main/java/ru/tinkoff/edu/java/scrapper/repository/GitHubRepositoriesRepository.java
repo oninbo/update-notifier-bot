@@ -51,16 +51,21 @@ public class GitHubRepositoriesRepository implements BaseRepository<GitHubReposi
         return jdbcTemplate.query("SELECT * FROM github_repositories", rowMapper());
     }
 
-    public List<GitHubRepository> findAllWithLinks() {
-        return jdbcTemplate.query("""
+    public List<GitHubRepository> findAllWithLinks(int limit) {
+        return jdbcTemplate.query(
+                """
                         SELECT gr.*
                         FROM links
                         JOIN github_repositories gr on links.github_repository_id = gr.id
                         GROUP BY gr.id, gr.username, gr.name, gr.created_at, gr.updated_at
+                        ORDER BY gr.updated_at NULLS FIRST
+                        LIMIT ?
                         """,
-                rowMapper()
+                rowMapper(),
+                limit
         );
     }
+
     public void updateUpdatedAt(List<GitHubRepository> repositories, OffsetDateTime updatedAt) {
         jdbcTemplate.batchUpdate(
                 "UPDATE github_repositories SET updated_at = ? WHERE id = ?",
@@ -78,6 +83,7 @@ public class GitHubRepositoriesRepository implements BaseRepository<GitHubReposi
                 }
         );
     }
+
     @Override
     public void remove(UUID id) {
         jdbcTemplate.update("DELETE FROM github_repositories WHERE id = ?", id);

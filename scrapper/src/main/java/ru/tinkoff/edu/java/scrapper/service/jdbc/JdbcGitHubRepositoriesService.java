@@ -88,13 +88,8 @@ public class JdbcGitHubRepositoriesService implements
 
 
     @Override
-    public List<GitHubRepository> getObjectsForUpdate() {
+    public List<GitHubRepository> getObjectsForUpdate(int first) {
         return gitHubRepositoriesRepository.findAll();
-    }
-
-    @Override
-    public List<GitHubRepository> getObjectsForCheck() {
-        return gitHubRepositoriesRepository.findAllWithLinks();
     }
 
     private OffsetDateTime fetchedUpdatedAt(GitHubRepository gitHubRepository) {

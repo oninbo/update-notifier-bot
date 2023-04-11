@@ -98,12 +98,7 @@ public class JdbcStackOverflowQuestionsService implements
     }
 
     @Override
-    public List<StackOverflowQuestion> getObjectsForUpdate() {
-        return stackOverflowQuestionsRepository.findAll();
-    }
-
-    @Override
-    public List<StackOverflowQuestion> getObjectsForCheck() {
-        return stackOverflowQuestionsRepository.findAllWithLinks();
+    public List<StackOverflowQuestion> getObjectsForUpdate(int first) {
+        return stackOverflowQuestionsRepository.findAllWithLinks(first);
     }
 }
