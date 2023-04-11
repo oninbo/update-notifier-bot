@@ -9,4 +9,5 @@ public interface UpdatesService <T> {
     List<LinkUpdate> getUpdates(List<T> objects);
     void updateUpdatedAt(List<T> objects, OffsetDateTime updatedAt);
     List<T> getObjectsForUpdate();
+    List<T> getObjectsForCheck();
 }

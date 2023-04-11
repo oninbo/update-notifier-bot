@@ -30,9 +30,14 @@ public class LinkUpdaterScheduler {
     @Transactional
     public <T> void processUpdates(UpdatesService<T> updatesService) {
         OffsetDateTime updatedAt = OffsetDateTime.now();
-        var updatedObjects = updatesService.getObjectsForUpdate();
-        List<LinkUpdate> linkUpdates = updatesService.getUpdates(updatedObjects);
-        updatesService.updateUpdatedAt(updatedObjects, updatedAt);
+
+        List<LinkUpdate> linkUpdates = updatesService.getUpdates(updatesService.getObjectsForCheck());
+
+        updatesService.updateUpdatedAt(
+                updatesService.getObjectsForUpdate(),
+                updatedAt
+        );
+
         linkUpdates.forEach(botClient::sendUpdates);
     }
 }

@@ -89,6 +89,11 @@ public class JdbcGitHubRepositoriesService implements
 
     @Override
     public List<GitHubRepository> getObjectsForUpdate() {
+        return gitHubRepositoriesRepository.findAll();
+    }
+
+    @Override
+    public List<GitHubRepository> getObjectsForCheck() {
         return gitHubRepositoriesRepository.findAllWithLinks();
     }
 
