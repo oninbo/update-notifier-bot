@@ -9,6 +9,6 @@ public class StackOverflowQuestionNotFoundException extends ServiceException {
 
     @Override
     public String description() {
-        return applicationConfig.errorDescription().stackOverFlowQuestionNotFound();
+        return applicationConfig.errorDescription().stackoverflowQuestionNotFound();
     }
 }

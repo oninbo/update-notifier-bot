@@ -38,8 +38,8 @@ public class JdbcStackOverflowQuestionsService implements
 
     @Override
     public StackOverflowQuestion findOrCreate(StackOverflowParserResult findParams) {
-        return find(findParams).orElse(
-                create(
+        return find(findParams).orElseGet(
+                () -> create(
                         new StackOverflowQuestionAddParams(
                                 findParams.questionId()
                         )

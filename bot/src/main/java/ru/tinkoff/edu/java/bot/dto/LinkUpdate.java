@@ -1,6 +1,7 @@
 package ru.tinkoff.edu.java.bot.dto;
 
-import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 import org.springframework.validation.annotation.Validated;
 
 import java.net.URI;
@@ -10,8 +11,8 @@ import java.util.UUID;
 @Validated
 public record LinkUpdate(
         UUID id,
-        @NotBlank URI url,
+        @NotNull URI url,
         String description,
-        List<Long> tgChatIds
+        @NotEmpty List<@NotNull Long> tgChatIds
 ) {
 }

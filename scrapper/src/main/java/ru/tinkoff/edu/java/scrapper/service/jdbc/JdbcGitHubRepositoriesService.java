@@ -39,8 +39,8 @@ public class JdbcGitHubRepositoriesService implements
 
     @Override
     public GitHubRepository findOrCreate(GitHubParserResult findParams) {
-        return find(findParams).orElse(
-                create(
+        return find(findParams).orElseGet(
+                () -> create(
                         new GitHubRepositoryAddParams(
                                 findParams.userName(),
                                 findParams.projectName()
@@ -50,7 +50,7 @@ public class JdbcGitHubRepositoriesService implements
     }
 
     public Optional<GitHubRepository> find(GitHubParserResult findParams) {
-        return gitHubRepositoriesRepository.find(findParams.userName(), findParams.userName());
+        return gitHubRepositoriesRepository.find(findParams.userName(), findParams.projectName());
     }
 
     public GitHubRepository create(GitHubRepositoryAddParams gitHubRepositoryAddParams) {

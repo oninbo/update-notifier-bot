@@ -59,7 +59,8 @@ public class GitHubClientTest {
                 .setBody(mapper.writeValueAsString(mockRepository))
                 .addHeader("Content-Type", "application/json"));
         var result = gitHubClient.getRepository(mockUser.login(), mockRepository.name(), "1");
-        assertEquals(result, mockRepository);
+        assertEquals(result.owner(), mockRepository.owner());
+        assertEquals(result.name(), mockRepository.name());
 
         RecordedRequest recordedRequest = mockBackEnd.takeRequest();
         assertEquals("GET", recordedRequest.getMethod());

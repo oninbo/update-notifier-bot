@@ -9,6 +9,6 @@ public class GitHubRepositoryNotFoundException extends ServiceException {
 
     @Override
     public String description() {
-        return applicationConfig.errorDescription().gitHubRepositoryNotFound();
+        return applicationConfig.errorDescription().githubRepositoryNotFound();
     }
 }
