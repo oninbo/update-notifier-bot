@@ -90,7 +90,8 @@ public class JdbcGitHubRepositoriesService implements
 
     @Override
     public List<GitHubRepository> getObjectsForUpdate(int first) {
-        return gitHubRepositoriesRepository.findAllWithLinks(first);
+        return gitHubRepositoriesRepository
+                .findAllWithLinks(first, GitHubRepositoriesRepository.UpdateColumn.UPDATED_AT);
     }
 
     private OffsetDateTime fetchedUpdatedAt(GitHubRepository gitHubRepository) {
@@ -106,15 +107,7 @@ public class JdbcGitHubRepositoriesService implements
     public List<GitHubIssueUpdate> getGitHubIssueUpdates(List<GitHubRepository> repositories) {
         List<GitHubIssueUpdate> updates = new ArrayList<>();
         for (var repo : repositories) {
-            var issues = gitHubClient.getRepositoryIssues(
-                    repo.username(),
-                    repo.name(),
-                    applicationConfig.webClient().github().apiVersion(),
-                    repo.issuesUpdatedAt().toString()
-            )
-                    .stream()
-                    .filter(i -> Objects.isNull(i.pullRequest()))
-                    .toList();
+            var issues = getRepositoryIssues(repo);
 
             if (issues.isEmpty()) {
                 continue;
@@ -146,5 +139,34 @@ public class JdbcGitHubRepositoriesService implements
     @Override
     public void updateIssuesUpdatedAt(List<GitHubRepository> repositories, OffsetDateTime updatedAt) {
         gitHubRepositoriesRepository.updateIssuesUpdatedAt(repositories, updatedAt);
+    }
+
+    @Override
+    public List<GitHubRepository> getRepositoriesForUpdate(int first) {
+        return gitHubRepositoriesRepository
+                .findAllWithLinks(first, GitHubRepositoriesRepository.UpdateColumn.ISSUES_UPDATED_AT);
+    }
+
+    private List<GitHubIssueResponse> getRepositoryIssues(GitHubRepository repo) {
+        List<GitHubIssueResponse> result = new ArrayList<>();
+        List<GitHubIssueResponse> issues;
+        int page = 1;
+        int perPage = 100;
+        do {
+            issues = gitHubClient.getRepositoryIssues(
+                            repo.username(),
+                            repo.name(),
+                            applicationConfig.webClient().github().apiVersion(),
+                            repo.issuesUpdatedAt().toString(),
+                            page,
+                            perPage
+                    )
+                    .stream()
+                    .filter(i -> Objects.isNull(i.pullRequest()))
+                    .toList();
+            result.addAll(issues);
+            page++;
+        } while (issues.size() == perPage);
+        return result;
     }
 }

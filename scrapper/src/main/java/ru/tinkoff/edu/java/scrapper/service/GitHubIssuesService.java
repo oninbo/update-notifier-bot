@@ -9,4 +9,5 @@ import java.util.List;
 public interface GitHubIssuesService extends UpdatesService<GitHubRepository> {
     List<GitHubIssueUpdate> getGitHubIssueUpdates(List<GitHubRepository> repositories);
     void updateIssuesUpdatedAt(List<GitHubRepository> repositories, OffsetDateTime updatedAt);
+    List<GitHubRepository> getRepositoriesForUpdate(int first);
 }

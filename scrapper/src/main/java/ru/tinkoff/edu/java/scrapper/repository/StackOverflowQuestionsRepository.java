@@ -44,19 +44,24 @@ public class StackOverflowQuestionsRepository implements BaseRepository<StackOve
         return jdbcTemplate.query("SELECT * FROM stackoverflow_questions", rowMapper());
     }
 
-    public List<StackOverflowQuestion> findAllWithLinks(int limit) {
-        return jdbcTemplate.query(
+    public enum UpdateColumn {
+        UPDATED_AT,
+        ANSWERS_UPDATED_AT
+    }
+
+    public List<StackOverflowQuestion> findAllWithLinks(int limit, UpdateColumn updateColumn) {
+        String sql = String.format(
                 """
                         SELECT sq.*
                         FROM links
                         JOIN stackoverflow_questions sq on sq.id = links.stackoverflow_question_id
                         GROUP BY sq.id, sq.question_id, sq.created_at, sq.updated_at
-                        ORDER BY sq.updated_at NULLS FIRST
+                        ORDER BY sq.%s NULLS FIRST
                         LIMIT ?
                         """,
-                rowMapper(),
-                limit
+                updateColumn.name().toLowerCase()
         );
+        return jdbcTemplate.query(sql, rowMapper(), limit);
     }
 
     public Optional<StackOverflowQuestion> find(Long questionId) {

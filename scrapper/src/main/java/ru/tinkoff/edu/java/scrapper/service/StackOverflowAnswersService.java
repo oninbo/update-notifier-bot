@@ -12,4 +12,5 @@ public interface StackOverflowAnswersService extends UpdatesService<StackOverflo
     );
 
     void updateAnswersUpdatedAt(List<StackOverflowQuestion> questions, OffsetDateTime updatedAt);
+    List<StackOverflowQuestion> getQuestionsForUpdate(int first);
 }

@@ -21,6 +21,8 @@ public interface GitHubClient {
             @PathVariable String owner,
             @PathVariable String repo,
             @RequestParam(name = "X-GitHub-Api-Version") String version,
-            @RequestParam String since
+            @RequestParam String since,
+            @RequestParam int page,
+            @RequestParam(name = "per_page") int perPage
     );
 }

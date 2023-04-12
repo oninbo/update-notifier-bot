@@ -98,7 +98,10 @@ public class JdbcStackOverflowQuestionsService implements
 
     @Override
     public List<StackOverflowQuestion> getObjectsForUpdate(int first) {
-        return stackOverflowQuestionsRepository.findAllWithLinks(first);
+        return stackOverflowQuestionsRepository.findAllWithLinks(
+                first,
+                StackOverflowQuestionsRepository.UpdateColumn.UPDATED_AT
+        );
     }
 
     @Override
@@ -110,13 +113,19 @@ public class JdbcStackOverflowQuestionsService implements
                 .min(Comparator.naturalOrder())
                 .orElseThrow();
         var ids = questions.stream().map(StackOverflowQuestion::questionId).toList();
-        var answers = stackOverflowClient.getStackOverflowAnswers(
-                        applicationConfig.webClient().stackExchange().apiVersion(),
-                        ids,
-                        since,
-                        StackExchangeClient.ANSWER_LINK_FILTER
-                )
-                .items();
+
+        List<StackExchangeAnswerResponse> answers = new ArrayList<>();
+        ListStackExchangeAnswersResponse response;
+        do {
+            response = stackOverflowClient.getStackOverflowAnswers(
+                    applicationConfig.webClient().stackExchange().apiVersion(),
+                    ids,
+                    since,
+                    StackExchangeClient.ANSWER_LINK_FILTER
+            );
+            answers.addAll(response.items());
+        } while (response.hasMore());
+
         List<StackOverflowAnswerUpdate> result = new ArrayList<>();
         answers.forEach(
                 answer -> {
@@ -151,5 +160,13 @@ public class JdbcStackOverflowQuestionsService implements
     @Override
     public void updateAnswersUpdatedAt(List<StackOverflowQuestion> questions, OffsetDateTime updatedAt) {
         stackOverflowQuestionsRepository.updateAnswersUpdatedAt(questions, updatedAt);
+    }
+
+    @Override
+    public List<StackOverflowQuestion> getQuestionsForUpdate(int first) {
+        return stackOverflowQuestionsRepository.findAllWithLinks(
+                first,
+                StackOverflowQuestionsRepository.UpdateColumn.ANSWERS_UPDATED_AT
+        );
     }
 }

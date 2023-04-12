@@ -79,7 +79,11 @@ public class GitHubRepositoriesRepositoryTest {
     public void shouldFindAllGitHubRepositoriesWithLinks() {
         var gitHubRepositoryId = insertGitHubRepository();
         var limit = 100;
-        var foundIds = gitHubRepositoriesRepository.findAllWithLinks(limit).stream().map(GitHubRepository::id).toList();
+        var foundIds = gitHubRepositoriesRepository
+                .findAllWithLinks(limit, GitHubRepositoriesRepository.UpdateColumn.UPDATED_AT)
+                .stream()
+                .map(GitHubRepository::id)
+                .toList();
         assertIterableEquals(List.of(), foundIds);
 
         var tgChatId = jdbcTemplate
@@ -90,7 +94,10 @@ public class GitHubRepositoriesRepositoryTest {
                 tgChatId,
                 gitHubRepositoryId
         );
-        foundIds = gitHubRepositoriesRepository.findAllWithLinks(limit).stream().map(GitHubRepository::id).toList();
+        foundIds = gitHubRepositoriesRepository
+                .findAllWithLinks(limit, GitHubRepositoriesRepository.UpdateColumn.UPDATED_AT)
+                .stream()
+                .map(GitHubRepository::id).toList();
         assertIterableEquals(List.of(gitHubRepositoryId), foundIds);
     }
 

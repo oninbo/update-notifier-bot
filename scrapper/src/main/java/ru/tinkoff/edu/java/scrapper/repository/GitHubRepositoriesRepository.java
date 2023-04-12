@@ -51,19 +51,24 @@ public class GitHubRepositoriesRepository implements BaseRepository<GitHubReposi
         return jdbcTemplate.query("SELECT * FROM github_repositories", rowMapper());
     }
 
-    public List<GitHubRepository> findAllWithLinks(int limit) {
-        return jdbcTemplate.query(
+    public enum UpdateColumn {
+        UPDATED_AT,
+        ISSUES_UPDATED_AT,
+    }
+
+    public List<GitHubRepository> findAllWithLinks(int limit, UpdateColumn updateColumn) {
+        String sql = String.format(
                 """
                         SELECT gr.*
                         FROM links
                         JOIN github_repositories gr on links.github_repository_id = gr.id
                         GROUP BY gr.id, gr.username, gr.name, gr.created_at, gr.updated_at
-                        ORDER BY gr.updated_at NULLS FIRST
+                        ORDER BY gr.%s NULLS FIRST
                         LIMIT ?
                         """,
-                rowMapper(),
-                limit
+                updateColumn.name().toLowerCase()
         );
+        return jdbcTemplate.query(sql, rowMapper(), limit);
     }
 
     public void updateUpdatedAt(List<GitHubRepository> repositories, OffsetDateTime updatedAt) {
