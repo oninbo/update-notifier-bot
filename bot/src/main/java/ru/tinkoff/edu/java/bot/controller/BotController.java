@@ -41,7 +41,7 @@ public class BotController {
     @PostMapping("/stackoverflowAnswerUpdates")
     public void stackOverflowAnswerUpdates(@Valid @RequestBody StackOverflowAnswerUpdate update) {
         var messageText = String.format(
-                "Получен новый [ответ](%s) на [вопрос](%s) на Stack Overflow", // TODO: move to config
+                applicationConfig.message().stackoverflowAnswerUpdate(),
                 update.answerUrl(),
                 update.questionUrl()
         );
@@ -51,7 +51,7 @@ public class BotController {
     @PostMapping("/githubIssueUpdates")
     public void githubIssueUpdates(@Valid @RequestBody GitHubIssueUpdate update) {
         var messageText = String.format(
-                "Добавлен новый [тикет](%s) в GitHub [репозиторий %s](%s) пользователя %s", // TODO: move to config
+                applicationConfig.message().githubIssueUpdate(),
                 update.issueUrl(),
                 update.repository().name(),
                 update.repository().url(),

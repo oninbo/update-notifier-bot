@@ -19,7 +19,9 @@ public record ApplicationConfig(
     @Validated
     public record Message(
             @NotBlank String update,
-            @NotBlank String unsupportedLink
+            @NotBlank String unsupportedLink,
+            @NotBlank String stackoverflowAnswerUpdate,
+            @NotBlank String githubIssueUpdate
     ) {
     }
 }
