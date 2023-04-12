@@ -107,9 +107,8 @@ public class JdbcStackOverflowQuestionsService implements
     ) {
         var since = questions.stream()
                 .map(StackOverflowQuestion::answersUpdatedAt)
-                .filter(Objects::nonNull)
                 .min(Comparator.naturalOrder())
-                .orElse(OffsetDateTime.now());
+                .orElseThrow();
         var ids = questions.stream().map(StackOverflowQuestion::questionId).toList();
         var answers = stackOverflowClient.getStackOverflowAnswers(
                         applicationConfig.webClient().stackExchange().apiVersion(),

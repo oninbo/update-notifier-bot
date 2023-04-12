@@ -106,14 +106,11 @@ public class JdbcGitHubRepositoriesService implements
     public List<GitHubIssueUpdate> getGitHubIssueUpdates(List<GitHubRepository> repositories) {
         List<GitHubIssueUpdate> updates = new ArrayList<>();
         for (var repo : repositories) {
-            var issuesUpdatedAt = Optional.ofNullable(repo.issuesUpdatedAt())
-                    .orElse(OffsetDateTime.now());
-
             var issues = gitHubClient.getRepositoryIssues(
                     repo.username(),
                     repo.name(),
                     applicationConfig.webClient().github().apiVersion(),
-                    issuesUpdatedAt.toString()
+                    repo.issuesUpdatedAt().toString()
             )
                     .stream()
                     .filter(i -> Objects.isNull(i.pullRequest()))
