@@ -116,14 +116,17 @@ public class JdbcStackOverflowQuestionsService implements
 
         List<StackExchangeAnswerResponse> answers = new ArrayList<>();
         ListStackExchangeAnswersResponse response;
+        int page = 1;
         do {
             response = stackOverflowClient.getStackOverflowAnswers(
                     applicationConfig.webClient().stackExchange().apiVersion(),
                     ids,
                     since,
-                    StackExchangeClient.ANSWER_LINK_FILTER
+                    StackExchangeClient.ANSWER_LINK_FILTER,
+                    page
             );
             answers.addAll(response.items());
+            page++;
         } while (response.hasMore());
 
         List<StackOverflowAnswerUpdate> result = new ArrayList<>();

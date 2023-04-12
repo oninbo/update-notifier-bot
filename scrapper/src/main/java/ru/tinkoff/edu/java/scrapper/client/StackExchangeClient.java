@@ -25,6 +25,7 @@ public interface StackExchangeClient {
             @PathVariable String ids,
             @SuppressWarnings("SpellCheckingInspection") @RequestParam Long fromdate,
             @RequestParam String filter,
-            @RequestParam(name = "site") String site
+            @RequestParam(name = "site") String site,
+            @RequestParam Integer page
     );
 }
