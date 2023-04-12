@@ -26,14 +26,16 @@ public class StackOverflowClient {
             String version,
             List<Long> questionIds,
             OffsetDateTime since,
-            String filter
+            String filter,
+            Integer page
     ) {
         return stackExchangeClient.getStackExchangeAnswers(
                 version,
                 idsToString(questionIds),
                 since.toEpochSecond(),
                 filter,
-                "stackoverflow"
+                "stackoverflow",
+                page
         );
     }
 
