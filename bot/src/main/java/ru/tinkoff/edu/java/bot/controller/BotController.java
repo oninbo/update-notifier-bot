@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import ru.tinkoff.edu.java.bot.configuration.ApplicationConfig;
+import ru.tinkoff.edu.java.bot.dto.GitHubIssueUpdate;
 import ru.tinkoff.edu.java.bot.dto.LinkUpdate;
 import ru.tinkoff.edu.java.bot.dto.StackOverflowAnswerUpdate;
 import ru.tinkoff.edu.java.bot.exception.LinkNotSupportedException;
@@ -37,12 +38,23 @@ public class BotController {
             userResponseService.sendMessage(chatId, messageBuilder.toString());
         }
     }
-    @PostMapping("/stackoverflow_answer_updates")
+
+    @PostMapping("/stackoverflowAnswerUpdates")
     public void stackOverflowAnswerUpdates(@Valid @RequestBody StackOverflowAnswerUpdate update) {
         var messageText = String.format(
                 "Получен новый [ответ](%s) на [вопрос](%s) на Stack Overflow", // TODO: move to config
                 update.answerUrl(),
                 update.questionUrl()
+        );
+        update.chatIds().forEach(id -> userResponseService.sendMessage(id, messageText));
+    }
+
+    @PostMapping("/githubIssueUpdates")
+    public void githubIssueUpdates(@Valid @RequestBody GitHubIssueUpdate update) {
+        var messageText = String.format(
+                "Добавлен новый [тикет](%s) в GitHub [репозиторий](%s)", // TODO: move to config
+                update.issueUrl(),
+                update.repositoryUrl()
         );
         update.chatIds().forEach(id -> userResponseService.sendMessage(id, messageText));
     }

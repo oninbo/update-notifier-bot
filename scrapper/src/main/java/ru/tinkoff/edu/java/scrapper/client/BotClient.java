@@ -9,6 +9,6 @@ public interface BotClient {
     @PostExchange("/updates")
     void sendLinkUpdates(@RequestBody LinkUpdate linkUpdate);
 
-    @PostExchange("/stackoverflow_answer_updates")
+    @PostExchange("/stackoverflowAnswerUpdates")
     void sendStackOverflowAnswerUpdates(@RequestBody StackOverflowAnswerUpdate linkUpdate);
 }
