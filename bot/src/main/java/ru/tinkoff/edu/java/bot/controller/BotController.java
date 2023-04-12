@@ -32,8 +32,7 @@ public class BotController {
         var linkPresenter = new LinkParseResultPresenter(messageBuilder, linkUpdate.url().toString());
         linkPresenter.present(result);
 
-        for (Long chatId : linkUpdate.tgChatIds()) {
-            userResponseService.sendMessage(chatId, messageBuilder.toString());
-        }
+        var messageText = messageBuilder.toString();
+        linkUpdate.tgChatIds().forEach(id -> userResponseService.sendMessage(id, messageText));
     }
 }
