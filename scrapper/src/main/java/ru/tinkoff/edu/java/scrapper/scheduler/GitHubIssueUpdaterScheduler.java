@@ -7,25 +7,25 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.tinkoff.edu.java.scrapper.client.BotClient;
 import ru.tinkoff.edu.java.scrapper.configuration.ApplicationConfig;
 import ru.tinkoff.edu.java.scrapper.configuration.SchedulerConfig;
-import ru.tinkoff.edu.java.scrapper.service.StackOverflowAnswersService;
+import ru.tinkoff.edu.java.scrapper.service.GitHubIssuesService;
 
 import java.time.OffsetDateTime;
 
 @Component
 @RequiredArgsConstructor
-public class StackOverflowAnswerUpdaterScheduler {
+public class GitHubIssueUpdaterScheduler {
     @SuppressWarnings("unused")
     private final SchedulerConfig schedulerConfig;
     private final ApplicationConfig applicationConfig;
-    private final StackOverflowAnswersService stackOverflowAnswersService;
+    private final GitHubIssuesService gitHubIssuesService;
     private final BotClient botClient;
 
     @Scheduled(fixedDelayString = "#{@schedulerConfig.getInterval()}")
     @Transactional
     public void update() {
-        var questions = stackOverflowAnswersService.getObjectsForUpdate(applicationConfig.scheduler().batchSize());
-        var updates = stackOverflowAnswersService.getStackOverflowAnswerUpdates(questions);
-        stackOverflowAnswersService.updateUpdatedAt(questions, OffsetDateTime.now());
-        updates.forEach(botClient::sendStackOverflowAnswerUpdates);
+        var repositories = gitHubIssuesService.getObjectsForUpdate(applicationConfig.scheduler().batchSize());
+        var updates = gitHubIssuesService.getGitHubIssueUpdates(repositories);
+        gitHubIssuesService.updateUpdatedAt(repositories, OffsetDateTime.now());
+        updates.forEach(botClient::sendGithubIssueUpdates);
     }
 }

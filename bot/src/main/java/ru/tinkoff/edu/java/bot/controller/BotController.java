@@ -51,9 +51,11 @@ public class BotController {
     @PostMapping("/githubIssueUpdates")
     public void githubIssueUpdates(@Valid @RequestBody GitHubIssueUpdate update) {
         var messageText = String.format(
-                "Добавлен новый [тикет](%s) в GitHub [репозиторий](%s)", // TODO: move to config
+                "Добавлен новый [тикет](%s) в GitHub [репозиторий %s](%s) пользователя %s", // TODO: move to config
                 update.issueUrl(),
-                update.repositoryUrl()
+                update.repository().name(),
+                update.repository().url(),
+                update.repository().username()
         );
         update.chatIds().forEach(id -> userResponseService.sendMessage(id, messageText));
     }
