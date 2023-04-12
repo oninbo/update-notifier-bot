@@ -1,4 +1,4 @@
-package ru.tinkoff.edu.java.scrapper.service;
+package ru.tinkoff.edu.java.scrapper.service.utils;
 
 import org.apache.commons.lang3.ObjectUtils;
 import ru.tinkoff.edu.java.scrapper.dto.LinkUpdate;
@@ -27,9 +27,6 @@ public class LinkUpdateUtils {
             }
 
             var updatedAt = ObjectUtils.max(getUpdatedAt.apply(u), getCreatedAt.apply(u));
-
-            // Если в бд updated_at равен дате из api, ничего не делаем
-            // Если в бд updated_at меньше даты из api, записываем ссылку, чтобы отправить уведомление об обновлении
             if (updatedAt.isBefore(fetchedUpdatedAt)) {
                 var links = getLinks.apply(u);
 

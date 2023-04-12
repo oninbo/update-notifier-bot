@@ -15,7 +15,7 @@ import ru.tinkoff.edu.java.scrapper.exception.GitHubRepositoryNotFoundException;
 import ru.tinkoff.edu.java.scrapper.repository.GitHubRepositoriesRepository;
 import ru.tinkoff.edu.java.scrapper.repository.LinksRepository;
 import ru.tinkoff.edu.java.scrapper.service.FindOrDoService;
-import ru.tinkoff.edu.java.scrapper.service.LinkUpdateUtils;
+import ru.tinkoff.edu.java.scrapper.service.utils.LinkUpdateUtils;
 import ru.tinkoff.edu.java.scrapper.service.UpdatesService;
 
 import java.time.OffsetDateTime;

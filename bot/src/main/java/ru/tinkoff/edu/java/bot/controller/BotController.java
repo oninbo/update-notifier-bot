@@ -9,7 +9,7 @@ import ru.tinkoff.edu.java.bot.configuration.ApplicationConfig;
 import ru.tinkoff.edu.java.bot.dto.LinkUpdate;
 import ru.tinkoff.edu.java.bot.exception.LinkNotSupportedException;
 import ru.tinkoff.edu.java.bot.service.UserResponseService;
-import ru.tinkoff.edu.java.bot.service.bot_command.handler.LinkParseResultPresenter;
+import ru.tinkoff.edu.java.bot.utils.LinkParseResultPresenter;
 import ru.tinkoff.edu.java.link_parser.LinkParserResult;
 import ru.tinkoff.edu.java.link_parser.LinkParserService;
 
