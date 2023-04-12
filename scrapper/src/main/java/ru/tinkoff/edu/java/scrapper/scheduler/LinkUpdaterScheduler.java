@@ -1,7 +1,6 @@
 package ru.tinkoff.edu.java.scrapper.scheduler;
 
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -15,7 +14,6 @@ import java.time.OffsetDateTime;
 import java.util.List;
 
 @Component
-@Slf4j
 @RequiredArgsConstructor
 public class LinkUpdaterScheduler {
     @SuppressWarnings("unused")
@@ -32,8 +30,8 @@ public class LinkUpdaterScheduler {
     @Transactional
     public <T> void processUpdates(UpdatesService<T> updatesService) {
         var objects = updatesService.getObjectsForUpdate(applicationConfig.scheduler().batchSize());
-        List<LinkUpdate> linkUpdates = updatesService.getUpdates(objects);
+        List<LinkUpdate> linkUpdates = updatesService.getLinkUpdates(objects);
         updatesService.updateUpdatedAt(objects, OffsetDateTime.now());
-        linkUpdates.forEach(botClient::sendUpdates);
+        linkUpdates.forEach(botClient::sendLinkUpdates);
     }
 }

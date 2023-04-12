@@ -4,20 +4,21 @@ import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.stereotype.Service;
 import ru.tinkoff.edu.java.link_parser.stackoverflow.StackOverflowParserResult;
+import ru.tinkoff.edu.java.scrapper.client.StackExchangeClient;
 import ru.tinkoff.edu.java.scrapper.client.StackOverflowClient;
 import ru.tinkoff.edu.java.scrapper.configuration.ApplicationConfig;
-import ru.tinkoff.edu.java.scrapper.dto.LinkUpdate;
-import ru.tinkoff.edu.java.scrapper.dto.StackOverflowQuestion;
-import ru.tinkoff.edu.java.scrapper.dto.StackOverflowQuestionAddParams;
+import ru.tinkoff.edu.java.scrapper.dto.*;
 import ru.tinkoff.edu.java.scrapper.exception.StackOverflowQuestionNotFoundException;
 import ru.tinkoff.edu.java.scrapper.repository.LinksRepository;
 import ru.tinkoff.edu.java.scrapper.repository.StackOverflowQuestionsRepository;
 import ru.tinkoff.edu.java.scrapper.service.FindOrDoService;
-import ru.tinkoff.edu.java.scrapper.service.utils.LinkUpdateUtils;
+import ru.tinkoff.edu.java.scrapper.service.StackOverflowAnswersService;
 import ru.tinkoff.edu.java.scrapper.service.UpdatesService;
+import ru.tinkoff.edu.java.scrapper.service.utils.LinkUpdateUtils;
 
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 
@@ -25,7 +26,8 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class JdbcStackOverflowQuestionsService implements
         FindOrDoService<StackOverflowQuestion, StackOverflowParserResult>,
-        UpdatesService <StackOverflowQuestion> {
+        UpdatesService<StackOverflowQuestion>,
+        StackOverflowAnswersService {
     private final StackOverflowQuestionsRepository stackOverflowQuestionsRepository;
     private final LinksRepository linksRepository;
     private final StackOverflowClient stackOverflowClient;
@@ -67,7 +69,7 @@ public class JdbcStackOverflowQuestionsService implements
     }
 
     @Override
-    public List<LinkUpdate> getUpdates(List<StackOverflowQuestion> questions) {
+    public List<LinkUpdate> getLinkUpdates(List<StackOverflowQuestion> questions) {
         int batchSize = 100;
         List<LinkUpdate> result = new ArrayList<>();
         for (int i = 0; i < questions.size(); i += batchSize) {
@@ -100,5 +102,52 @@ public class JdbcStackOverflowQuestionsService implements
     @Override
     public List<StackOverflowQuestion> getObjectsForUpdate(int first) {
         return stackOverflowQuestionsRepository.findAllWithLinks(first);
+    }
+
+    @Override
+    public List<StackOverflowAnswerUpdate> getStackOverflowAnswerUpdates(
+            List<StackOverflowQuestion> questions
+    ) {
+        var since = questions.stream()
+                .map(StackOverflowQuestion::updatedAt)
+                .min(Comparator.naturalOrder())
+                .orElseThrow();
+        var ids = questions.stream().map(StackOverflowQuestion::questionId).toList();
+        var answers = stackOverflowClient.getStackOverflowAnswers(
+                        applicationConfig.webClient().stackExchange().apiVersion(),
+                        ids,
+                        since,
+                        StackExchangeClient.UNSAFE_FILTER
+                )
+                .items();
+        List<StackOverflowAnswerUpdate> result = new ArrayList<>();
+        answers.forEach(
+                answer -> {
+                    var questionResult = questions
+                            .stream()
+                            .filter(q -> q.questionId().equals(answer.questionId()))
+                            .findFirst();
+                    if (questionResult.isEmpty()) {
+                        return;
+                    }
+                    var question = questionResult.get();
+                    if (!question.updatedAt().isBefore(answer.creationDate())) {
+                        return;
+                    }
+                    var links = linksRepository.findAllWithChatId(question);
+                    if (links.isEmpty()) {
+                        return;
+                    }
+                    var link = links.get(0);
+                    result.add(
+                            new StackOverflowAnswerUpdate(
+                                    link.url(),
+                                    answer.link(),
+                                    links.stream().map(LinkWithChatId::chatId).toList()
+                            )
+                    );
+                }
+        );
+        return result;
     }
 }

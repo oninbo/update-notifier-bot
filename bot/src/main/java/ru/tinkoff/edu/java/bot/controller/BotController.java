@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import ru.tinkoff.edu.java.bot.configuration.ApplicationConfig;
 import ru.tinkoff.edu.java.bot.dto.LinkUpdate;
+import ru.tinkoff.edu.java.bot.dto.StackOverflowAnswerUpdate;
 import ru.tinkoff.edu.java.bot.exception.LinkNotSupportedException;
 import ru.tinkoff.edu.java.bot.service.UserResponseService;
 import ru.tinkoff.edu.java.bot.utils.LinkParseResultPresenter;
@@ -21,7 +22,7 @@ public class BotController {
     private final ApplicationConfig applicationConfig;
 
     @PostMapping("/updates")
-    public void updates(@Valid @RequestBody LinkUpdate linkUpdate) {
+    public void linkUpdates(@Valid @RequestBody LinkUpdate linkUpdate) {
         LinkParserResult result = linkParserService.parse(linkUpdate.url())
                 .orElseThrow(LinkNotSupportedException::new);
 
@@ -35,5 +36,14 @@ public class BotController {
         for (Long chatId : linkUpdate.tgChatIds()) {
             userResponseService.sendMessage(chatId, messageBuilder.toString());
         }
+    }
+    @PostMapping("/stackoverflow_answer_updates")
+    public void stackOverflowAnswerUpdates(@Valid @RequestBody StackOverflowAnswerUpdate update) {
+        var messageText = String.format(
+                "Получен новый [ответ](%s) на [вопрос](%s) на Stack Overflow", // TODO: move to config
+                update.answerUrl(),
+                update.questionUrl()
+        );
+        update.chatIds().forEach(id -> userResponseService.sendMessage(id, messageText));
     }
 }

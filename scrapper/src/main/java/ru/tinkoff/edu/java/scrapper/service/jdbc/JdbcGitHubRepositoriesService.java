@@ -71,7 +71,7 @@ public class JdbcGitHubRepositoriesService implements
     }
 
     @Override
-    public List<LinkUpdate> getUpdates(List<GitHubRepository> repositories) {
+    public List<LinkUpdate> getLinkUpdates(List<GitHubRepository> repositories) {
         return LinkUpdateUtils.getUpdates(
                 repositories,
                 this::fetchedUpdatedAt,
