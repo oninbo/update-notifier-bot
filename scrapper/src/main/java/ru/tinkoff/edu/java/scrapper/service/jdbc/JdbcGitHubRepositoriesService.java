@@ -19,6 +19,7 @@ import ru.tinkoff.edu.java.scrapper.service.UpdatesService;
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @Service
@@ -105,25 +106,35 @@ public class JdbcGitHubRepositoriesService implements
     public List<GitHubIssueUpdate> getGitHubIssueUpdates(List<GitHubRepository> repositories) {
         List<GitHubIssueUpdate> updates = new ArrayList<>();
         for (var repo : repositories) {
+            var issuesUpdatedAt = Optional.ofNullable(repo.issuesUpdatedAt())
+                    .orElse(OffsetDateTime.now());
+
             var issues = gitHubClient.getRepositoryIssues(
                     repo.username(),
                     repo.name(),
                     applicationConfig.webClient().github().apiVersion(),
-                    repo.updatedAt().toString()
-            );
+                    issuesUpdatedAt.toString()
+            )
+                    .stream()
+                    .filter(i -> Objects.isNull(i.pullRequest()))
+                    .toList();
 
             if (issues.isEmpty()) {
                 continue;
             }
 
             var links = linksRepository.findAllWithChatId(repo);
+            if (links.isEmpty()) {
+                continue;
+            }
+            var link = links.get(0);
 
             issues.forEach(
                     issue -> updates.add(
                             new GitHubIssueUpdate(
                                     issue.url(),
                                     new GitHubIssueUpdate.GitHubRepository(
-                                            issue.repositoryUrl(),
+                                            link.url(),
                                             repo.name(),
                                             repo.username()
                                     ),
@@ -133,5 +144,10 @@ public class JdbcGitHubRepositoriesService implements
             );
         }
         return updates;
+    }
+
+    @Override
+    public void updateIssuesUpdatedAt(List<GitHubRepository> repositories, OffsetDateTime updatedAt) {
+        gitHubRepositoriesRepository.updateIssuesUpdatedAt(repositories, updatedAt);
     }
 }

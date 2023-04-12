@@ -86,6 +86,24 @@ public class StackOverflowQuestionsRepository implements BaseRepository<StackOve
         );
     }
 
+    public void updateAnswersUpdatedAt(List<StackOverflowQuestion> questions, OffsetDateTime updatedAt) {
+        jdbcTemplate.batchUpdate(
+                "UPDATE stackoverflow_questions SET answers_updated_at = ? WHERE id = ?",
+                new BatchPreparedStatementSetter() {
+
+                    public void setValues(@NotNull PreparedStatement ps, int i)
+                            throws SQLException {
+                        ps.setObject(1, updatedAt);
+                        ps.setObject(2, questions.get(i).id());
+                    }
+
+                    public int getBatchSize() {
+                        return questions.size();
+                    }
+                }
+        );
+    }
+
     @Override
     public void remove(UUID id) {
         jdbcTemplate.update("DELETE FROM stackoverflow_questions WHERE id = ?", id);
@@ -100,7 +118,8 @@ public class StackOverflowQuestionsRepository implements BaseRepository<StackOve
                 rs.getObject("id", UUID.class),
                 rs.getLong("question_id"),
                 rs.getObject("updated_at", OffsetDateTime.class),
-                rs.getObject("created_at", OffsetDateTime.class)
+                rs.getObject("created_at", OffsetDateTime.class),
+                rs.getObject("answers_updated_at", OffsetDateTime.class)
         );
     }
 }

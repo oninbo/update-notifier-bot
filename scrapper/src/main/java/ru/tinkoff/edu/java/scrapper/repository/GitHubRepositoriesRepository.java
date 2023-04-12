@@ -84,6 +84,24 @@ public class GitHubRepositoriesRepository implements BaseRepository<GitHubReposi
         );
     }
 
+    public void updateIssuesUpdatedAt(List<GitHubRepository> repositories, OffsetDateTime updatedAt) {
+        jdbcTemplate.batchUpdate(
+                "UPDATE github_repositories SET issues_updated_at = ? WHERE id = ?",
+                new BatchPreparedStatementSetter() {
+
+                    public void setValues(@NotNull PreparedStatement ps, int i)
+                            throws SQLException {
+                        ps.setObject(1, updatedAt);
+                        ps.setObject(2, repositories.get(i).id());
+                    }
+
+                    public int getBatchSize() {
+                        return repositories.size();
+                    }
+                }
+        );
+    }
+
     @Override
     public void remove(UUID id) {
         jdbcTemplate.update("DELETE FROM github_repositories WHERE id = ?", id);
@@ -99,7 +117,8 @@ public class GitHubRepositoriesRepository implements BaseRepository<GitHubReposi
                 rs.getString("username"),
                 rs.getString("name"),
                 rs.getObject("updated_at", OffsetDateTime.class),
-                rs.getObject("created_at", OffsetDateTime.class)
+                rs.getObject("created_at", OffsetDateTime.class),
+                rs.getObject("issues_updated_at", OffsetDateTime.class)
         );
     }
 }

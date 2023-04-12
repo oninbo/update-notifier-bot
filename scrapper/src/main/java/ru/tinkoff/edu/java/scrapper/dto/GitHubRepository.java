@@ -8,6 +8,7 @@ public record GitHubRepository(
         String username,
         String name,
         OffsetDateTime updatedAt,
-        OffsetDateTime createdAt
+        OffsetDateTime createdAt,
+        OffsetDateTime issuesUpdatedAt
 ) {
 }

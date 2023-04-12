@@ -25,7 +25,7 @@ public class StackOverflowAnswerUpdaterScheduler {
     public void update() {
         var questions = stackOverflowAnswersService.getObjectsForUpdate(applicationConfig.scheduler().batchSize());
         var updates = stackOverflowAnswersService.getStackOverflowAnswerUpdates(questions);
-        stackOverflowAnswersService.updateUpdatedAt(questions, OffsetDateTime.now());
+        stackOverflowAnswersService.updateAnswersUpdatedAt(questions, OffsetDateTime.now());
         updates.forEach(botClient::sendStackOverflowAnswerUpdates);
     }
 }

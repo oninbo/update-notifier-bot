@@ -17,10 +17,7 @@ import ru.tinkoff.edu.java.scrapper.service.UpdatesService;
 import ru.tinkoff.edu.java.scrapper.service.utils.LinkUpdateUtils;
 
 import java.time.OffsetDateTime;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -109,15 +106,16 @@ public class JdbcStackOverflowQuestionsService implements
             List<StackOverflowQuestion> questions
     ) {
         var since = questions.stream()
-                .map(StackOverflowQuestion::updatedAt)
+                .map(StackOverflowQuestion::answersUpdatedAt)
+                .filter(Objects::nonNull)
                 .min(Comparator.naturalOrder())
-                .orElseThrow();
+                .orElse(OffsetDateTime.now());
         var ids = questions.stream().map(StackOverflowQuestion::questionId).toList();
         var answers = stackOverflowClient.getStackOverflowAnswers(
                         applicationConfig.webClient().stackExchange().apiVersion(),
                         ids,
                         since,
-                        StackExchangeClient.UNSAFE_FILTER
+                        StackExchangeClient.ANSWER_LINK_FILTER
                 )
                 .items();
         List<StackOverflowAnswerUpdate> result = new ArrayList<>();
@@ -131,7 +129,7 @@ public class JdbcStackOverflowQuestionsService implements
                         return;
                     }
                     var question = questionResult.get();
-                    if (!question.updatedAt().isBefore(answer.creationDate())) {
+                    if (!question.answersUpdatedAt().isBefore(answer.creationDate())) {
                         return;
                     }
                     var links = linksRepository.findAllWithChatId(question);
@@ -149,5 +147,10 @@ public class JdbcStackOverflowQuestionsService implements
                 }
         );
         return result;
+    }
+
+    @Override
+    public void updateAnswersUpdatedAt(List<StackOverflowQuestion> questions, OffsetDateTime updatedAt) {
+        stackOverflowQuestionsRepository.updateAnswersUpdatedAt(questions, updatedAt);
     }
 }

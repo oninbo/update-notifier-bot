@@ -25,7 +25,7 @@ public class GitHubIssueUpdaterScheduler {
     public void update() {
         var repositories = gitHubIssuesService.getObjectsForUpdate(applicationConfig.scheduler().batchSize());
         var updates = gitHubIssuesService.getGitHubIssueUpdates(repositories);
-        gitHubIssuesService.updateUpdatedAt(repositories, OffsetDateTime.now());
+        gitHubIssuesService.updateIssuesUpdatedAt(repositories, OffsetDateTime.now());
         updates.forEach(botClient::sendGithubIssueUpdates);
     }
 }

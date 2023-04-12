@@ -10,7 +10,7 @@ public interface StackExchangeClient {
     /**
      * <a href="https://api.stackexchange.com/docs/filters">Custom Filters</a>
      */
-    String UNSAFE_FILTER = "y49uLr";
+    String ANSWER_LINK_FILTER = "!nOedRLj6*S";
 
     @GetExchange("/{version}/questions/{ids}")
     ListStackExchangeQuestionsResponse getStackExchangeQuestions(
