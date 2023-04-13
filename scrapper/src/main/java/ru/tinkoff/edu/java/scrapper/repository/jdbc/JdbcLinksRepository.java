@@ -1,10 +1,11 @@
-package ru.tinkoff.edu.java.scrapper.repository;
+package ru.tinkoff.edu.java.scrapper.repository.jdbc;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 import ru.tinkoff.edu.java.scrapper.dto.*;
+import ru.tinkoff.edu.java.scrapper.repository.BaseRepository;
 
 import java.net.URI;
 import java.sql.ResultSet;
@@ -15,7 +16,7 @@ import java.util.UUID;
 
 @Repository
 @RequiredArgsConstructor
-public class LinksRepository implements BaseRepository<Link, LinkAddParams> {
+public class JdbcLinksRepository implements BaseRepository<Link, LinkAddParams> {
     private final JdbcTemplate jdbcTemplate;
 
     @Override
@@ -34,7 +35,7 @@ public class LinksRepository implements BaseRepository<Link, LinkAddParams> {
                         linkAddParams.url().toString(),
                         linkAddParams.tgChatId(),
                         linkAddParams.githubRepositoryId(),
-                        linkAddParams.stackoverflowId()
+                        linkAddParams.stackoverflowQuestionId()
                 );
     }
 

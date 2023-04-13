@@ -17,6 +17,7 @@ import ru.tinkoff.edu.java.scrapper.configuration.JdbcConfig;
 import ru.tinkoff.edu.java.scrapper.configuration.TestDataSourceConfig;
 import ru.tinkoff.edu.java.scrapper.configuration.TransactionConfig;
 import ru.tinkoff.edu.java.scrapper.dto.*;
+import ru.tinkoff.edu.java.scrapper.repository.jdbc.JdbcLinksRepository;
 
 import java.net.URI;
 import java.util.List;
@@ -28,15 +29,15 @@ import static org.mockito.Mockito.when;
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = {
         TransactionConfig.class,
-        LinksRepository.class,
+        JdbcLinksRepository.class,
         TestDataSourceConfig.class,
         JdbcConfig.class
 })
 @ExtendWith(RandomBeansExtension.class)
 @ExtendWith(MockitoExtension.class)
-public class LinksRepositoryTest {
+public class JdbcLinksRepositoryTest {
     @Autowired
-    LinksRepository linksRepository;
+    JdbcLinksRepository jdbcLinksRepository;
 
     @Autowired
     JdbcTemplate jdbcTemplate;
@@ -67,7 +68,7 @@ public class LinksRepositoryTest {
     @Rollback
     public void shouldAddLink() {
         insertGitHubRepository();
-        var link = linksRepository.add(new LinkAddParams(url, tgChat, gitHubRepository));
+        var link = jdbcLinksRepository.add(new LinkAddParams(url, tgChat, gitHubRepository));
         assertEquals(url, link.url());
 
         var sqlRowSet = jdbcTemplate
@@ -84,7 +85,7 @@ public class LinksRepositoryTest {
     public void shouldFindAllLinks() {
         insertGitHubRepository();
         var linkId = insertLink();
-        var foundLinks = linksRepository.findAll();
+        var foundLinks = jdbcLinksRepository.findAll();
         assertIterableEquals(List.of(new Link(linkId, url)), foundLinks);
     }
 
@@ -94,7 +95,7 @@ public class LinksRepositoryTest {
     public void shouldFindAllLinksByTgChat() {
         insertGitHubRepository();
         var linkId = insertLink();
-        var foundLinks = linksRepository.findAll(tgChat);
+        var foundLinks = jdbcLinksRepository.findAll(tgChat);
         assertIterableEquals(List.of(new Link(linkId, url)), foundLinks);
     }
 
@@ -104,7 +105,7 @@ public class LinksRepositoryTest {
     public void shouldFindLinkWithGitHubRepository() {
         insertGitHubRepository();
         var linkId = insertLink();
-        var foundLink = linksRepository.find(tgChat, gitHubRepository);
+        var foundLink = jdbcLinksRepository.find(tgChat, gitHubRepository);
         assertTrue(foundLink.isPresent());
         assertEquals(new Link(linkId, url), foundLink.get());
     }
@@ -133,7 +134,7 @@ public class LinksRepositoryTest {
                 stackOverflowQuestion.id()
         );
 
-        var foundLink = linksRepository.find(tgChat, stackOverflowQuestion);
+        var foundLink = jdbcLinksRepository.find(tgChat, stackOverflowQuestion);
         assertTrue(foundLink.isPresent());
         assertEquals(new Link(linkId, url), foundLink.get());
     }
@@ -144,7 +145,7 @@ public class LinksRepositoryTest {
     public void shouldRemoveLink() {
         insertGitHubRepository();
         var id = insertLink();
-        linksRepository.remove(id);
+        jdbcLinksRepository.remove(id);
 
         var ids = jdbcTemplate.queryForList("SELECT id from links where id = ?", UUID.class, id);
         assertTrue(ids.isEmpty());

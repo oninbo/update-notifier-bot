@@ -9,7 +9,7 @@ import ru.tinkoff.edu.java.scrapper.client.StackOverflowClient;
 import ru.tinkoff.edu.java.scrapper.configuration.ApplicationConfig;
 import ru.tinkoff.edu.java.scrapper.dto.*;
 import ru.tinkoff.edu.java.scrapper.exception.StackOverflowQuestionNotFoundException;
-import ru.tinkoff.edu.java.scrapper.repository.LinksRepository;
+import ru.tinkoff.edu.java.scrapper.repository.jdbc.JdbcLinksRepository;
 import ru.tinkoff.edu.java.scrapper.repository.StackOverflowQuestionsRepository;
 import ru.tinkoff.edu.java.scrapper.service.FindOrDoService;
 import ru.tinkoff.edu.java.scrapper.service.StackOverflowAnswersService;
@@ -26,7 +26,7 @@ public class JdbcStackOverflowQuestionsService implements
         UpdatesService<StackOverflowQuestion>,
         StackOverflowAnswersService {
     private final StackOverflowQuestionsRepository stackOverflowQuestionsRepository;
-    private final LinksRepository linksRepository;
+    private final JdbcLinksRepository jdbcLinksRepository;
     private final StackOverflowClient stackOverflowClient;
     private final ApplicationConfig applicationConfig;
 
@@ -82,7 +82,7 @@ public class JdbcStackOverflowQuestionsService implements
                             .findFirst()
                             .map(sq -> ObjectUtils.max(sq.lastActivityDate(), sq.lastEditDate()))
                             .orElse(null),
-                    linksRepository::findAllWithChatId,
+                    jdbcLinksRepository::findAllWithChatId,
                     StackOverflowQuestion::updatedAt,
                     StackOverflowQuestion::createdAt
             );

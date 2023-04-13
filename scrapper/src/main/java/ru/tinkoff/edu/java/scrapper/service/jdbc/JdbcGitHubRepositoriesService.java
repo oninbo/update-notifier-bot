@@ -10,7 +10,7 @@ import ru.tinkoff.edu.java.scrapper.configuration.ApplicationConfig;
 import ru.tinkoff.edu.java.scrapper.dto.*;
 import ru.tinkoff.edu.java.scrapper.exception.GitHubRepositoryNotFoundException;
 import ru.tinkoff.edu.java.scrapper.repository.GitHubRepositoriesRepository;
-import ru.tinkoff.edu.java.scrapper.repository.LinksRepository;
+import ru.tinkoff.edu.java.scrapper.repository.jdbc.JdbcLinksRepository;
 import ru.tinkoff.edu.java.scrapper.service.FindOrDoService;
 import ru.tinkoff.edu.java.scrapper.service.GitHubIssuesService;
 import ru.tinkoff.edu.java.scrapper.service.utils.LinkUpdateUtils;
@@ -29,7 +29,7 @@ public class JdbcGitHubRepositoriesService implements
         UpdatesService<GitHubRepository>,
         GitHubIssuesService {
     private final GitHubRepositoriesRepository gitHubRepositoriesRepository;
-    private final LinksRepository linksRepository;
+    private final JdbcLinksRepository jdbcLinksRepository;
     private final ApplicationConfig applicationConfig;
     private final GitHubClient gitHubClient;
 
@@ -69,7 +69,7 @@ public class JdbcGitHubRepositoriesService implements
         return LinkUpdateUtils.getUpdates(
                 repositories,
                 this::fetchedUpdatedAt,
-                linksRepository::findAllWithChatId,
+                jdbcLinksRepository::findAllWithChatId,
                 GitHubRepository::updatedAt,
                 GitHubRepository::createdAt
         );
