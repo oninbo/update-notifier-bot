@@ -153,26 +153,23 @@ public class JdbcGitHubRepositoriesService implements
         int page = 1;
         int perPage = 100;
         do {
-            List<GitHubIssueResponse> response;
             try {
-                response = gitHubClient.getRepositoryIssues(
-                        repo.username(),
-                        repo.name(),
-                        applicationConfig.webClient().github().apiVersion(),
-                        repo.issuesUpdatedAt().toString(),
-                        page,
-                        perPage
-                );
+                issues = gitHubClient.getRepositoryIssues(
+                                repo.username(),
+                                repo.name(),
+                                applicationConfig.webClient().github().apiVersion(),
+                                repo.issuesUpdatedAt().toString(),
+                                page,
+                                perPage
+                        )
+                        .stream()
+                        .filter(i -> Objects.isNull(i.pullRequest()))
+                        .toList();
+                result.addAll(issues);
+                page++;
             } catch (WebClientResponseException.NotFound exception) {
-                response = List.of();
+                return List.of();
             }
-
-            issues = response
-                    .stream()
-                    .filter(i -> Objects.isNull(i.pullRequest()))
-                    .toList();
-            result.addAll(issues);
-            page++;
         } while (issues.size() == perPage);
         return result;
     }
