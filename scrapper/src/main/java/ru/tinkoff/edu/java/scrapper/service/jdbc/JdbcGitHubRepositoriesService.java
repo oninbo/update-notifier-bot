@@ -26,7 +26,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class JdbcGitHubRepositoriesService implements
         FindOrDoService<GitHubRepository, GitHubParserResult>,
-        UpdatesService <GitHubRepository> {
+        UpdatesService<GitHubRepository> {
     private final GitHubRepositoriesRepository gitHubRepositoriesRepository;
     private final LinksRepository linksRepository;
     private final ApplicationConfig applicationConfig;
@@ -59,15 +59,8 @@ public class JdbcGitHubRepositoriesService implements
     }
 
     private void checkIfGitHubRepositoryExists(GitHubRepositoryAddParams gitHubRepositoryAddParams) {
-        try {
-            gitHubClient.getRepository(
-                    gitHubRepositoryAddParams.username(),
-                    gitHubRepositoryAddParams.name(),
-                    applicationConfig.webClient().github().apiVersion()
-            );
-        } catch (WebClientResponseException.NotFound exception) {
-            throw new GitHubRepositoryNotFoundException(applicationConfig);
-        }
+        getGitHubRepositoryResponse(gitHubRepositoryAddParams.username(), gitHubRepositoryAddParams.name())
+                .orElseThrow(() -> new GitHubRepositoryNotFoundException(applicationConfig));
     }
 
     @Override
@@ -93,11 +86,24 @@ public class JdbcGitHubRepositoriesService implements
     }
 
     private OffsetDateTime fetchedUpdatedAt(GitHubRepository gitHubRepository) {
-        GitHubRepositoryResponse response = gitHubClient.getRepository(
-                gitHubRepository.username(),
-                gitHubRepository.name(),
-                applicationConfig.webClient().github().apiVersion()
-        );
-        return ObjectUtils.max(response.updatedAt(), response.pushedAt());
+        return getGitHubRepositoryResponse(gitHubRepository.username(), gitHubRepository.name())
+                .map(response -> ObjectUtils.max(response.updatedAt(), response.pushedAt()))
+                .orElse(gitHubRepository.updatedAt()); // Если репозиторий не существует, так как был удален
+
+        // FIXME: Было бы неплохо еще как-то редирект обрабатывать, возможно, через HttpClient с помощью
+        // метода followRedirect(boolean), либо сделать Scheduler, который будет менять устаревшие ссылки на новые
+    }
+
+    private Optional<GitHubRepositoryResponse> getGitHubRepositoryResponse(String username, String name) {
+        try {
+            GitHubRepositoryResponse response = gitHubClient.getRepository(
+                    username,
+                    name,
+                    applicationConfig.webClient().github().apiVersion()
+            );
+            return Optional.of(response);
+        } catch (WebClientResponseException.NotFound exception) {
+            return Optional.empty();
+        }
     }
 }
