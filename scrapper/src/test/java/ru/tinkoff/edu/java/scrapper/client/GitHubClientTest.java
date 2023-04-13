@@ -2,6 +2,7 @@ package ru.tinkoff.edu.java.scrapper.client;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.json.JsonMapper;
 import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.MockWebServer;
 import okhttp3.mockwebserver.RecordedRequest;
@@ -17,6 +18,8 @@ import ru.tinkoff.edu.java.scrapper.dto.GitHubRepositoryResponse;
 import ru.tinkoff.edu.java.scrapper.dto.GitHubUserResponse;
 
 import java.io.IOException;
+import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.mock;
@@ -52,15 +55,17 @@ public class GitHubClientTest {
     public void shouldGetGitHubRepository() throws InterruptedException, JsonProcessingException {
         GitHubUserResponse mockUser = new GitHubUserResponse("mock_user", 1L);
         GitHubRepositoryResponse mockRepository = mock(GitHubRepositoryResponse.class);
-        when(mockRepository.name()).thenReturn("mock_project");
-        when(mockRepository.owner()).thenReturn(mockUser);
-        ObjectMapper mapper = new ObjectMapper();
+        when(mockRepository.updatedAt()).thenReturn(OffsetDateTime.now().withOffsetSameInstant(ZoneOffset.UTC));
+        when(mockRepository.pushedAt()).thenReturn(OffsetDateTime.now().withOffsetSameInstant(ZoneOffset.UTC));
+        ObjectMapper mapper = JsonMapper.builder()
+                .findAndAddModules()
+                .build();
         mockBackEnd.enqueue(new MockResponse()
                 .setBody(mapper.writeValueAsString(mockRepository))
                 .addHeader("Content-Type", "application/json"));
-        var result = gitHubClient.getRepository(mockUser.login(), mockRepository.name(), "1");
-        assertEquals(result.owner(), mockRepository.owner());
-        assertEquals(result.name(), mockRepository.name());
+        var result = gitHubClient.getRepository(mockUser.login(), "mock_project", "1");
+        assertEquals(result.updatedAt(), mockRepository.updatedAt());
+        assertEquals(result.pushedAt(), mockRepository.pushedAt());
 
         RecordedRequest recordedRequest = mockBackEnd.takeRequest();
         assertEquals("GET", recordedRequest.getMethod());
