@@ -1,7 +1,7 @@
 package ru.tinkoff.edu.java.scrapper.service.jooq;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Repository;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.tinkoff.edu.java.link_parser.LinkParserResult;
 import ru.tinkoff.edu.java.link_parser.LinkParserService;
@@ -15,7 +15,6 @@ import ru.tinkoff.edu.java.scrapper.repository.jooq.JooqLinksRepository;
 import ru.tinkoff.edu.java.scrapper.repository.jooq.JooqTgChatsRepository;
 import ru.tinkoff.edu.java.scrapper.service.LinksService;
 import ru.tinkoff.edu.java.scrapper.service.jdbc.JdbcGitHubRepositoriesService;
-import ru.tinkoff.edu.java.scrapper.service.jdbc.JdbcStackOverflowQuestionsService;
 import ru.tinkoff.edu.java.scrapper.service.utils.LinkBuilder;
 import ru.tinkoff.edu.java.scrapper.service.utils.LinkFinder;
 
@@ -24,13 +23,13 @@ import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.Optional;
 
-@Repository
+@Service
 @RequiredArgsConstructor
 public class JooqLinksService implements LinksService {
     private final JooqLinksRepository linksRepository;
     private final JooqTgChatsRepository tgChatsRepository;
     private final ApplicationConfig applicationConfig;
-    private final JdbcStackOverflowQuestionsService stackOverflowQuestionsService; // TODO: change to JooqStackOverflowQuestionsService
+    private final JooqStackOverflowQuestionsService stackOverflowQuestionsService; // TODO: change to JooqStackOverflowQuestionsService
     private final JdbcGitHubRepositoriesService gitHubRepositoriesService; // TODO: change to JooqGitHubRepositoriesService
     private final LinkParserService linkParserService;
 

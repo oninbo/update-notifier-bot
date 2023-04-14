@@ -8,6 +8,7 @@ import ru.tinkoff.edu.java.scrapper.dto.StackOverflowQuestionAddParams;
 import ru.tinkoff.edu.java.scrapper.repository.BaseRepository;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 import static ru.tinkoff.edu.java.scrapper.domain.jooq.Tables.STACKOVERFLOW_QUESTIONS;
@@ -32,6 +33,14 @@ public class JooqStackOverflowQuestionsRepository implements
     @Override
     public List<StackOverflowQuestion> findAll() {
         return create.selectFrom(STACKOVERFLOW_QUESTIONS).fetchInto(StackOverflowQuestion.class);
+    }
+
+    public Optional<StackOverflowQuestion> find(Long questionId) {
+        var record = create
+                .selectFrom(STACKOVERFLOW_QUESTIONS)
+                .where(STACKOVERFLOW_QUESTIONS.QUESTION_ID.eq(questionId))
+                .fetchOne();
+        return Optional.ofNullable(record).map(r -> r.into(StackOverflowQuestion.class));
     }
 
     @Override
