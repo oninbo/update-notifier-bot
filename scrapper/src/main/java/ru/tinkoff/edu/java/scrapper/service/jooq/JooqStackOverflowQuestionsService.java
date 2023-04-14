@@ -8,6 +8,7 @@ import ru.tinkoff.edu.java.scrapper.configuration.ApplicationConfig;
 import ru.tinkoff.edu.java.scrapper.dto.LinkUpdate;
 import ru.tinkoff.edu.java.scrapper.dto.StackOverflowAnswerUpdate;
 import ru.tinkoff.edu.java.scrapper.dto.StackOverflowQuestion;
+import ru.tinkoff.edu.java.scrapper.dto.StackOverflowQuestionAddParams;
 import ru.tinkoff.edu.java.scrapper.exception.StackOverflowQuestionNotFoundException;
 import ru.tinkoff.edu.java.scrapper.repository.jooq.JooqStackOverflowQuestionsRepository;
 import ru.tinkoff.edu.java.scrapper.service.FindOrDoService;
@@ -15,6 +16,8 @@ import ru.tinkoff.edu.java.scrapper.service.StackOverflowAnswersService;
 
 import java.time.OffsetDateTime;
 import java.util.List;
+
+import static ru.tinkoff.edu.java.scrapper.domain.jooq.Tables.STACKOVERFLOW_QUESTIONS;
 
 @Service
 @RequiredArgsConstructor
@@ -32,8 +35,9 @@ class JooqStackOverflowQuestionsService  implements
 
     @Override
     public StackOverflowQuestion findOrCreate(StackOverflowParserResult findParams) {
-        // TODO
-        throw new NotImplementedException();
+        return stackOverflowQuestionsRepository.find(findParams.questionId())
+                .orElseGet(() -> stackOverflowQuestionsRepository
+                        .add(new StackOverflowQuestionAddParams(findParams.questionId())));
     }
 
     @Override
@@ -43,15 +47,14 @@ class JooqStackOverflowQuestionsService  implements
     }
 
     @Override
-    public void updateUpdatedAt(List<StackOverflowQuestion> objects, OffsetDateTime updatedAt) {
-        // TODO
-        throw new NotImplementedException();
+    public void updateUpdatedAt(List<StackOverflowQuestion> questions, OffsetDateTime updatedAt) {
+        stackOverflowQuestionsRepository.update(questions,
+                stackoverflowQuestions -> stackoverflowQuestions.setUpdatedAt(updatedAt));
     }
 
     @Override
-    public List<StackOverflowQuestion> getObjectsForUpdate(int first) {
-        // TODO
-        throw new NotImplementedException();
+    public List<StackOverflowQuestion> getForLinksUpdate(int first) {
+        return stackOverflowQuestionsRepository.findWithLinks(first, STACKOVERFLOW_QUESTIONS.UPDATED_AT);
     }
 
     @Override
@@ -62,18 +65,20 @@ class JooqStackOverflowQuestionsService  implements
 
     @Override
     public void updateAnswersUpdatedAt(List<StackOverflowQuestion> questions, OffsetDateTime updatedAt) {
-        // TODO
-        throw new NotImplementedException();
+        stackOverflowQuestionsRepository.update(questions,
+                stackoverflowQuestions -> stackoverflowQuestions.setAnswersUpdatedAt(updatedAt));
     }
 
     @Override
-    public List<StackOverflowQuestion> getQuestionsForUpdate(int first) {
-        // TODO
-        throw new NotImplementedException();
+    public List<StackOverflowQuestion> getForAnswersUpdate(int first) {
+        return stackOverflowQuestionsRepository.findWithLinks(first, STACKOVERFLOW_QUESTIONS.ANSWERS_UPDATED_AT);
     }
 
     public void updateAllTimestamps(StackOverflowQuestion stackOverflowQuestion, OffsetDateTime now) {
-        // TODO
-        throw new NotImplementedException();
+        stackOverflowQuestionsRepository.update(stackOverflowQuestion,
+                stackoverflowQuestions -> {
+                    stackoverflowQuestions.setUpdatedAt(now);
+                    stackoverflowQuestions.setAnswersUpdatedAt(now);
+                });
     }
 }

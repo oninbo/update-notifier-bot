@@ -257,4 +257,19 @@ public class StackoverflowQuestionsRecord extends UpdatableRecordImpl<Stackoverf
         setUpdatedAt(updatedAt);
         setAnswersUpdatedAt(answersUpdatedAt);
     }
+
+    /**
+     * Create a detached, initialised StackoverflowQuestionsRecord
+     */
+    public StackoverflowQuestionsRecord(ru.tinkoff.edu.java.scrapper.domain.jooq.tables.pojos.StackoverflowQuestions value) {
+        super(StackoverflowQuestions.STACKOVERFLOW_QUESTIONS);
+
+        if (value != null) {
+            setId(value.getId());
+            setQuestionId(value.getQuestionId());
+            setCreatedAt(value.getCreatedAt());
+            setUpdatedAt(value.getUpdatedAt());
+            setAnswersUpdatedAt(value.getAnswersUpdatedAt());
+        }
+    }
 }

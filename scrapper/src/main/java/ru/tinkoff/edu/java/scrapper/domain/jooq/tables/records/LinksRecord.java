@@ -292,4 +292,20 @@ public class LinksRecord extends UpdatableRecordImpl<LinksRecord> implements Rec
         setGithubRepositoryId(githubRepositoryId);
         setStackoverflowQuestionId(stackoverflowQuestionId);
     }
+
+    /**
+     * Create a detached, initialised LinksRecord
+     */
+    public LinksRecord(ru.tinkoff.edu.java.scrapper.domain.jooq.tables.pojos.Links value) {
+        super(Links.LINKS);
+
+        if (value != null) {
+            setId(value.getId());
+            setUrl(value.getUrl());
+            setCreatedAt(value.getCreatedAt());
+            setTgChatId(value.getTgChatId());
+            setGithubRepositoryId(value.getGithubRepositoryId());
+            setStackoverflowQuestionId(value.getStackoverflowQuestionId());
+        }
+    }
 }

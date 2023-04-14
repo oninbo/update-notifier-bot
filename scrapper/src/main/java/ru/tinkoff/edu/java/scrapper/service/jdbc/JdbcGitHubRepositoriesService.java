@@ -81,7 +81,7 @@ public class JdbcGitHubRepositoriesService implements
 
 
     @Override
-    public List<GitHubRepository> getObjectsForUpdate(int first) {
+    public List<GitHubRepository> getForLinksUpdate(int first) {
         return jdbcGitHubRepositoriesRepository
                 .findAllWithLinks(first, JdbcGitHubRepositoriesRepository.UpdateColumn.UPDATED_AT);
     }

@@ -12,6 +12,8 @@ public class JooqCodegen {
                         .withUser("postgres")
                         .withPassword("postgres"))
                 .withGenerator(new Generator()
+                        .withGenerate(new Generate()
+                                .withPojos(true))
                         .withDatabase(new Database()
                                 .withName("org.jooq.meta.postgres.PostgresDatabase")
                                 .withIncludes(".*")

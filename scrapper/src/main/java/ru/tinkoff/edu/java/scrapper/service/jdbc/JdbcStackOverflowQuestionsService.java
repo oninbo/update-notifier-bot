@@ -99,7 +99,7 @@ public class JdbcStackOverflowQuestionsService implements
     }
 
     @Override
-    public List<StackOverflowQuestion> getObjectsForUpdate(int first) {
+    public List<StackOverflowQuestion> getForLinksUpdate(int first) {
         return jdbcStackOverflowQuestionsRepository.findAllWithLinks(
                 first,
                 JdbcStackOverflowQuestionsRepository.UpdateColumn.UPDATED_AT
@@ -168,7 +168,7 @@ public class JdbcStackOverflowQuestionsService implements
     }
 
     @Override
-    public List<StackOverflowQuestion> getQuestionsForUpdate(int first) {
+    public List<StackOverflowQuestion> getForAnswersUpdate(int first) {
         return jdbcStackOverflowQuestionsRepository.findAllWithLinks(
                 first,
                 JdbcStackOverflowQuestionsRepository.UpdateColumn.ANSWERS_UPDATED_AT

@@ -29,7 +29,7 @@ public class LinkUpdaterScheduler {
 
     @Transactional
     public <T> void processUpdates(LinksUpdatesService<T> linksUpdatesService) {
-        var objects = linksUpdatesService.getObjectsForUpdate(applicationConfig.scheduler().batchSize());
+        var objects = linksUpdatesService.getForLinksUpdate(applicationConfig.scheduler().batchSize());
         List<LinkUpdate> linkUpdates = linksUpdatesService.getLinkUpdates(objects);
         linksUpdatesService.updateUpdatedAt(objects, OffsetDateTime.now());
         linkUpdates.forEach(botClient::sendLinkUpdates);

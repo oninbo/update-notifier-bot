@@ -55,20 +55,14 @@ class JdbcLinksService implements LinksService {
     @Transactional
     public Link addLink(TgChat tgChat, URI url, GitHubRepository gitHubRepository) {
         checkIfLinkExists(jdbcLinksRepository.find(tgChat, gitHubRepository));
-        var updatedAt = OffsetDateTime.now();
-        var repositories = List.of(gitHubRepository);
-        gitHubRepositoriesService.updateUpdatedAt(repositories, updatedAt);
-        gitHubRepositoriesService.updateIssuesUpdatedAt(repositories, updatedAt);
+        gitHubRepositoriesService.updateAllTimestamps(gitHubRepository, OffsetDateTime.now());
         return jdbcLinksRepository.add(new LinkAddParams(url, tgChat, gitHubRepository));
     }
 
     @Transactional
     public Link addLink(TgChat tgChat, URI url, StackOverflowQuestion stackOverflowQuestion) {
         checkIfLinkExists(jdbcLinksRepository.find(tgChat, stackOverflowQuestion));
-        var updatedAt = OffsetDateTime.now();
-        var questions = List.of(stackOverflowQuestion);
-        stackOverflowQuestionsService.updateUpdatedAt(questions, updatedAt);
-        stackOverflowQuestionsService.updateAnswersUpdatedAt(questions, updatedAt);
+        stackOverflowQuestionsService.updateAllTimestamps(stackOverflowQuestion, OffsetDateTime.now());
         return jdbcLinksRepository.add(new LinkAddParams(url, tgChat, stackOverflowQuestion));
     }
 

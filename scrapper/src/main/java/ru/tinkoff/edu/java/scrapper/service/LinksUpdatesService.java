@@ -8,5 +8,5 @@ import java.util.List;
 public interface LinksUpdatesService<T> {
     List<LinkUpdate> getLinkUpdates(List<T> objects);
     void updateUpdatedAt(List<T> objects, OffsetDateTime updatedAt);
-    List<T> getObjectsForUpdate(int first);
+    List<T> getForLinksUpdate(int first);
 }

@@ -23,7 +23,7 @@ public class StackOverflowAnswerUpdaterScheduler {
     @Scheduled(fixedDelayString = "#{@schedulerConfig.getInterval()}")
     @Transactional
     public void update() {
-        var questions = stackOverflowAnswersService.getQuestionsForUpdate(applicationConfig.scheduler().batchSize());
+        var questions = stackOverflowAnswersService.getForAnswersUpdate(applicationConfig.scheduler().batchSize());
         var updates = stackOverflowAnswersService.getStackOverflowAnswerUpdates(questions);
         stackOverflowAnswersService.updateAnswersUpdatedAt(questions, OffsetDateTime.now());
         updates.forEach(botClient::sendStackOverflowAnswerUpdates);

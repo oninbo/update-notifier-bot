@@ -577,4 +577,28 @@ public class DatabasechangelogRecord extends TableRecordImpl<DatabasechangelogRe
         setLabels(labels);
         setDeploymentId(deploymentId);
     }
+
+    /**
+     * Create a detached, initialised DatabasechangelogRecord
+     */
+    public DatabasechangelogRecord(ru.tinkoff.edu.java.scrapper.domain.jooq.tables.pojos.Databasechangelog value) {
+        super(Databasechangelog.DATABASECHANGELOG);
+
+        if (value != null) {
+            setId(value.getId());
+            setAuthor(value.getAuthor());
+            setFilename(value.getFilename());
+            setDateexecuted(value.getDateexecuted());
+            setOrderexecuted(value.getOrderexecuted());
+            setExectype(value.getExectype());
+            setMd5sum(value.getMd5sum());
+            setDescription(value.getDescription());
+            setComments(value.getComments());
+            setTag(value.getTag());
+            setLiquibase(value.getLiquibase());
+            setContexts(value.getContexts());
+            setLabels(value.getLabels());
+            setDeploymentId(value.getDeploymentId());
+        }
+    }
 }
