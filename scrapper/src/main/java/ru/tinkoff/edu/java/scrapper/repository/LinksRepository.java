@@ -34,7 +34,7 @@ public class LinksRepository implements BaseRepository<Link, LinkAddParams> {
                         linkAddParams.url().toString(),
                         linkAddParams.tgChatId(),
                         linkAddParams.githubRepositoryId(),
-                        linkAddParams.stackoverflowId()
+                        linkAddParams.stackoverflowQuestionId()
                 );
     }
 
