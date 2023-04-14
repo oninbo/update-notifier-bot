@@ -8,7 +8,7 @@ import ru.tinkoff.edu.java.scrapper.client.BotClient;
 import ru.tinkoff.edu.java.scrapper.configuration.ApplicationConfig;
 import ru.tinkoff.edu.java.scrapper.configuration.SchedulerConfig;
 import ru.tinkoff.edu.java.scrapper.dto.LinkUpdate;
-import ru.tinkoff.edu.java.scrapper.service.UpdatesService;
+import ru.tinkoff.edu.java.scrapper.service.LinksUpdatesService;
 
 import java.time.OffsetDateTime;
 import java.util.List;
@@ -19,19 +19,19 @@ public class LinkUpdaterScheduler {
     @SuppressWarnings("unused")
     private final SchedulerConfig schedulerConfig;
     private final ApplicationConfig applicationConfig;
-    private final List<UpdatesService<?>> updatesServices;
+    private final List<LinksUpdatesService<?>> linksUpdatesServices;
     private final BotClient botClient;
 
     @Scheduled(fixedDelayString = "#{@schedulerConfig.getInterval()}")
     public void update() {
-        updatesServices.forEach(this::processUpdates);
+        linksUpdatesServices.forEach(this::processUpdates);
     }
 
     @Transactional
-    public <T> void processUpdates(UpdatesService<T> updatesService) {
-        var objects = updatesService.getObjectsForUpdate(applicationConfig.scheduler().batchSize());
-        List<LinkUpdate> linkUpdates = updatesService.getLinkUpdates(objects);
-        updatesService.updateUpdatedAt(objects, OffsetDateTime.now());
+    public <T> void processUpdates(LinksUpdatesService<T> linksUpdatesService) {
+        var objects = linksUpdatesService.getObjectsForUpdate(applicationConfig.scheduler().batchSize());
+        List<LinkUpdate> linkUpdates = linksUpdatesService.getLinkUpdates(objects);
+        linksUpdatesService.updateUpdatedAt(objects, OffsetDateTime.now());
         linkUpdates.forEach(botClient::sendLinkUpdates);
     }
 }

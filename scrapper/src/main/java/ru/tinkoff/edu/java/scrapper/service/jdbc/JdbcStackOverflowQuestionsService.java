@@ -13,17 +13,18 @@ import ru.tinkoff.edu.java.scrapper.repository.jdbc.JdbcLinksRepository;
 import ru.tinkoff.edu.java.scrapper.repository.jdbc.JdbcStackOverflowQuestionsRepository;
 import ru.tinkoff.edu.java.scrapper.service.FindOrDoService;
 import ru.tinkoff.edu.java.scrapper.service.StackOverflowAnswersService;
-import ru.tinkoff.edu.java.scrapper.service.UpdatesService;
 import ru.tinkoff.edu.java.scrapper.service.utils.LinkUpdateUtils;
 
 import java.time.OffsetDateTime;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
 public class JdbcStackOverflowQuestionsService implements
         FindOrDoService<StackOverflowQuestion, StackOverflowParserResult>,
-        UpdatesService<StackOverflowQuestion>,
         StackOverflowAnswersService {
     private final JdbcStackOverflowQuestionsRepository jdbcStackOverflowQuestionsRepository;
     private final JdbcLinksRepository jdbcLinksRepository;

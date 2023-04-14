@@ -6,7 +6,7 @@ import ru.tinkoff.edu.java.scrapper.dto.StackOverflowQuestion;
 import java.time.OffsetDateTime;
 import java.util.List;
 
-public interface StackOverflowAnswersService extends UpdatesService<StackOverflowQuestion> {
+public interface StackOverflowAnswersService extends LinksUpdatesService<StackOverflowQuestion> {
     List<StackOverflowAnswerUpdate> getStackOverflowAnswerUpdates(
             List<StackOverflowQuestion> questions
     );

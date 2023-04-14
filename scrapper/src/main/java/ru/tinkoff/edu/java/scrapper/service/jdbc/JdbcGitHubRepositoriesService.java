@@ -14,7 +14,6 @@ import ru.tinkoff.edu.java.scrapper.repository.jdbc.JdbcLinksRepository;
 import ru.tinkoff.edu.java.scrapper.service.FindOrDoService;
 import ru.tinkoff.edu.java.scrapper.service.GitHubIssuesService;
 import ru.tinkoff.edu.java.scrapper.service.utils.LinkUpdateUtils;
-import ru.tinkoff.edu.java.scrapper.service.UpdatesService;
 
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
@@ -26,7 +25,6 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class JdbcGitHubRepositoriesService implements
         FindOrDoService<GitHubRepository, GitHubParserResult>,
-        UpdatesService<GitHubRepository>,
         GitHubIssuesService {
     private final JdbcGitHubRepositoriesRepository jdbcGitHubRepositoriesRepository;
     private final JdbcLinksRepository jdbcLinksRepository;
