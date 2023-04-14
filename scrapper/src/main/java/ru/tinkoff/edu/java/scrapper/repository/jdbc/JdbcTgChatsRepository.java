@@ -1,4 +1,4 @@
-package ru.tinkoff.edu.java.scrapper.repository;
+package ru.tinkoff.edu.java.scrapper.repository.jdbc;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -6,6 +6,7 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 import ru.tinkoff.edu.java.scrapper.dto.TgChat;
 import ru.tinkoff.edu.java.scrapper.dto.TgChatAddParams;
+import ru.tinkoff.edu.java.scrapper.repository.BaseRepository;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -15,7 +16,7 @@ import java.util.UUID;
 
 @Repository
 @RequiredArgsConstructor
-public class TgChatsRepository implements BaseRepository<TgChat, TgChatAddParams> {
+public class JdbcTgChatsRepository implements BaseRepository<TgChat, TgChatAddParams> {
     private final JdbcTemplate jdbcTemplate;
 
     @Override

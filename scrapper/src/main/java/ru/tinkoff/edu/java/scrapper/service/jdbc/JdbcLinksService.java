@@ -16,7 +16,7 @@ import ru.tinkoff.edu.java.scrapper.exception.LinkNotFoundException;
 import ru.tinkoff.edu.java.scrapper.exception.LinkNotSupportedException;
 import ru.tinkoff.edu.java.scrapper.exception.TgChatNotFoundException;
 import ru.tinkoff.edu.java.scrapper.repository.jdbc.JdbcLinksRepository;
-import ru.tinkoff.edu.java.scrapper.repository.TgChatsRepository;
+import ru.tinkoff.edu.java.scrapper.repository.jdbc.JdbcTgChatsRepository;
 import ru.tinkoff.edu.java.scrapper.service.LinksService;
 
 import java.net.URI;
@@ -29,7 +29,7 @@ import java.util.function.Supplier;
 @RequiredArgsConstructor
 class JdbcLinksService implements LinksService {
     private final JdbcLinksRepository jdbcLinksRepository;
-    private final TgChatsRepository tgChatsRepository;
+    private final JdbcTgChatsRepository jdbcTgChatsRepository;
     private final ApplicationConfig applicationConfig;
     private final LinkParserService linkParserService;
     private final JdbcGitHubRepositoriesService gitHubRepositoriesService;
@@ -90,7 +90,7 @@ class JdbcLinksService implements LinksService {
     }
 
     private TgChat getTgChat(Long chatId) {
-        var result = tgChatsRepository.find(chatId);
+        var result = jdbcTgChatsRepository.find(chatId);
         if (result.isEmpty()) {
             throw new TgChatNotFoundException(applicationConfig);
         }
