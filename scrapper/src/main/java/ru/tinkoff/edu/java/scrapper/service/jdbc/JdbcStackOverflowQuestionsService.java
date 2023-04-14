@@ -10,7 +10,7 @@ import ru.tinkoff.edu.java.scrapper.configuration.ApplicationConfig;
 import ru.tinkoff.edu.java.scrapper.dto.*;
 import ru.tinkoff.edu.java.scrapper.exception.StackOverflowQuestionNotFoundException;
 import ru.tinkoff.edu.java.scrapper.repository.jdbc.JdbcLinksRepository;
-import ru.tinkoff.edu.java.scrapper.repository.StackOverflowQuestionsRepository;
+import ru.tinkoff.edu.java.scrapper.repository.jdbc.JdbcStackOverflowQuestionsRepository;
 import ru.tinkoff.edu.java.scrapper.service.FindOrDoService;
 import ru.tinkoff.edu.java.scrapper.service.StackOverflowAnswersService;
 import ru.tinkoff.edu.java.scrapper.service.UpdatesService;
@@ -25,7 +25,7 @@ public class JdbcStackOverflowQuestionsService implements
         FindOrDoService<StackOverflowQuestion, StackOverflowParserResult>,
         UpdatesService<StackOverflowQuestion>,
         StackOverflowAnswersService {
-    private final StackOverflowQuestionsRepository stackOverflowQuestionsRepository;
+    private final JdbcStackOverflowQuestionsRepository jdbcStackOverflowQuestionsRepository;
     private final JdbcLinksRepository jdbcLinksRepository;
     private final StackOverflowClient stackOverflowClient;
     private final ApplicationConfig applicationConfig;
@@ -47,12 +47,12 @@ public class JdbcStackOverflowQuestionsService implements
     }
 
     public Optional<StackOverflowQuestion> find(StackOverflowParserResult findParams) {
-        return stackOverflowQuestionsRepository.find(findParams.questionId());
+        return jdbcStackOverflowQuestionsRepository.find(findParams.questionId());
     }
 
     public StackOverflowQuestion create(StackOverflowQuestionAddParams stackOverflowQuestion) {
         checkIfStackOverflowQuestionExists(stackOverflowQuestion);
-        return stackOverflowQuestionsRepository.add(stackOverflowQuestion);
+        return jdbcStackOverflowQuestionsRepository.add(stackOverflowQuestion);
     }
 
     private void checkIfStackOverflowQuestionExists(StackOverflowQuestionAddParams stackOverflowQuestion) {
@@ -93,14 +93,14 @@ public class JdbcStackOverflowQuestionsService implements
 
     @Override
     public void updateUpdatedAt(List<StackOverflowQuestion> questions, OffsetDateTime updatedAt) {
-        stackOverflowQuestionsRepository.updateUpdatedAt(questions, updatedAt);
+        jdbcStackOverflowQuestionsRepository.updateUpdatedAt(questions, updatedAt);
     }
 
     @Override
     public List<StackOverflowQuestion> getObjectsForUpdate(int first) {
-        return stackOverflowQuestionsRepository.findAllWithLinks(
+        return jdbcStackOverflowQuestionsRepository.findAllWithLinks(
                 first,
-                StackOverflowQuestionsRepository.UpdateColumn.UPDATED_AT
+                JdbcStackOverflowQuestionsRepository.UpdateColumn.UPDATED_AT
         );
     }
 
@@ -162,14 +162,14 @@ public class JdbcStackOverflowQuestionsService implements
 
     @Override
     public void updateAnswersUpdatedAt(List<StackOverflowQuestion> questions, OffsetDateTime updatedAt) {
-        stackOverflowQuestionsRepository.updateAnswersUpdatedAt(questions, updatedAt);
+        jdbcStackOverflowQuestionsRepository.updateAnswersUpdatedAt(questions, updatedAt);
     }
 
     @Override
     public List<StackOverflowQuestion> getQuestionsForUpdate(int first) {
-        return stackOverflowQuestionsRepository.findAllWithLinks(
+        return jdbcStackOverflowQuestionsRepository.findAllWithLinks(
                 first,
-                StackOverflowQuestionsRepository.UpdateColumn.ANSWERS_UPDATED_AT
+                JdbcStackOverflowQuestionsRepository.UpdateColumn.ANSWERS_UPDATED_AT
         );
     }
 }
