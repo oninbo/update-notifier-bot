@@ -15,6 +15,7 @@ import ru.tinkoff.edu.java.scrapper.configuration.TestDataSourceConfig;
 import ru.tinkoff.edu.java.scrapper.configuration.TransactionConfig;
 import ru.tinkoff.edu.java.scrapper.dto.GitHubRepository;
 import ru.tinkoff.edu.java.scrapper.dto.GitHubRepositoryAddParams;
+import ru.tinkoff.edu.java.scrapper.repository.jdbc.JdbcGitHubRepositoriesRepository;
 
 import java.time.OffsetDateTime;
 import java.util.List;
@@ -28,14 +29,14 @@ import static org.mockito.Mockito.when;
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = {
         TransactionConfig.class,
-        GitHubRepositoriesRepository.class,
+        JdbcGitHubRepositoriesRepository.class,
         TestDataSourceConfig.class,
         JdbcConfig.class
 })
 @ExtendWith(RandomBeansExtension.class)
-public class GitHubRepositoriesRepositoryTest {
+public class JdbcGitHubRepositoriesRepositoryTest {
     @Autowired
-    GitHubRepositoriesRepository gitHubRepositoriesRepository;
+    JdbcGitHubRepositoriesRepository jdbcGitHubRepositoriesRepository;
 
     @Autowired
     JdbcTemplate jdbcTemplate;
@@ -54,7 +55,7 @@ public class GitHubRepositoriesRepositoryTest {
     @Rollback
     public void shouldAddGitHubRepository() {
         var addParams = new GitHubRepositoryAddParams(username, name);
-        var gitHubRepository = gitHubRepositoriesRepository.add(addParams);
+        var gitHubRepository = jdbcGitHubRepositoriesRepository.add(addParams);
         assertEquals(addParams.name(), gitHubRepository.name());
         assertEquals(addParams.username(), gitHubRepository.username());
 
@@ -70,7 +71,7 @@ public class GitHubRepositoriesRepositoryTest {
     @Rollback
     public void shouldFindAllGitHubRepositories() {
         var id = insertGitHubRepository();
-        var foundIds = gitHubRepositoriesRepository.findAll().stream().map(GitHubRepository::id).toList();
+        var foundIds = jdbcGitHubRepositoriesRepository.findAll().stream().map(GitHubRepository::id).toList();
         assertIterableEquals(List.of(id), foundIds);
     }
     @Test
@@ -79,8 +80,8 @@ public class GitHubRepositoriesRepositoryTest {
     public void shouldFindAllGitHubRepositoriesWithLinks() {
         var gitHubRepositoryId = insertGitHubRepository();
         var limit = 100;
-        var foundIds = gitHubRepositoriesRepository
-                .findAllWithLinks(limit, GitHubRepositoriesRepository.UpdateColumn.UPDATED_AT)
+        var foundIds = jdbcGitHubRepositoriesRepository
+                .findAllWithLinks(limit, JdbcGitHubRepositoriesRepository.UpdateColumn.UPDATED_AT)
                 .stream()
                 .map(GitHubRepository::id)
                 .toList();
@@ -94,8 +95,8 @@ public class GitHubRepositoriesRepositoryTest {
                 tgChatId,
                 gitHubRepositoryId
         );
-        foundIds = gitHubRepositoriesRepository
-                .findAllWithLinks(limit, GitHubRepositoriesRepository.UpdateColumn.UPDATED_AT)
+        foundIds = jdbcGitHubRepositoriesRepository
+                .findAllWithLinks(limit, JdbcGitHubRepositoriesRepository.UpdateColumn.UPDATED_AT)
                 .stream()
                 .map(GitHubRepository::id).toList();
         assertIterableEquals(List.of(gitHubRepositoryId), foundIds);
@@ -106,7 +107,7 @@ public class GitHubRepositoriesRepositoryTest {
     @Rollback
     public void shouldFindAllGitHubRepository() {
         var id = insertGitHubRepository();
-        var foundId = gitHubRepositoriesRepository.find(username, name).map(GitHubRepository::id);
+        var foundId = jdbcGitHubRepositoriesRepository.find(username, name).map(GitHubRepository::id);
         assertEquals(Optional.of(id), foundId);
     }
 
@@ -115,7 +116,7 @@ public class GitHubRepositoriesRepositoryTest {
     @Rollback
     public void shouldRemoveGitHubRepository() {
         var id = insertGitHubRepository();
-        gitHubRepositoriesRepository.remove(id);
+        jdbcGitHubRepositoriesRepository.remove(id);
 
         var ids = jdbcTemplate
                 .queryForList("SELECT id from github_repositories where id = ?", UUID.class, id);
@@ -129,7 +130,7 @@ public class GitHubRepositoriesRepositoryTest {
         var id = insertGitHubRepository();
         updatedAt = updatedAt.withNano(0);
         GitHubRepository repository = when(mock(GitHubRepository.class).id()).thenReturn(id).getMock();
-        gitHubRepositoriesRepository.updateUpdatedAt(List.of(repository), updatedAt);
+        jdbcGitHubRepositoriesRepository.updateUpdatedAt(List.of(repository), updatedAt);
         var result = jdbcTemplate
                 .queryForObject("SELECT updated_at from github_repositories", OffsetDateTime.class);
         assertNotNull(result);

@@ -1,4 +1,4 @@
-package ru.tinkoff.edu.java.scrapper.repository;
+package ru.tinkoff.edu.java.scrapper.repository.jdbc;
 
 import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;
@@ -8,6 +8,7 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 import ru.tinkoff.edu.java.scrapper.dto.GitHubRepository;
 import ru.tinkoff.edu.java.scrapper.dto.GitHubRepositoryAddParams;
+import ru.tinkoff.edu.java.scrapper.repository.BaseRepository;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -19,7 +20,7 @@ import java.util.UUID;
 
 @Repository
 @RequiredArgsConstructor
-public class GitHubRepositoriesRepository implements BaseRepository<GitHubRepository, GitHubRepositoryAddParams> {
+public class JdbcGitHubRepositoriesRepository implements BaseRepository<GitHubRepository, GitHubRepositoryAddParams> {
     public final JdbcTemplate jdbcTemplate;
 
     @Override

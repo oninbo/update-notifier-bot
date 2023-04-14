@@ -3,7 +3,7 @@ package ru.tinkoff.edu.java.scrapper.repository.jooq;
 import lombok.RequiredArgsConstructor;
 import org.jooq.DSLContext;
 import org.springframework.stereotype.Repository;
-import ru.tinkoff.edu.java.scrapper.domain.jooq.tables.records.LinksRecord;
+import ru.tinkoff.edu.java.scrapper.dto.Link;
 import ru.tinkoff.edu.java.scrapper.dto.LinkAddParams;
 import ru.tinkoff.edu.java.scrapper.repository.BaseRepository;
 
@@ -12,25 +12,28 @@ import java.util.UUID;
 
 import static ru.tinkoff.edu.java.scrapper.domain.jooq.Tables.LINKS;
 
-
 @Repository
 @RequiredArgsConstructor
-public class JooqLinksRepository implements BaseRepository<LinksRecord, LinkAddParams> {
+public class JooqLinksRepository implements BaseRepository<Link, LinkAddParams> {
     private final DSLContext create;
 
     @Override
-    public LinksRecord add(LinkAddParams linkAddParams) {
-        return create.insertInto(LINKS)
+    public Link add(LinkAddParams linkAddParams) {
+        var result = create.insertInto(LINKS)
                 .set(LINKS.URL, linkAddParams.url().toString())
                 .set(LINKS.TG_CHAT_ID, linkAddParams.tgChatId())
                 .set(LINKS.GITHUB_REPOSITORY_ID, linkAddParams.githubRepositoryId())
                 .set(LINKS.STACKOVERFLOW_QUESTION_ID, linkAddParams.stackoverflowQuestionId())
-                .returning().fetchOne();
+                .returning()
+                .fetchOne();
+
+        //noinspection DataFlowIssue
+        return result.into(Link.class);
     }
 
     @Override
-    public List<LinksRecord> findAll() {
-        return create.selectFrom(LINKS).fetch();
+    public List<Link> findAll() {
+        return create.selectFrom(LINKS).fetchInto(Link.class);
     }
 
     @Override

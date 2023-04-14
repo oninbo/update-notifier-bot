@@ -9,7 +9,7 @@ import ru.tinkoff.edu.java.scrapper.client.GitHubClient;
 import ru.tinkoff.edu.java.scrapper.configuration.ApplicationConfig;
 import ru.tinkoff.edu.java.scrapper.dto.*;
 import ru.tinkoff.edu.java.scrapper.exception.GitHubRepositoryNotFoundException;
-import ru.tinkoff.edu.java.scrapper.repository.GitHubRepositoriesRepository;
+import ru.tinkoff.edu.java.scrapper.repository.jdbc.JdbcGitHubRepositoriesRepository;
 import ru.tinkoff.edu.java.scrapper.repository.jdbc.JdbcLinksRepository;
 import ru.tinkoff.edu.java.scrapper.service.FindOrDoService;
 import ru.tinkoff.edu.java.scrapper.service.GitHubIssuesService;
@@ -28,7 +28,7 @@ public class JdbcGitHubRepositoriesService implements
         FindOrDoService<GitHubRepository, GitHubParserResult>,
         UpdatesService<GitHubRepository>,
         GitHubIssuesService {
-    private final GitHubRepositoriesRepository gitHubRepositoriesRepository;
+    private final JdbcGitHubRepositoriesRepository jdbcGitHubRepositoriesRepository;
     private final JdbcLinksRepository jdbcLinksRepository;
     private final ApplicationConfig applicationConfig;
     private final GitHubClient gitHubClient;
@@ -51,12 +51,12 @@ public class JdbcGitHubRepositoriesService implements
     }
 
     public Optional<GitHubRepository> find(GitHubParserResult findParams) {
-        return gitHubRepositoriesRepository.find(findParams.userName(), findParams.projectName());
+        return jdbcGitHubRepositoriesRepository.find(findParams.userName(), findParams.projectName());
     }
 
     public GitHubRepository create(GitHubRepositoryAddParams gitHubRepositoryAddParams) {
         checkIfGitHubRepositoryExists(gitHubRepositoryAddParams);
-        return gitHubRepositoriesRepository.add(gitHubRepositoryAddParams);
+        return jdbcGitHubRepositoriesRepository.add(gitHubRepositoryAddParams);
     }
 
     private void checkIfGitHubRepositoryExists(GitHubRepositoryAddParams gitHubRepositoryAddParams) {
@@ -77,14 +77,14 @@ public class JdbcGitHubRepositoriesService implements
 
     @Override
     public void updateUpdatedAt(List<GitHubRepository> repos, OffsetDateTime updatedAt) {
-        gitHubRepositoriesRepository.updateUpdatedAt(repos, updatedAt);
+        jdbcGitHubRepositoriesRepository.updateUpdatedAt(repos, updatedAt);
     }
 
 
     @Override
     public List<GitHubRepository> getObjectsForUpdate(int first) {
-        return gitHubRepositoriesRepository
-                .findAllWithLinks(first, GitHubRepositoriesRepository.UpdateColumn.UPDATED_AT);
+        return jdbcGitHubRepositoriesRepository
+                .findAllWithLinks(first, JdbcGitHubRepositoriesRepository.UpdateColumn.UPDATED_AT);
     }
 
     private OffsetDateTime fetchedUpdatedAt(GitHubRepository gitHubRepository) {
@@ -119,7 +119,7 @@ public class JdbcGitHubRepositoriesService implements
                 continue;
             }
 
-            var links = linksRepository.findAllWithChatId(repo);
+            var links = jdbcLinksRepository.findAllWithChatId(repo);
             if (links.isEmpty()) {
                 continue;
             }
@@ -144,13 +144,13 @@ public class JdbcGitHubRepositoriesService implements
 
     @Override
     public void updateIssuesUpdatedAt(List<GitHubRepository> repositories, OffsetDateTime updatedAt) {
-        gitHubRepositoriesRepository.updateIssuesUpdatedAt(repositories, updatedAt);
+        jdbcGitHubRepositoriesRepository.updateIssuesUpdatedAt(repositories, updatedAt);
     }
 
     @Override
     public List<GitHubRepository> getRepositoriesForUpdate(int first) {
-        return gitHubRepositoriesRepository
-                .findAllWithLinks(first, GitHubRepositoriesRepository.UpdateColumn.ISSUES_UPDATED_AT);
+        return jdbcGitHubRepositoriesRepository
+                .findAllWithLinks(first, JdbcGitHubRepositoriesRepository.UpdateColumn.ISSUES_UPDATED_AT);
     }
 
     private List<GitHubIssueResponse> getRepositoryIssues(GitHubRepository repo) {

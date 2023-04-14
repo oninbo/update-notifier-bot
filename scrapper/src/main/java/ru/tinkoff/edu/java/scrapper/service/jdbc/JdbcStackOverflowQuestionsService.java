@@ -143,7 +143,7 @@ public class JdbcStackOverflowQuestionsService implements
                     if (!question.answersUpdatedAt().isBefore(answer.creationDate())) {
                         return;
                     }
-                    var links = linksRepository.findAllWithChatId(question);
+                    var links = jdbcLinksRepository.findAllWithChatId(question);
                     if (links.isEmpty()) {
                         return;
                     }
