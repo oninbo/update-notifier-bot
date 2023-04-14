@@ -23,6 +23,7 @@ import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
+// TODO: change scope to default
 public class JdbcGitHubRepositoriesService implements
         FindOrDoService<GitHubRepository, GitHubParserResult>,
         GitHubIssuesService {
@@ -176,5 +177,11 @@ public class JdbcGitHubRepositoriesService implements
             }
         } while (issues.size() == perPage);
         return result;
+    }
+
+    public void updateAllTimestamps(GitHubRepository repository, OffsetDateTime value) {
+        var repos = List.of(repository);
+        updateUpdatedAt(repos, value);
+        updateIssuesUpdatedAt(repos, value);
     }
 }

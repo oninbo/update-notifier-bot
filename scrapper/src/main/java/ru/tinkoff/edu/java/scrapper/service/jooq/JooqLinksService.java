@@ -1,0 +1,110 @@
+package ru.tinkoff.edu.java.scrapper.service.jooq;
+
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
+import ru.tinkoff.edu.java.link_parser.LinkParserResult;
+import ru.tinkoff.edu.java.link_parser.LinkParserService;
+import ru.tinkoff.edu.java.scrapper.configuration.ApplicationConfig;
+import ru.tinkoff.edu.java.scrapper.dto.*;
+import ru.tinkoff.edu.java.scrapper.exception.LinkExistsException;
+import ru.tinkoff.edu.java.scrapper.exception.LinkNotFoundException;
+import ru.tinkoff.edu.java.scrapper.exception.LinkNotSupportedException;
+import ru.tinkoff.edu.java.scrapper.exception.TgChatNotFoundException;
+import ru.tinkoff.edu.java.scrapper.repository.jooq.JooqLinksRepository;
+import ru.tinkoff.edu.java.scrapper.repository.jooq.JooqTgChatsRepository;
+import ru.tinkoff.edu.java.scrapper.service.LinksService;
+import ru.tinkoff.edu.java.scrapper.service.jdbc.JdbcGitHubRepositoriesService;
+import ru.tinkoff.edu.java.scrapper.service.jdbc.JdbcStackOverflowQuestionsService;
+import ru.tinkoff.edu.java.scrapper.service.utils.LinkBuilder;
+import ru.tinkoff.edu.java.scrapper.service.utils.LinkFinder;
+
+import java.net.URI;
+import java.time.OffsetDateTime;
+import java.util.List;
+import java.util.Optional;
+
+@Repository
+@RequiredArgsConstructor
+public class JooqLinksService implements LinksService {
+    private final JooqLinksRepository linksRepository;
+    private final JooqTgChatsRepository tgChatsRepository;
+    private final ApplicationConfig applicationConfig;
+    private final JdbcStackOverflowQuestionsService stackOverflowQuestionsService; // TODO: change to JooqStackOverflowQuestionsService
+    private final JdbcGitHubRepositoriesService gitHubRepositoriesService; // TODO: change to JooqGitHubRepositoriesService
+    private final LinkParserService linkParserService;
+
+    @Override
+    public List<Link> getLinks(Long chatId) {
+        return linksRepository.findAll(chatId);
+    }
+
+    @Transactional
+    @Override
+    public Link addLink(Long chatId, URI url) {
+        TgChat tgChat = getTgChat(chatId);
+
+        var linkBuilder = new LinkBuilder(
+                gitHubRepository -> addLink(tgChat, url, gitHubRepository),
+                stackOverflowQuestion -> addLink(tgChat, url, stackOverflowQuestion),
+                stackOverflowQuestionsService,
+                gitHubRepositoriesService
+        );
+        return linkBuilder.build(getLinkParserResult(url));
+    }
+
+    private Link addLink(TgChat tgChat, URI url, StackOverflowQuestion stackOverflowQuestion) {
+        checkIfLinkExists(linksRepository.find(tgChat, stackOverflowQuestion));
+        stackOverflowQuestionsService.updateAllTimestamps(stackOverflowQuestion, OffsetDateTime.now());
+        return linksRepository.add(new LinkAddParams(url, tgChat, stackOverflowQuestion));
+    }
+
+    private Link addLink(TgChat tgChat, URI url, GitHubRepository gitHubRepository) {
+        checkIfLinkExists(linksRepository.find(tgChat, gitHubRepository));
+        gitHubRepositoriesService.updateAllTimestamps(gitHubRepository, OffsetDateTime.now());
+        return linksRepository.add(new LinkAddParams(url, tgChat, gitHubRepository));
+    }
+
+    @Override
+    public Link deleteLink(Long chatId, URI url) {
+        var tgChat = getTgChat(chatId);
+        var linkFinder = new LinkFinder(
+                gitHubRepository -> linksRepository.find(tgChat, gitHubRepository),
+                question -> linksRepository.find(tgChat, question),
+                stackOverflowQuestionsService,
+                gitHubRepositoriesService
+        );
+
+        return linkFinder
+                .find(getLinkParserResult(url))
+                .map(link -> {
+                    linksRepository.remove(link.id());
+                    return link;
+                })
+                .orElseThrow(() -> new LinkNotFoundException(applicationConfig));
+    }
+
+    private TgChat getTgChat(Long chatId) {
+        var result = tgChatsRepository.find(chatId);
+        if (result.isEmpty()) {
+            throw new TgChatNotFoundException(applicationConfig);
+        }
+        return result.get();
+    }
+
+    private LinkParserResult getLinkParserResult(URI link) {
+        var linkParserResult = linkParserService.parse(link);
+
+        if (linkParserResult.isEmpty()) {
+            throw new LinkNotSupportedException(applicationConfig);
+        }
+
+        return linkParserResult.get();
+    }
+
+    private void checkIfLinkExists(Optional<Link> link) {
+        if (link.isPresent()) {
+            throw new LinkExistsException(applicationConfig);
+        }
+    }
+}

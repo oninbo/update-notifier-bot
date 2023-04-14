@@ -1,14 +1,10 @@
 package ru.tinkoff.edu.java.scrapper.service.jdbc;
 
-import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.tinkoff.edu.java.link_parser.LinkParserResult;
-import ru.tinkoff.edu.java.link_parser.LinkParserResultVisitor;
 import ru.tinkoff.edu.java.link_parser.LinkParserService;
-import ru.tinkoff.edu.java.link_parser.github.GitHubParserResult;
-import ru.tinkoff.edu.java.link_parser.stackoverflow.StackOverflowParserResult;
 import ru.tinkoff.edu.java.scrapper.configuration.ApplicationConfig;
 import ru.tinkoff.edu.java.scrapper.dto.*;
 import ru.tinkoff.edu.java.scrapper.exception.LinkExistsException;
@@ -18,12 +14,13 @@ import ru.tinkoff.edu.java.scrapper.exception.TgChatNotFoundException;
 import ru.tinkoff.edu.java.scrapper.repository.jdbc.JdbcLinksRepository;
 import ru.tinkoff.edu.java.scrapper.repository.jdbc.JdbcTgChatsRepository;
 import ru.tinkoff.edu.java.scrapper.service.LinksService;
+import ru.tinkoff.edu.java.scrapper.service.utils.LinkBuilder;
+import ru.tinkoff.edu.java.scrapper.service.utils.LinkFinder;
 
 import java.net.URI;
 import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.Optional;
-import java.util.function.Supplier;
 
 @Service
 @RequiredArgsConstructor
@@ -47,12 +44,12 @@ class JdbcLinksService implements LinksService {
         TgChat tgChat = getTgChat(chatId);
 
         var linkBuilder = new LinkBuilder(
-                url,
-                tgChat,
-                getLinkParserResult(url),
-                this
+                gitHubRepository -> addLink(tgChat, url, gitHubRepository),
+                stackOverflowQuestion -> addLink(tgChat, url, stackOverflowQuestion),
+                stackOverflowQuestionsService,
+                gitHubRepositoriesService
         );
-        return linkBuilder.build();
+        return linkBuilder.build(getLinkParserResult(url));
     }
 
     @Transactional
@@ -78,7 +75,14 @@ class JdbcLinksService implements LinksService {
     @Override
     public Link deleteLink(Long chatId, URI url) {
         var tgChat = getTgChat(chatId);
-        var linkResult = new LinkFinder(tgChat, getLinkParserResult(url)).find();
+        var linkResult = new LinkFinder(
+                gitHubRepository -> jdbcLinksRepository.find(tgChat, gitHubRepository),
+                question -> jdbcLinksRepository.find(tgChat, question),
+                stackOverflowQuestionsService,
+                gitHubRepositoriesService
+        )
+                .find(getLinkParserResult(url));
+
 
         if (linkResult.isEmpty()) {
             throw new LinkNotFoundException(applicationConfig);
@@ -111,64 +115,5 @@ class JdbcLinksService implements LinksService {
         }
 
         return linkParserResult.get();
-    }
-
-    @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
-    class LinkBuilder implements LinkParserResultVisitor {
-        private final URI url;
-        private final TgChat tgChat;
-        private final JdbcLinksService linksService;
-        private Supplier<Link> onBuild;
-
-        public LinkBuilder(URI url, TgChat tgChat, LinkParserResult linkParserResult, JdbcLinksService linksService) {
-            this(url, tgChat, linksService);
-            linkParserResult.acceptVisitor(this);
-        }
-
-        public Link build() {
-            return onBuild.get();
-        }
-
-        @Override
-        public void visit(GitHubParserResult gitHubParserResult) {
-            onBuild = () -> linksService.addLink(tgChat, url, gitHubRepositoriesService.findOrCreate(gitHubParserResult));
-        }
-
-        @Override
-        public void visit(StackOverflowParserResult stackOverflowParserResult) {
-            onBuild = () -> linksService.addLink(
-                    tgChat,
-                    url,
-                    stackOverflowQuestionsService.findOrCreate(stackOverflowParserResult)
-            );
-        }
-    }
-
-    @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
-    class LinkFinder implements LinkParserResultVisitor {
-        private final TgChat tgChat;
-        private Supplier<Optional<Link>> onFind;
-
-        public LinkFinder(TgChat tgChat, LinkParserResult linkParserResult) {
-            this(tgChat);
-            linkParserResult.acceptVisitor(this);
-        }
-
-        public Optional<Link> find() {
-            return onFind.get();
-        }
-
-        @Override
-        public void visit(GitHubParserResult gitHubParserResult) {
-            onFind = () -> jdbcLinksRepository.find(tgChat, gitHubRepositoriesService.findOrThrow(gitHubParserResult));
-        }
-
-        @Override
-        public void visit(StackOverflowParserResult stackOverflowParserResult) {
-            onFind = () -> jdbcLinksRepository.find(
-                    tgChat,
-                    stackOverflowQuestionsService.findOrThrow(stackOverflowParserResult)
-            );
-        }
     }
 }

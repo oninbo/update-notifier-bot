@@ -8,6 +8,7 @@ import ru.tinkoff.edu.java.scrapper.dto.TgChatAddParams;
 import ru.tinkoff.edu.java.scrapper.repository.BaseRepository;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 import static ru.tinkoff.edu.java.scrapper.domain.jooq.Tables.TG_CHATS;
@@ -30,6 +31,11 @@ public class JooqTgChatsRepository implements BaseRepository<TgChat, TgChatAddPa
     @Override
     public List<TgChat> findAll() {
         return create.selectFrom(TG_CHATS).fetchInto(TgChat.class);
+    }
+
+    public Optional<TgChat> find(Long chatId) {
+        var record = create.selectFrom(TG_CHATS).where(TG_CHATS.CHAT_ID.eq(chatId)).fetchOne();
+        return Optional.ofNullable(record).map(r -> r.into(TgChat.class));
     }
 
     @Override

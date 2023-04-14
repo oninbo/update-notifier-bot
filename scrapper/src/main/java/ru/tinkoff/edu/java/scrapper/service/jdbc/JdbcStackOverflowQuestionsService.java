@@ -23,6 +23,7 @@ import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
+// TODO: change scope to default
 public class JdbcStackOverflowQuestionsService implements
         FindOrDoService<StackOverflowQuestion, StackOverflowParserResult>,
         StackOverflowAnswersService {
@@ -172,5 +173,11 @@ public class JdbcStackOverflowQuestionsService implements
                 first,
                 JdbcStackOverflowQuestionsRepository.UpdateColumn.ANSWERS_UPDATED_AT
         );
+    }
+
+    public void updateAllTimestamps(StackOverflowQuestion question, OffsetDateTime value) {
+        var questions = List.of(question);
+        updateUpdatedAt(questions, value);
+        updateAnswersUpdatedAt(questions, value);
     }
 }
