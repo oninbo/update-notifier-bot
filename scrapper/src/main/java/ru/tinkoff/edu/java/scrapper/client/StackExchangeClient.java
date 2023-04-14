@@ -5,10 +5,13 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.service.annotation.GetExchange;
 import ru.tinkoff.edu.java.scrapper.dto.ListStackExchangeAnswersResponse;
 import ru.tinkoff.edu.java.scrapper.dto.ListStackExchangeQuestionsResponse;
+import ru.tinkoff.edu.java.scrapper.dto.StackExchangeAnswerResponse;
 
 public interface StackExchangeClient {
     /**
-     * <a href="https://api.stackexchange.com/docs/filters">Custom Filters</a>
+     * Фильтр, чтобы получать ссылку на ответ из API
+     * @see StackExchangeAnswerResponse#link()
+     * @see <a href="https://api.stackexchange.com/docs/filters">Custom Filters</a>
      */
     String ANSWER_LINK_FILTER = "!nOedRLj6*S";
 
