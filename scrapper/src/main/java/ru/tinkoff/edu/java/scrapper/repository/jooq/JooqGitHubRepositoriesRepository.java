@@ -20,13 +20,11 @@ public class JooqGitHubRepositoriesRepository implements
 
     @Override
     public GitHubRepository add(GitHubRepositoryAddParams gitHubRepositoryAddParams) {
-        var result = create.insertInto(GITHUB_REPOSITORIES)
+        return create.insertInto(GITHUB_REPOSITORIES)
                 .set(GITHUB_REPOSITORIES.NAME, gitHubRepositoryAddParams.name())
                 .set(GITHUB_REPOSITORIES.USERNAME, gitHubRepositoryAddParams.username())
                 .returning()
-                .fetchOne();
-        //noinspection DataFlowIssue
-        return result.into(GitHubRepository.class);
+                .fetchOneInto(GitHubRepository.class);
     }
 
     @Override

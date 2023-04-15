@@ -2,6 +2,8 @@ package ru.tinkoff.edu.java.scrapper.repository.jooq;
 
 import lombok.RequiredArgsConstructor;
 import org.jooq.DSLContext;
+import org.jooq.Record;
+import org.jooq.TableOnConditionStep;
 import org.springframework.stereotype.Repository;
 import ru.tinkoff.edu.java.scrapper.dto.*;
 import ru.tinkoff.edu.java.scrapper.repository.BaseRepository;
@@ -10,8 +12,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-import static ru.tinkoff.edu.java.scrapper.domain.jooq.Tables.LINKS;
-import static ru.tinkoff.edu.java.scrapper.domain.jooq.Tables.TG_CHATS;
+import static ru.tinkoff.edu.java.scrapper.domain.jooq.Tables.*;
 
 @Repository
 @RequiredArgsConstructor
@@ -20,16 +21,13 @@ public class JooqLinksRepository implements BaseRepository<Link, LinkAddParams> 
 
     @Override
     public Link add(LinkAddParams linkAddParams) {
-        var result = create.insertInto(LINKS)
+        return create.insertInto(LINKS)
                 .set(LINKS.URL, linkAddParams.url().toString())
                 .set(LINKS.TG_CHAT_ID, linkAddParams.tgChatId())
                 .set(LINKS.GITHUB_REPOSITORY_ID, linkAddParams.githubRepositoryId())
                 .set(LINKS.STACKOVERFLOW_QUESTION_ID, linkAddParams.stackoverflowQuestionId())
                 .returning()
-                .fetchOne();
-
-        //noinspection DataFlowIssue
-        return result.into(Link.class);
+                .fetchOneInto(Link.class);
     }
 
     @Override
@@ -39,11 +37,11 @@ public class JooqLinksRepository implements BaseRepository<Link, LinkAddParams> 
 
     public List<Link> findAll(Long chatId) {
         return create
-                .selectFrom(LINKS.join(TG_CHATS)
-                        .on(TG_CHATS.ID.eq(LINKS.TG_CHAT_ID)))
+                .selectFrom(linksJoinTgChats())
                 .where(TG_CHATS.CHAT_ID.eq(chatId))
                 .fetchInto(Link.class);
     }
+
     public Optional<Link> find(TgChat tgChat, GitHubRepository gitHubRepository) {
         var record = create
                 .selectFrom(LINKS)
@@ -71,5 +69,18 @@ public class JooqLinksRepository implements BaseRepository<Link, LinkAddParams> 
     @Override
     public void remove(UUID id) {
         create.deleteFrom(LINKS).where(LINKS.ID.eq(id)).execute();
+    }
+
+    public List<LinkWithChatId> findAllWithChatId(StackOverflowQuestion stackOverflowQuestion) {
+        return create
+                .select(LINKS.asterisk(), TG_CHATS.CHAT_ID)
+                .from(linksJoinTgChats())
+                .where(LINKS.STACKOVERFLOW_QUESTION_ID.eq(stackOverflowQuestion.id()))
+                .fetchInto(LinkWithChatId.class);
+    }
+
+    private TableOnConditionStep<Record> linksJoinTgChats() {
+        return LINKS.join(TG_CHATS)
+                .on(TG_CHATS.ID.eq(LINKS.TG_CHAT_ID));
     }
 }

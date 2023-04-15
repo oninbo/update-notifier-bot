@@ -20,12 +20,10 @@ public class JooqTgChatsRepository implements BaseRepository<TgChat, TgChatAddPa
 
     @Override
     public TgChat add(TgChatAddParams addParams) {
-        var result = create.insertInto(TG_CHATS)
+        return create.insertInto(TG_CHATS)
                 .set(TG_CHATS.CHAT_ID, addParams.chatId())
                 .returning()
-                .fetchOne();
-        //noinspection DataFlowIssue
-        return result.into(TgChat.class);
+                .fetchOneInto(TgChat.class);
     }
 
     @Override

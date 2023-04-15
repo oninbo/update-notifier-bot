@@ -1,18 +1,21 @@
 package ru.tinkoff.edu.java.scrapper.service.jooq;
 
 import lombok.RequiredArgsConstructor;
-import org.apache.commons.lang3.NotImplementedException;
 import org.springframework.stereotype.Service;
 import ru.tinkoff.edu.java.link_parser.stackoverflow.StackOverflowParserResult;
+import ru.tinkoff.edu.java.scrapper.client.StackOverflowClient;
 import ru.tinkoff.edu.java.scrapper.configuration.ApplicationConfig;
 import ru.tinkoff.edu.java.scrapper.dto.LinkUpdate;
 import ru.tinkoff.edu.java.scrapper.dto.StackOverflowAnswerUpdate;
 import ru.tinkoff.edu.java.scrapper.dto.StackOverflowQuestion;
 import ru.tinkoff.edu.java.scrapper.dto.StackOverflowQuestionAddParams;
 import ru.tinkoff.edu.java.scrapper.exception.StackOverflowQuestionNotFoundException;
+import ru.tinkoff.edu.java.scrapper.repository.jooq.JooqLinksRepository;
 import ru.tinkoff.edu.java.scrapper.repository.jooq.JooqStackOverflowQuestionsRepository;
 import ru.tinkoff.edu.java.scrapper.service.FindOrDoService;
 import ru.tinkoff.edu.java.scrapper.service.StackOverflowAnswersService;
+import ru.tinkoff.edu.java.scrapper.service.utils.StackOverflowAnswersUtils;
+import ru.tinkoff.edu.java.scrapper.service.utils.StackOverflowLinksUtils;
 
 import java.time.OffsetDateTime;
 import java.util.List;
@@ -25,7 +28,9 @@ class JooqStackOverflowQuestionsService  implements
         FindOrDoService<StackOverflowQuestion, StackOverflowParserResult>,
         StackOverflowAnswersService {
     private final JooqStackOverflowQuestionsRepository stackOverflowQuestionsRepository;
+    private final JooqLinksRepository linksRepository;
     private final ApplicationConfig applicationConfig;
+    private final StackOverflowClient stackOverflowClient;
 
     @Override
     public StackOverflowQuestion findOrThrow(StackOverflowParserResult findParams) {
@@ -41,9 +46,15 @@ class JooqStackOverflowQuestionsService  implements
     }
 
     @Override
-    public List<LinkUpdate> getLinkUpdates(List<StackOverflowQuestion> objects) {
-        // TODO
-        throw new NotImplementedException();
+    public List<LinkUpdate> getLinkUpdates(List<StackOverflowQuestion> questions) {
+        return StackOverflowAnswersUtils.getBatchedUpdates(
+                questions,
+                batch -> StackOverflowLinksUtils.getUpdates(
+                        batch,
+                        stackOverflowClient,
+                        applicationConfig,
+                        linksRepository::findAllWithChatId
+                ));
     }
 
     @Override
@@ -59,8 +70,14 @@ class JooqStackOverflowQuestionsService  implements
 
     @Override
     public List<StackOverflowAnswerUpdate> getStackOverflowAnswerUpdates(List<StackOverflowQuestion> questions) {
-        // TODO
-        throw new NotImplementedException();
+        return StackOverflowAnswersUtils.getBatchedUpdates(
+                questions,
+                batch -> StackOverflowAnswersUtils.getAnswerUpdates(
+                        batch,
+                        linksRepository::findAllWithChatId,
+                        stackOverflowClient,
+                        applicationConfig
+                ));
     }
 
     @Override
