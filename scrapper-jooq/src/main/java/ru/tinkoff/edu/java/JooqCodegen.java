@@ -1,4 +1,4 @@
-package ru.tinkoff.edu.java.scrapper;
+package ru.tinkoff.edu.java;
 
 import org.jooq.codegen.GenerationTool;
 import org.jooq.meta.jaxb.*;
