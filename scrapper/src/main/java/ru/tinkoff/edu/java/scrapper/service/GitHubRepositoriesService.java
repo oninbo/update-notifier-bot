@@ -36,7 +36,8 @@ public abstract class GitHubRepositoriesService {
     }
 
     protected Optional<GitHubRepositoryResponse> getGitHubRepositoryResponse(
-            String username, String name,
+            String username,
+            String name,
             GitHubClient gitHubClient,
             ApplicationConfig config
     ) {

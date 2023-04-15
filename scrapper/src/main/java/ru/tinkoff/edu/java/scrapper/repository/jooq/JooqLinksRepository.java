@@ -76,10 +76,7 @@ public class JooqLinksRepository implements BaseRepository<Link, LinkAddParams> 
                 .select(LINKS.asterisk(), TG_CHATS.CHAT_ID)
                 .from(linksJoinTgChats())
                 .where(LINKS.STACKOVERFLOW_QUESTION_ID.eq(stackOverflowQuestion.id()))
-                .fetch(record -> new LinkWithChatId(
-                        record.get(LINKS.ID),
-                        record.get(LINKS.URL, URI.class),
-                        record.get(TG_CHATS.CHAT_ID)));
+                .fetch(recordMapperWithChatId());
     }
 
     private TableOnConditionStep<Record> linksJoinTgChats() {
@@ -92,10 +89,17 @@ public class JooqLinksRepository implements BaseRepository<Link, LinkAddParams> 
                 .select(LINKS.asterisk(), TG_CHATS.CHAT_ID)
                 .from(linksJoinTgChats())
                 .where(LINKS.GITHUB_REPOSITORY_ID.eq(gitHubRepository.id()))
-                .fetchInto(LinkWithChatId.class);
+                .fetch(recordMapperWithChatId());
     }
 
     private RecordMapper<Record, Link> recordMapper() {
         return (record) -> new Link(record.get(LINKS.ID), record.get(LINKS.URL, URI.class));
+    }
+
+    private RecordMapper<Record, LinkWithChatId> recordMapperWithChatId() {
+        return record -> new LinkWithChatId(
+                record.get(LINKS.ID),
+                record.get(LINKS.URL, URI.class),
+                record.get(TG_CHATS.CHAT_ID));
     }
 }

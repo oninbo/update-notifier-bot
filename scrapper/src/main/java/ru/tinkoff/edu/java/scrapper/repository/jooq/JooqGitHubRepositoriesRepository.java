@@ -2,6 +2,8 @@ package ru.tinkoff.edu.java.scrapper.repository.jooq;
 
 import lombok.RequiredArgsConstructor;
 import org.jooq.DSLContext;
+import org.jooq.Record;
+import org.jooq.RecordMapper;
 import org.jooq.TableField;
 import org.springframework.stereotype.Repository;
 import ru.tinkoff.edu.java.link_parser.github.GitHubParserResult;
@@ -30,7 +32,7 @@ public class JooqGitHubRepositoriesRepository implements
                 .set(GITHUB_REPOSITORIES.NAME, gitHubRepositoryAddParams.name())
                 .set(GITHUB_REPOSITORIES.USERNAME, gitHubRepositoryAddParams.username())
                 .returning()
-                .fetchOneInto(GitHubRepository.class);
+                .fetchOne(recordMapper());
     }
 
     public Optional<GitHubRepository> find(GitHubParserResult gitHubParserResult) {
@@ -38,12 +40,12 @@ public class JooqGitHubRepositoriesRepository implements
                 .selectFrom(GITHUB_REPOSITORIES)
                 .where(GITHUB_REPOSITORIES.NAME.eq(gitHubParserResult.projectName())
                         .and(GITHUB_REPOSITORIES.USERNAME.eq(gitHubParserResult.userName())))
-                .fetchOptionalInto(GitHubRepository.class);
+                .fetchOptional(recordMapper());
     }
 
     @Override
     public List<GitHubRepository> findAll() {
-        return create.selectFrom(GITHUB_REPOSITORIES).fetchInto(GitHubRepository.class);
+        return create.selectFrom(GITHUB_REPOSITORIES).fetch(recordMapper());
     }
 
     @Override
@@ -70,7 +72,7 @@ public class JooqGitHubRepositoriesRepository implements
                 .from(LINKS.join(GITHUB_REPOSITORIES).on(LINKS.GITHUB_REPOSITORY_ID.eq(GITHUB_REPOSITORIES.ID)))
                 .orderBy(orderColumn.asc().nullsFirst())
                 .limit(first)
-                .fetchInto(GitHubRepository.class);
+                .fetch(recordMapper());
     }
 
     public void update(GitHubRepository repository, Consumer<GithubRepositoriesRecord> setter) {
@@ -82,5 +84,15 @@ public class JooqGitHubRepositoriesRepository implements
                     setter.accept(r);
                     r.store();
                 });
+    }
+
+    private RecordMapper<Record, GitHubRepository> recordMapper() {
+        return (record) -> new GitHubRepository(
+                record.get(GITHUB_REPOSITORIES.ID),
+                record.get(GITHUB_REPOSITORIES.USERNAME),
+                record.get(GITHUB_REPOSITORIES.NAME),
+                record.get(GITHUB_REPOSITORIES.CREATED_AT),
+                record.get(GITHUB_REPOSITORIES.UPDATED_AT),
+                record.get(GITHUB_REPOSITORIES.ISSUES_UPDATED_AT));
     }
 }
