@@ -14,8 +14,7 @@ import ru.tinkoff.edu.java.scrapper.repository.jooq.JooqLinksRepository;
 import ru.tinkoff.edu.java.scrapper.repository.jooq.JooqStackOverflowQuestionsRepository;
 import ru.tinkoff.edu.java.scrapper.service.FindOrDoService;
 import ru.tinkoff.edu.java.scrapper.service.StackOverflowAnswersService;
-import ru.tinkoff.edu.java.scrapper.service.utils.StackOverflowAnswersUtils;
-import ru.tinkoff.edu.java.scrapper.service.utils.StackOverflowLinksUtils;
+import ru.tinkoff.edu.java.scrapper.service.StackOverflowQuestionsService;
 
 import java.time.OffsetDateTime;
 import java.util.List;
@@ -24,8 +23,9 @@ import static ru.tinkoff.edu.java.scrapper.domain.jooq.Tables.STACKOVERFLOW_QUES
 
 @Service
 @RequiredArgsConstructor
-class JooqStackOverflowQuestionsService  implements
-        FindOrDoService<StackOverflowQuestion, StackOverflowParserResult>,
+class JooqStackOverflowQuestionsService
+        extends StackOverflowQuestionsService
+        implements FindOrDoService<StackOverflowQuestion, StackOverflowParserResult>,
         StackOverflowAnswersService {
     private final JooqStackOverflowQuestionsRepository stackOverflowQuestionsRepository;
     private final JooqLinksRepository linksRepository;
@@ -47,9 +47,9 @@ class JooqStackOverflowQuestionsService  implements
 
     @Override
     public List<LinkUpdate> getLinkUpdates(List<StackOverflowQuestion> questions) {
-        return StackOverflowAnswersUtils.getBatchedUpdates(
+        return getBatchedUpdates(
                 questions,
-                batch -> StackOverflowLinksUtils.getUpdates(
+                batch -> getUpdates(
                         batch,
                         stackOverflowClient,
                         applicationConfig,
@@ -70,9 +70,9 @@ class JooqStackOverflowQuestionsService  implements
 
     @Override
     public List<StackOverflowAnswerUpdate> getStackOverflowAnswerUpdates(List<StackOverflowQuestion> questions) {
-        return StackOverflowAnswersUtils.getBatchedUpdates(
+        return getBatchedUpdates(
                 questions,
-                batch -> StackOverflowAnswersUtils.getAnswerUpdates(
+                batch -> getAnswerUpdates(
                         batch,
                         linksRepository::findAllWithChatId,
                         stackOverflowClient,
