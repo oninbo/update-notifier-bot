@@ -10,7 +10,7 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import ru.tinkoff.edu.java.scrapper.configuration.ApplicationConfig;
-import ru.tinkoff.edu.java.scrapper.configuration.ClientConfig;
+import ru.tinkoff.edu.java.scrapper.configuration.ClientConfiguration;
 import ru.tinkoff.edu.java.scrapper.configuration.WebClient;
 import ru.tinkoff.edu.java.scrapper.configuration.WebClientConfig;
 import ru.tinkoff.edu.java.scrapper.dto.ListStackExchangeQuestionsResponse;
@@ -22,6 +22,8 @@ import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 public class StackOverflowClientTest {
 
@@ -41,23 +43,25 @@ public class StackOverflowClientTest {
     @BeforeEach
     void initialize() {
         String baseUrl = String.format("http://localhost:%s", mockBackEnd.getPort());
-        WebClient webClient = new WebClient(null, new WebClientConfig(baseUrl, "1"));
-        ApplicationConfig applicationConfig = new ApplicationConfig(null, webClient, null);
-        StackExchangeClient stackExchangeClient = new ClientConfig().getStackExchangeClient(applicationConfig);
+        WebClient webClient = mock(WebClient.class);
+        when(webClient.stackExchange()).thenReturn(new WebClientConfig(baseUrl, "1"));
+        ApplicationConfig applicationConfig = mock(ApplicationConfig.class);
+        when(applicationConfig.webClient()).thenReturn(webClient);
+        StackExchangeClient stackExchangeClient = new ClientConfiguration().getStackExchangeClient(applicationConfig);
         stackOverflowClient = new StackOverflowClient(stackExchangeClient);
     }
 
     @Test
     public void shouldGetListOfQuestions() throws InterruptedException, JsonProcessingException {
-        StackExchangeQuestionResponse mockQuestion1 = new StackExchangeQuestionResponse(10L);
-        StackExchangeQuestionResponse mockQuestion2 = new StackExchangeQuestionResponse(20L);
+        StackExchangeQuestionResponse mockQuestion1 = new StackExchangeQuestionResponse(10L, null, null);
+        StackExchangeQuestionResponse mockQuestion2 = new StackExchangeQuestionResponse(20L, null, null);
         ListStackExchangeQuestionsResponse mockQuestionList =
                 new ListStackExchangeQuestionsResponse(List.of(mockQuestion1, mockQuestion2));
         ObjectMapper mapper = new ObjectMapper();
         mockBackEnd.enqueue(new MockResponse()
                 .setBody(mapper.writeValueAsString(mockQuestionList))
                 .addHeader("Content-Type", "application/json"));
-        var result = stackOverflowClient.getQuestions("1", List.of(10L, 20L));
+        var result = stackOverflowClient.getStackOverflowQuestions("1", List.of(10L, 20L));
         assertEquals(result, mockQuestionList);
 
         RecordedRequest recordedRequest = mockBackEnd.takeRequest();

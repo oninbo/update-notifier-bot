@@ -9,7 +9,7 @@ public class SchedulerConfig {
     private final Duration interval;
 
     public SchedulerConfig(ApplicationConfig applicationConfig) {
-        this.interval = applicationConfig.scheduler().interval();
+        this.interval = applicationConfig.scheduler().interval().getDuration();
     }
 
     public Duration getInterval() {

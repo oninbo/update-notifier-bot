@@ -21,7 +21,6 @@ public record Command(
         public record Message(
                 @NotBlank String botError,
                 @NotBlank String unsupportedCommand,
-                @NotBlank String unsupportedLink,
                 @NotBlank String invalidLink
         ) {
         }
@@ -35,7 +34,10 @@ public record Command(
     }
 
     @Validated
-    public record Help(@NotBlank String description) {
+    public record Help(
+            @NotBlank String description,
+            @NotBlank String header
+    ) {
 
     }
 

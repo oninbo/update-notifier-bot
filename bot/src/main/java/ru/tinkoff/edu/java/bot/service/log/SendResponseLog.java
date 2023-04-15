@@ -9,6 +9,6 @@ public record SendResponseLog(MessageLog message) {
         if (Objects.isNull(sendResponse.message())) {
             return new SendResponseLog(null);
         }
-        return new SendResponseLog(MessageLog.fromMessage(sendResponse.message()));
+        return new SendResponseLog(new MessageLog(sendResponse.message()));
     }
 }

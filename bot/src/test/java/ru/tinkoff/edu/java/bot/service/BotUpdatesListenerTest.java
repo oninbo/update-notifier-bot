@@ -18,15 +18,12 @@ import ru.tinkoff.edu.java.bot.dto.LinkResponse;
 import ru.tinkoff.edu.java.bot.dto.ListLinksResponse;
 import ru.tinkoff.edu.java.bot.dto.RemoveLinkRequest;
 
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @SpringBootTest
 @ExtendWith(RandomBeansExtension.class)
@@ -46,16 +43,12 @@ public class BotUpdatesListenerTest {
     @Random(type = SendResponse.class, size = size)
     private List<SendResponse> responses;
 
-    @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
     @Autowired
     private BotUpdatesListener botUpdatesListener;
 
     @BeforeEach
-    public void initialize() throws URISyntaxException {
-        var linkResponses = List.of(
-                new LinkResponse(1, new URI("https://github.com/sanyarnd/tinkoff-java-course-2022")),
-                new LinkResponse(2, new URI("https://stackoverflow.com/questions/42307687/"))
-        );
+    public void initialize() {
+        List<LinkResponse> linkResponses = List.of(mock(LinkResponse.class), mock(LinkResponse.class));
         when(scrapperClient.getLinks(anyLong())).thenReturn(new ListLinksResponse(linkResponses, linkResponses.size()));
         when(scrapperClient.addLink(anyLong(), any(AddLinkRequest.class))).thenReturn(linkResponses.get(0));
         when(scrapperClient.deleteLink(anyLong(), any(RemoveLinkRequest.class))).thenReturn(linkResponses.get(0));

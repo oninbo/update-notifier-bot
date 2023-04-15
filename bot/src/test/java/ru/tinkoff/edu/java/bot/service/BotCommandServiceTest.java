@@ -12,7 +12,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import ru.tinkoff.edu.java.bot.configuration.ApplicationConfig;
 import ru.tinkoff.edu.java.bot.configuration.Command;
-import ru.tinkoff.edu.java.bot.service.bot_command.BotCommandHandler;
+import ru.tinkoff.edu.java.bot.service.bot_command.handler.BotCommandHandler;
 
 import java.util.ArrayList;
 import java.util.List;

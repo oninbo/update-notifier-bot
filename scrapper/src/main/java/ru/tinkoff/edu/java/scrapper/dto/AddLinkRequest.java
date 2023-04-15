@@ -1,8 +1,10 @@
 package ru.tinkoff.edu.java.scrapper.dto;
 
-import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import org.springframework.validation.annotation.Validated;
 
+import java.net.URI;
+
 @Validated
-public record AddLinkRequest(@NotBlank String link) {
+public record AddLinkRequest(@NotNull URI link) {
 }

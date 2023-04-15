@@ -3,7 +3,13 @@ app:
   error_description:
     api: Некорректные параметры запроса
     server: Ошибка сервера
-    tg_chat_not_found: Чат не существует
+    tg_chat_not_found: Вы не зарегистрированы. Зарегистрируйтесь с помощью команды /start
+    tg_chat_exists: Вы уже зарегистрированы
+    stackoverflow_question_not_found: Вопроса на Stack Overflow не существует
+    github_repository_not_found: GitHub репозитория не существует
+    link_not_found: Ссылка не найдена
+    link_not_supported: Ссылка не поддерживается
+    link_exists: Ссылка уже добавлена
   web_client:
     github:
       base_url: https://api.github.com/
@@ -11,21 +17,20 @@ app:
     stack_exchange:
       base_url: https://api.stackexchange.com/
       api_version: 2.3
+    bot_base_url: http://localhost:8080
   scheduler:
-    interval: 5000
-placeholder:
-  link_response: &link_response
-    id: 1
-    url: https://github.com/sanyarnd/tinkoff-java-course-2022
-  list_links_response:
-    links:
-      - *link_response
-      - id: 2
-        url: https://stackoverflow.com/questions/47969389/how-can-i-cache-maven-dependencies-and-plugins-in-a-docker-multi-stage-build-lay
-    size: 1
+    interval: 1h
+    batch_size: 100
+  database:
+    driver: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:5432/scrapper
+    username: postgres
+    password: postgres
 server:
   port: 8081
 spring:
+  liquibase:
+    enabled: false
   devtools:
     livereload:
       port: 35730
