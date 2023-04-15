@@ -15,8 +15,7 @@ import java.util.Optional;
 import java.util.UUID;
 import java.util.function.Consumer;
 
-import static ru.tinkoff.edu.java.scrapper.domain.jooq.Tables.LINKS;
-import static ru.tinkoff.edu.java.scrapper.domain.jooq.Tables.STACKOVERFLOW_QUESTIONS;
+import static ru.tinkoff.edu.java.scrapper.domain.jooq.Tables.*;
 
 @Repository
 @RequiredArgsConstructor
@@ -39,11 +38,11 @@ public class JooqStackOverflowQuestionsRepository implements
     }
 
     public Optional<StackOverflowQuestion> find(Long questionId) {
-        var record = create
+        var question = create
                 .selectFrom(STACKOVERFLOW_QUESTIONS)
                 .where(STACKOVERFLOW_QUESTIONS.QUESTION_ID.eq(questionId))
                 .fetchOneInto(StackOverflowQuestion.class);
-        return Optional.ofNullable(record);
+        return Optional.ofNullable(question);
     }
 
     @Override
@@ -83,7 +82,8 @@ public class JooqStackOverflowQuestionsRepository implements
             TableField<StackoverflowQuestionsRecord, ?> orderColumn
     ) {
         return create
-                .selectFrom(LINKS.join(STACKOVERFLOW_QUESTIONS)
+                .select(GITHUB_REPOSITORIES.asterisk())
+                .from(LINKS.join(STACKOVERFLOW_QUESTIONS)
                         .on(LINKS.STACKOVERFLOW_QUESTION_ID.eq(STACKOVERFLOW_QUESTIONS.ID)))
                 .orderBy(orderColumn.asc().nullsFirst())
                 .limit(first)

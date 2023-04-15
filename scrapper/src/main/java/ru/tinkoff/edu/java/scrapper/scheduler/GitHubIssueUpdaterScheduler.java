@@ -23,7 +23,7 @@ public class GitHubIssueUpdaterScheduler {
     @Scheduled(fixedDelayString = "#{@schedulerConfig.getInterval()}")
     @Transactional
     public void update() {
-        var repositories = gitHubIssuesService.getRepositoriesForUpdate(applicationConfig.scheduler().batchSize());
+        var repositories = gitHubIssuesService.getForIssuesUpdate(applicationConfig.scheduler().batchSize());
         var updates = gitHubIssuesService.getGitHubIssueUpdates(repositories);
         gitHubIssuesService.updateIssuesUpdatedAt(repositories, OffsetDateTime.now());
         updates.forEach(botClient::sendGithubIssueUpdates);

@@ -32,8 +32,8 @@ public class JooqTgChatsRepository implements BaseRepository<TgChat, TgChatAddPa
     }
 
     public Optional<TgChat> find(Long chatId) {
-        var record = create.selectFrom(TG_CHATS).where(TG_CHATS.CHAT_ID.eq(chatId)).fetchOne();
-        return Optional.ofNullable(record).map(r -> r.into(TgChat.class));
+        var tgChat = create.selectFrom(TG_CHATS).where(TG_CHATS.CHAT_ID.eq(chatId)).fetchOneInto(TgChat.class);
+        return Optional.ofNullable(tgChat);
     }
 
     @Override

@@ -14,7 +14,6 @@ import ru.tinkoff.edu.java.scrapper.exception.TgChatNotFoundException;
 import ru.tinkoff.edu.java.scrapper.repository.jooq.JooqLinksRepository;
 import ru.tinkoff.edu.java.scrapper.repository.jooq.JooqTgChatsRepository;
 import ru.tinkoff.edu.java.scrapper.service.LinksService;
-import ru.tinkoff.edu.java.scrapper.service.jdbc.JdbcGitHubRepositoriesService;
 import ru.tinkoff.edu.java.scrapper.service.utils.LinkBuilder;
 import ru.tinkoff.edu.java.scrapper.service.utils.LinkFinder;
 
@@ -30,7 +29,7 @@ public class JooqLinksService implements LinksService {
     private final JooqTgChatsRepository tgChatsRepository;
     private final ApplicationConfig applicationConfig;
     private final JooqStackOverflowQuestionsService stackOverflowQuestionsService;
-    private final JdbcGitHubRepositoriesService gitHubRepositoriesService; // TODO: change to JooqGitHubRepositoriesService
+    private final JooqGitHubRepositoriesService gitHubRepositoriesService;
     private final LinkParserService linkParserService;
 
     @Override

@@ -55,15 +55,15 @@ public class JooqLinksRepository implements BaseRepository<Link, LinkAddParams> 
     }
 
     public Optional<Link> find(TgChat tgChat, StackOverflowQuestion stackOverflowQuestion) {
-        var record = create
+        var link = create
                 .selectFrom(LINKS)
                 .where(
                         LINKS.STACKOVERFLOW_QUESTION_ID.eq(stackOverflowQuestion.id())
                                 .and(LINKS.TG_CHAT_ID.eq(tgChat.id()))
                 )
-                .fetchOne();
+                .fetchOneInto(Link.class);
 
-        return Optional.ofNullable(record).map(r -> r.into(Link.class));
+        return Optional.ofNullable(link);
     }
 
     @Override
@@ -82,5 +82,13 @@ public class JooqLinksRepository implements BaseRepository<Link, LinkAddParams> 
     private TableOnConditionStep<Record> linksJoinTgChats() {
         return LINKS.join(TG_CHATS)
                 .on(TG_CHATS.ID.eq(LINKS.TG_CHAT_ID));
+    }
+
+    public List<LinkWithChatId> findAllWithChatId(GitHubRepository gitHubRepository) {
+        return create
+                .select(LINKS.asterisk(), TG_CHATS.CHAT_ID)
+                .from(linksJoinTgChats())
+                .where(LINKS.GITHUB_REPOSITORY_ID.eq(gitHubRepository.id()))
+                .fetchInto(LinkWithChatId.class);
     }
 }
