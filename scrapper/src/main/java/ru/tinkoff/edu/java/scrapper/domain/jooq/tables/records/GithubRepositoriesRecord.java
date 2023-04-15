@@ -292,20 +292,4 @@ public class GithubRepositoriesRecord extends UpdatableRecordImpl<GithubReposito
         setUpdatedAt(updatedAt);
         setIssuesUpdatedAt(issuesUpdatedAt);
     }
-
-    /**
-     * Create a detached, initialised GithubRepositoriesRecord
-     */
-    public GithubRepositoriesRecord(ru.tinkoff.edu.java.scrapper.domain.jooq.tables.pojos.GithubRepositories value) {
-        super(GithubRepositories.GITHUB_REPOSITORIES);
-
-        if (value != null) {
-            setId(value.getId());
-            setName(value.getName());
-            setUsername(value.getUsername());
-            setCreatedAt(value.getCreatedAt());
-            setUpdatedAt(value.getUpdatedAt());
-            setIssuesUpdatedAt(value.getIssuesUpdatedAt());
-        }
-    }
 }

@@ -53,14 +53,16 @@ public class JooqLinksService implements LinksService {
 
     private Link addLink(TgChat tgChat, URI url, StackOverflowQuestion stackOverflowQuestion) {
         checkIfLinkExists(linksRepository.find(tgChat, stackOverflowQuestion));
+        var link = linksRepository.add(new LinkAddParams(url, tgChat, stackOverflowQuestion));
         stackOverflowQuestionsService.updateAllTimestamps(stackOverflowQuestion, OffsetDateTime.now());
-        return linksRepository.add(new LinkAddParams(url, tgChat, stackOverflowQuestion));
+        return link;
     }
 
     private Link addLink(TgChat tgChat, URI url, GitHubRepository gitHubRepository) {
         checkIfLinkExists(linksRepository.find(tgChat, gitHubRepository));
+        var link = linksRepository.add(new LinkAddParams(url, tgChat, gitHubRepository));
         gitHubRepositoriesService.updateAllTimestamps(gitHubRepository, OffsetDateTime.now());
-        return linksRepository.add(new LinkAddParams(url, tgChat, gitHubRepository));
+        return link;
     }
 
     @Override

@@ -217,18 +217,4 @@ public class DatabasechangeloglockRecord extends UpdatableRecordImpl<Databasecha
         setLockgranted(lockgranted);
         setLockedby(lockedby);
     }
-
-    /**
-     * Create a detached, initialised DatabasechangeloglockRecord
-     */
-    public DatabasechangeloglockRecord(ru.tinkoff.edu.java.scrapper.domain.jooq.tables.pojos.Databasechangeloglock value) {
-        super(Databasechangeloglock.DATABASECHANGELOGLOCK);
-
-        if (value != null) {
-            setId(value.getId());
-            setLocked(value.getLocked());
-            setLockgranted(value.getLockgranted());
-            setLockedby(value.getLockedby());
-        }
-    }
 }

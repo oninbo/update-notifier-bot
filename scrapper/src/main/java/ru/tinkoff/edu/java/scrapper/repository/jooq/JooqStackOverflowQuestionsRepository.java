@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 import org.jooq.DSLContext;
 import org.jooq.TableField;
 import org.springframework.stereotype.Repository;
-import ru.tinkoff.edu.java.scrapper.domain.jooq.tables.pojos.StackoverflowQuestions;
 import ru.tinkoff.edu.java.scrapper.domain.jooq.tables.records.StackoverflowQuestionsRecord;
 import ru.tinkoff.edu.java.scrapper.dto.StackOverflowQuestion;
 import ru.tinkoff.edu.java.scrapper.dto.StackOverflowQuestionAddParams;
@@ -15,7 +14,8 @@ import java.util.Optional;
 import java.util.UUID;
 import java.util.function.Consumer;
 
-import static ru.tinkoff.edu.java.scrapper.domain.jooq.Tables.*;
+import static ru.tinkoff.edu.java.scrapper.domain.jooq.Tables.LINKS;
+import static ru.tinkoff.edu.java.scrapper.domain.jooq.Tables.STACKOVERFLOW_QUESTIONS;
 
 @Repository
 @RequiredArgsConstructor
@@ -38,11 +38,10 @@ public class JooqStackOverflowQuestionsRepository implements
     }
 
     public Optional<StackOverflowQuestion> find(Long questionId) {
-        var question = create
+        return create
                 .selectFrom(STACKOVERFLOW_QUESTIONS)
                 .where(STACKOVERFLOW_QUESTIONS.QUESTION_ID.eq(questionId))
-                .fetchOneInto(StackOverflowQuestion.class);
-        return Optional.ofNullable(question);
+                .fetchOptionalInto(StackOverflowQuestion.class);
     }
 
     @Override
@@ -50,31 +49,28 @@ public class JooqStackOverflowQuestionsRepository implements
         create.deleteFrom(STACKOVERFLOW_QUESTIONS).where(STACKOVERFLOW_QUESTIONS.ID.eq(id)).execute();
     }
 
-    public void update(StackOverflowQuestion question, Consumer<StackoverflowQuestions> setter) {
-        var record = create
+    public void update(StackOverflowQuestion question, Consumer<StackoverflowQuestionsRecord> setter) {
+        create
                 .selectFrom(STACKOVERFLOW_QUESTIONS)
                 .where(STACKOVERFLOW_QUESTIONS.ID.eq(question.id()))
-                .fetchOneInto(StackoverflowQuestions.class);
-        Optional.ofNullable(record)
+                .fetchOptional()
                 .ifPresent(s -> {
                     setter.accept(s);
-                    create.newRecord(STACKOVERFLOW_QUESTIONS, s).store();
+                    s.store();
                 });
     }
 
-    public void update(List<StackOverflowQuestion> questions, Consumer<StackoverflowQuestions> setter) {
-        var ids = questions.stream().map(StackOverflowQuestion::id).toList();
-        var records = create
-                .selectFrom(STACKOVERFLOW_QUESTIONS)
+    public <T> void update(
+            List<StackOverflowQuestion> repositories,
+            TableField<StackoverflowQuestionsRecord, T> column,
+            T value
+    ) {
+        var ids = repositories.stream().map(StackOverflowQuestion::id).toList();
+        create
+                .update(STACKOVERFLOW_QUESTIONS)
+                .set(column, value)
                 .where(STACKOVERFLOW_QUESTIONS.ID.in(ids))
-                .fetchInto(StackoverflowQuestions.class)
-                .stream()
-                .map(q -> {
-                    setter.accept(q);
-                    return create.newRecord(STACKOVERFLOW_QUESTIONS, q);
-                })
-                .toList();
-        create.batchUpdate(records).execute();
+                .execute();
     }
 
     public List<StackOverflowQuestion> findWithLinks(
@@ -82,7 +78,7 @@ public class JooqStackOverflowQuestionsRepository implements
             TableField<StackoverflowQuestionsRecord, ?> orderColumn
     ) {
         return create
-                .select(GITHUB_REPOSITORIES.asterisk())
+                .select(STACKOVERFLOW_QUESTIONS.asterisk())
                 .from(LINKS.join(STACKOVERFLOW_QUESTIONS)
                         .on(LINKS.STACKOVERFLOW_QUESTION_ID.eq(STACKOVERFLOW_QUESTIONS.ID)))
                 .orderBy(orderColumn.asc().nullsFirst())

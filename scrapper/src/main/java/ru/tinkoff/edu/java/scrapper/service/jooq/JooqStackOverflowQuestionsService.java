@@ -59,8 +59,7 @@ class JooqStackOverflowQuestionsService
 
     @Override
     public void updateUpdatedAt(List<StackOverflowQuestion> questions, OffsetDateTime updatedAt) {
-        stackOverflowQuestionsRepository.update(questions,
-                stackoverflowQuestions -> stackoverflowQuestions.setUpdatedAt(updatedAt));
+        stackOverflowQuestionsRepository.update(questions, STACKOVERFLOW_QUESTIONS.UPDATED_AT, updatedAt);
     }
 
     @Override
@@ -82,8 +81,7 @@ class JooqStackOverflowQuestionsService
 
     @Override
     public void updateAnswersUpdatedAt(List<StackOverflowQuestion> questions, OffsetDateTime updatedAt) {
-        stackOverflowQuestionsRepository.update(questions,
-                stackoverflowQuestions -> stackoverflowQuestions.setAnswersUpdatedAt(updatedAt));
+        stackOverflowQuestionsRepository.update(questions, STACKOVERFLOW_QUESTIONS.ANSWERS_UPDATED_AT, updatedAt);
     }
 
     @Override

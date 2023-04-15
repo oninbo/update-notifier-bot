@@ -5,7 +5,6 @@ import org.jooq.DSLContext;
 import org.jooq.TableField;
 import org.springframework.stereotype.Repository;
 import ru.tinkoff.edu.java.link_parser.github.GitHubParserResult;
-import ru.tinkoff.edu.java.scrapper.domain.jooq.tables.pojos.GithubRepositories;
 import ru.tinkoff.edu.java.scrapper.domain.jooq.tables.records.GithubRepositoriesRecord;
 import ru.tinkoff.edu.java.scrapper.dto.GitHubRepository;
 import ru.tinkoff.edu.java.scrapper.dto.GitHubRepositoryAddParams;
@@ -39,12 +38,11 @@ public class JooqGitHubRepositoriesRepository implements
     }
 
     public Optional<GitHubRepository> find(GitHubParserResult gitHubParserResult) {
-        var repository = create
+        return create
                 .selectFrom(GITHUB_REPOSITORIES)
                 .where(GITHUB_REPOSITORIES.NAME.eq(gitHubParserResult.projectName())
                         .and(GITHUB_REPOSITORIES.USERNAME.eq(gitHubParserResult.userName())))
-                .fetchOneInto(GitHubRepository.class);
-        return Optional.ofNullable(repository);
+                .fetchOptionalInto(GitHubRepository.class);
     }
 
     @Override
@@ -79,15 +77,14 @@ public class JooqGitHubRepositoriesRepository implements
                 .fetchInto(GitHubRepository.class);
     }
 
-    public void update(GitHubRepository repository, Consumer<GithubRepositories> setter) {
-        var record = create
+    public void update(GitHubRepository repository, Consumer<GithubRepositoriesRecord> setter) {
+        create
                 .selectFrom(GITHUB_REPOSITORIES)
                 .where(GITHUB_REPOSITORIES.ID.eq(repository.id()))
-                .fetchOneInto(GithubRepositories.class);
-        Optional.ofNullable(record)
+                .fetchOptional()
                 .ifPresent(r -> {
                     setter.accept(r);
-                    create.newRecord(GITHUB_REPOSITORIES, r).store();
+                    r.store();
                 });
     }
 }

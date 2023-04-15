@@ -143,16 +143,4 @@ public class TgChatsRecord extends UpdatableRecordImpl<TgChatsRecord> implements
         setId(id);
         setChatId(chatId);
     }
-
-    /**
-     * Create a detached, initialised TgChatsRecord
-     */
-    public TgChatsRecord(ru.tinkoff.edu.java.scrapper.domain.jooq.tables.pojos.TgChats value) {
-        super(TgChats.TG_CHATS);
-
-        if (value != null) {
-            setId(value.getId());
-            setChatId(value.getChatId());
-        }
-    }
 }
