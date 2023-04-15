@@ -29,7 +29,7 @@ public class JooqLinksService implements LinksService {
     private final JooqLinksRepository linksRepository;
     private final JooqTgChatsRepository tgChatsRepository;
     private final ApplicationConfig applicationConfig;
-    private final JooqStackOverflowQuestionsService stackOverflowQuestionsService; // TODO: change to JooqStackOverflowQuestionsService
+    private final JooqStackOverflowQuestionsService stackOverflowQuestionsService;
     private final JdbcGitHubRepositoriesService gitHubRepositoriesService; // TODO: change to JooqGitHubRepositoriesService
     private final LinkParserService linkParserService;
 
