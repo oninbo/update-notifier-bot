@@ -33,10 +33,6 @@ public class JooqGitHubRepositoriesRepository implements
                 .fetchOneInto(GitHubRepository.class);
     }
 
-    public GitHubRepository add(GitHubParserResult gitHubParserResult) {
-        return add(new GitHubRepositoryAddParams(gitHubParserResult.userName(), gitHubParserResult.projectName()));
-    }
-
     public Optional<GitHubRepository> find(GitHubParserResult gitHubParserResult) {
         return create
                 .selectFrom(GITHUB_REPOSITORIES)

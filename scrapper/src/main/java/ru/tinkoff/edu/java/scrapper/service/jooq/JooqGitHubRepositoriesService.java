@@ -7,6 +7,7 @@ import ru.tinkoff.edu.java.scrapper.client.GitHubClient;
 import ru.tinkoff.edu.java.scrapper.configuration.ApplicationConfig;
 import ru.tinkoff.edu.java.scrapper.dto.GitHubIssueUpdate;
 import ru.tinkoff.edu.java.scrapper.dto.GitHubRepository;
+import ru.tinkoff.edu.java.scrapper.dto.GitHubRepositoryAddParams;
 import ru.tinkoff.edu.java.scrapper.dto.LinkUpdate;
 import ru.tinkoff.edu.java.scrapper.exception.GitHubRepositoryNotFoundException;
 import ru.tinkoff.edu.java.scrapper.repository.jooq.JooqGitHubRepositoriesRepository;
@@ -41,7 +42,14 @@ class JooqGitHubRepositoriesService
     @Override
     public GitHubRepository findOrCreate(GitHubParserResult findParams) {
         return gitHubRepositoriesRepository.find(findParams)
-                .orElseGet(() -> gitHubRepositoriesRepository.add(findParams));
+                .orElseGet(() -> {
+                    var addParams = new GitHubRepositoryAddParams(
+                            findParams.userName(),
+                            findParams.projectName()
+                    );
+                    checkIfGitHubRepositoryExists(addParams, applicationConfig, gitHubClient);
+                    return gitHubRepositoriesRepository.add(addParams);
+                });
     }
 
     @Override

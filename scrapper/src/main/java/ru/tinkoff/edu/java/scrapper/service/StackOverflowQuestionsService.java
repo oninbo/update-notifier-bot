@@ -5,6 +5,7 @@ import ru.tinkoff.edu.java.scrapper.client.StackExchangeClient;
 import ru.tinkoff.edu.java.scrapper.client.StackOverflowClient;
 import ru.tinkoff.edu.java.scrapper.configuration.ApplicationConfig;
 import ru.tinkoff.edu.java.scrapper.dto.*;
+import ru.tinkoff.edu.java.scrapper.exception.StackOverflowQuestionNotFoundException;
 import ru.tinkoff.edu.java.scrapper.service.utils.LinkUpdateUtils;
 
 import java.util.ArrayList;
@@ -14,6 +15,20 @@ import java.util.Optional;
 import java.util.function.Function;
 
 public abstract class StackOverflowQuestionsService {
+    protected void checkIfStackOverflowQuestionExists(
+            StackOverflowQuestionAddParams stackOverflowQuestion,
+            StackOverflowClient stackOverflowClient,
+            ApplicationConfig applicationConfig
+    ) {
+        var response = stackOverflowClient.getStackOverflowQuestions(
+                applicationConfig.webClient().stackExchange().apiVersion(),
+                List.of(stackOverflowQuestion.questionId())
+        );
+        if (response.items().isEmpty()) {
+            throw new StackOverflowQuestionNotFoundException(applicationConfig);
+        }
+    }
+
     protected List<LinkUpdate> getUpdates(
             List<StackOverflowQuestion> questions,
             StackOverflowClient stackOverflowClient,
@@ -36,7 +51,8 @@ public abstract class StackOverflowQuestionsService {
                 StackOverflowQuestion::createdAt
         );
     }
-    protected  <T> List<T> getBatchedUpdates(
+
+    protected <T> List<T> getBatchedUpdates(
             List<StackOverflowQuestion> questions,
             Function<List<StackOverflowQuestion>, List<T>> getUpdates
     ) {

@@ -52,18 +52,8 @@ class JdbcStackOverflowQuestionsService
     }
 
     public StackOverflowQuestion create(StackOverflowQuestionAddParams stackOverflowQuestion) {
-        checkIfStackOverflowQuestionExists(stackOverflowQuestion);
+        checkIfStackOverflowQuestionExists(stackOverflowQuestion, stackOverflowClient, applicationConfig);
         return jdbcStackOverflowQuestionsRepository.add(stackOverflowQuestion);
-    }
-
-    private void checkIfStackOverflowQuestionExists(StackOverflowQuestionAddParams stackOverflowQuestion) {
-        var response = stackOverflowClient.getStackOverflowQuestions(
-                applicationConfig.webClient().stackExchange().apiVersion(),
-                List.of(stackOverflowQuestion.questionId())
-        );
-        if (response.items().isEmpty()) {
-            throw new StackOverflowQuestionNotFoundException(applicationConfig);
-        }
     }
 
     @Override

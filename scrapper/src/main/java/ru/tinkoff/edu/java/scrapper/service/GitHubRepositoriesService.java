@@ -21,7 +21,18 @@ public abstract class GitHubRepositoriesService {
             GitHubClient gitHubClient
     ) {
         getGitHubRepositoryResponse(addParams.username(), addParams.name(), gitHubClient, config)
+                .filter(this::isResponseValid)
                 .orElseThrow(() -> new GitHubRepositoryNotFoundException(config));
+    }
+
+    /**
+     * Метод для проверки ответа от API в случае, когда запрос вернул код 301 и тело без полей репозитория
+     *
+     * @param response ответ от API
+     * @return true когда ответ содержит нужные поля, иначе false
+     */
+    protected boolean isResponseValid(GitHubRepositoryResponse response) {
+        return ObjectUtils.allNotNull(response.name(), response.owner());
     }
 
     protected Optional<GitHubRepositoryResponse> getGitHubRepositoryResponse(
@@ -40,12 +51,13 @@ public abstract class GitHubRepositoriesService {
             return Optional.empty();
         }
     }
+
     protected List<GitHubIssueUpdate> getGitHubIssueUpdates(
             List<GitHubRepository> repositories,
             Function<GitHubRepository, List<LinkWithChatId>> getLinks,
             GitHubClient gitHubClient,
             ApplicationConfig applicationConfig
-            ) {
+    ) {
         List<GitHubIssueUpdate> updates = new ArrayList<>();
         for (var repo : repositories) {
             var issues = getRepositoryIssues(repo, gitHubClient, applicationConfig);

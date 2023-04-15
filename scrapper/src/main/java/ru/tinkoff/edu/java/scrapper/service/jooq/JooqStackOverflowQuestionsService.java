@@ -41,8 +41,11 @@ class JooqStackOverflowQuestionsService
     @Override
     public StackOverflowQuestion findOrCreate(StackOverflowParserResult findParams) {
         return stackOverflowQuestionsRepository.find(findParams.questionId())
-                .orElseGet(() -> stackOverflowQuestionsRepository
-                        .add(new StackOverflowQuestionAddParams(findParams.questionId())));
+                .orElseGet(() -> {
+                    var addParams = new StackOverflowQuestionAddParams(findParams.questionId());
+                    checkIfStackOverflowQuestionExists(addParams, stackOverflowClient, applicationConfig);
+                    return stackOverflowQuestionsRepository.add(addParams);
+                });
     }
 
     @Override
