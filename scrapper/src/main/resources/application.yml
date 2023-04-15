@@ -17,13 +17,13 @@ app:
     stack_exchange:
       base_url: https://api.stackexchange.com/
       api_version: 2.3
-    bot_base_url: http://localhost:8080
+    bot_base_url: http://scrapper:8080
   scheduler:
     interval: 1h
     batch_size: 100
   database:
     driver: org.postgresql.Driver
-    url: jdbc:postgresql://localhost:5432/scrapper
+    url: jdbc:postgresql://postgresql:5432/scrapper
     username: postgres
     password: postgres
 server:

@@ -6,7 +6,39 @@ services:
       context: .
     depends_on:
       - scrapper
+
   scrapper:
+    depends_on:
+      - postgresql
     build:
       dockerfile: scrapper/Dockerfile
       context: .
+
+  postgresql:
+    image: postgres:15
+    environment:
+      POSTGRES_DB: scrapper
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+  liquibase-migrations:
+    image: liquibase/liquibase:4.18
+    depends_on:
+      - postgresql
+    command:
+      - --hub-mode=off
+      - --changelog-file=master.yml
+      - --driver=org.postgresql.Driver
+      - --url=jdbc:postgresql://postgresql:5432/scrapper
+      - --username=postgres
+      - --password=postgres
+      - update
+    volumes:
+      - ./scrapper/migrations:/liquibase/changelog
+
+volumes:
+  pgdata:
