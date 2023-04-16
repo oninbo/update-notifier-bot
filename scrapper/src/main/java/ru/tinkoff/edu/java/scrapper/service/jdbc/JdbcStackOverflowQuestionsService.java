@@ -105,10 +105,4 @@ class JdbcStackOverflowQuestionsService
                 JdbcStackOverflowQuestionsRepository.UpdateColumn.ANSWERS_UPDATED_AT
         );
     }
-
-    public void updateAllTimestamps(StackOverflowQuestion question, OffsetDateTime value) {
-        var questions = List.of(question);
-        updateUpdatedAt(questions, value);
-        updateAnswersUpdatedAt(questions, value);
-    }
 }

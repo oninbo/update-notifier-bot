@@ -12,7 +12,6 @@ import ru.tinkoff.edu.java.scrapper.repository.BaseRepository;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
-import java.util.function.Consumer;
 
 import static ru.tinkoff.edu.java.scrapper.domain.jooq.Tables.LINKS;
 import static ru.tinkoff.edu.java.scrapper.domain.jooq.Tables.STACKOVERFLOW_QUESTIONS;
@@ -47,17 +46,6 @@ public class JooqStackOverflowQuestionsRepository implements
     @Override
     public void remove(UUID id) {
         create.deleteFrom(STACKOVERFLOW_QUESTIONS).where(STACKOVERFLOW_QUESTIONS.ID.eq(id)).execute();
-    }
-
-    public void update(StackOverflowQuestion question, Consumer<StackoverflowQuestionsRecord> setter) {
-        create
-                .selectFrom(STACKOVERFLOW_QUESTIONS)
-                .where(STACKOVERFLOW_QUESTIONS.ID.eq(question.id()))
-                .fetchOptional()
-                .ifPresent(s -> {
-                    setter.accept(s);
-                    s.store();
-                });
     }
 
     public <T> void update(

@@ -8,13 +8,14 @@ import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.function.BiFunction;
 import java.util.function.Function;
 
 public class LinkUpdateUtils {
     public static <T> List<LinkUpdate> getUpdates(
             Iterable<T> updated,
             Function<T, OffsetDateTime> getFetchedUpdatedAt,
-            Function<T, List<LinkWithChatId>> getLinks,
+            BiFunction<T, OffsetDateTime, List<LinkWithChatId>> getLinks,
             Function<T, OffsetDateTime> getUpdatedAt,
             Function<T, OffsetDateTime> getCreatedAt
     ) {
@@ -28,7 +29,7 @@ public class LinkUpdateUtils {
 
             var updatedAt = ObjectUtils.max(getUpdatedAt.apply(u), getCreatedAt.apply(u));
             if (updatedAt.isBefore(fetchedUpdatedAt)) {
-                var links = getLinks.apply(u);
+                var links = getLinks.apply(u, fetchedUpdatedAt);
 
                 if (links.isEmpty()) {
                     continue;

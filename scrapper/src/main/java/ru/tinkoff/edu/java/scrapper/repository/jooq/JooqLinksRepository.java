@@ -10,6 +10,7 @@ import ru.tinkoff.edu.java.scrapper.dto.*;
 import ru.tinkoff.edu.java.scrapper.repository.BaseRepository;
 
 import java.net.URI;
+import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -71,11 +72,12 @@ public class JooqLinksRepository implements BaseRepository<Link, LinkAddParams> 
         create.deleteFrom(LINKS).where(LINKS.ID.eq(id)).execute();
     }
 
-    public List<LinkWithChatId> findAllWithChatId(StackOverflowQuestion stackOverflowQuestion) {
+    public List<LinkWithChatId> findAllWithChatId(StackOverflowQuestion question, OffsetDateTime createdBefore) {
         return create
                 .select(LINKS.asterisk(), TG_CHATS.CHAT_ID)
                 .from(linksJoinTgChats())
-                .where(LINKS.STACKOVERFLOW_QUESTION_ID.eq(stackOverflowQuestion.id()))
+                .where(LINKS.STACKOVERFLOW_QUESTION_ID.eq(question.id())
+                        .and(LINKS.CREATED_AT.lessThan(createdBefore)))
                 .fetch(recordMapperWithChatId());
     }
 
@@ -84,11 +86,12 @@ public class JooqLinksRepository implements BaseRepository<Link, LinkAddParams> 
                 .on(TG_CHATS.ID.eq(LINKS.TG_CHAT_ID));
     }
 
-    public List<LinkWithChatId> findAllWithChatId(GitHubRepository gitHubRepository) {
+    public List<LinkWithChatId> findAllWithChatId(GitHubRepository gitHubRepository, OffsetDateTime createdBefore) {
         return create
                 .select(LINKS.asterisk(), TG_CHATS.CHAT_ID)
                 .from(linksJoinTgChats())
-                .where(LINKS.GITHUB_REPOSITORY_ID.eq(gitHubRepository.id()))
+                .where(LINKS.GITHUB_REPOSITORY_ID.eq(gitHubRepository.id())
+                        .and(LINKS.CREATED_AT.lessThan(createdBefore)))
                 .fetch(recordMapperWithChatId());
     }
 

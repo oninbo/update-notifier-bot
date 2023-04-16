@@ -18,7 +18,6 @@ import ru.tinkoff.edu.java.scrapper.service.utils.LinkBuilder;
 import ru.tinkoff.edu.java.scrapper.service.utils.LinkFinder;
 
 import java.net.URI;
-import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -53,16 +52,12 @@ public class JooqLinksService implements LinksService {
 
     private Link addLink(TgChat tgChat, URI url, StackOverflowQuestion stackOverflowQuestion) {
         checkIfLinkExists(linksRepository.find(tgChat, stackOverflowQuestion));
-        var link = linksRepository.add(new LinkAddParams(url, tgChat, stackOverflowQuestion));
-        stackOverflowQuestionsService.updateAllTimestamps(stackOverflowQuestion, OffsetDateTime.now());
-        return link;
+        return linksRepository.add(new LinkAddParams(url, tgChat, stackOverflowQuestion));
     }
 
     private Link addLink(TgChat tgChat, URI url, GitHubRepository gitHubRepository) {
         checkIfLinkExists(linksRepository.find(tgChat, gitHubRepository));
-        var link = linksRepository.add(new LinkAddParams(url, tgChat, gitHubRepository));
-        gitHubRepositoriesService.updateAllTimestamps(gitHubRepository, OffsetDateTime.now());
-        return link;
+        return linksRepository.add(new LinkAddParams(url, tgChat, gitHubRepository));
     }
 
     @Override

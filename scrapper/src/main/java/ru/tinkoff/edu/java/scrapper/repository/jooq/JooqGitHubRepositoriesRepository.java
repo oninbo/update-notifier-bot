@@ -15,7 +15,6 @@ import ru.tinkoff.edu.java.scrapper.repository.BaseRepository;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
-import java.util.function.Consumer;
 
 import static ru.tinkoff.edu.java.scrapper.domain.jooq.Tables.GITHUB_REPOSITORIES;
 import static ru.tinkoff.edu.java.scrapper.domain.jooq.Tables.LINKS;
@@ -73,17 +72,6 @@ public class JooqGitHubRepositoriesRepository implements
                 .orderBy(orderColumn.asc().nullsFirst())
                 .limit(first)
                 .fetch(recordMapper());
-    }
-
-    public void update(GitHubRepository repository, Consumer<GithubRepositoriesRecord> setter) {
-        create
-                .selectFrom(GITHUB_REPOSITORIES)
-                .where(GITHUB_REPOSITORIES.ID.eq(repository.id()))
-                .fetchOptional()
-                .ifPresent(r -> {
-                    setter.accept(r);
-                    r.store();
-                });
     }
 
     private RecordMapper<Record, GitHubRepository> recordMapper() {

@@ -91,12 +91,4 @@ class JooqStackOverflowQuestionsService
     public List<StackOverflowQuestion> getForAnswersUpdate(int first) {
         return stackOverflowQuestionsRepository.findWithLinks(first, STACKOVERFLOW_QUESTIONS.ANSWERS_UPDATED_AT);
     }
-
-    public void updateAllTimestamps(StackOverflowQuestion stackOverflowQuestion, OffsetDateTime now) {
-        stackOverflowQuestionsRepository.update(stackOverflowQuestion,
-                stackoverflowQuestions -> {
-                    stackoverflowQuestions.setUpdatedAt(now);
-                    stackoverflowQuestions.setAnswersUpdatedAt(now);
-                });
-    }
 }

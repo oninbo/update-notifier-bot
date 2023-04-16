@@ -18,7 +18,6 @@ import ru.tinkoff.edu.java.scrapper.service.utils.LinkBuilder;
 import ru.tinkoff.edu.java.scrapper.service.utils.LinkFinder;
 
 import java.net.URI;
-import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -39,13 +38,12 @@ class JdbcLinksService implements LinksService {
     }
 
     @Override
-    @Transactional
     public Link addLink(Long chatId, URI url) {
         TgChat tgChat = getTgChat(chatId);
 
         var linkBuilder = new LinkBuilder(
-                gitHubRepository -> addLink(tgChat, url, gitHubRepository),
-                stackOverflowQuestion -> addLink(tgChat, url, stackOverflowQuestion),
+                gitHubRepository -> new Add(this, tgChat, url).add(gitHubRepository),
+                stackOverflowQuestion -> new Add(this, tgChat, url).add(stackOverflowQuestion),
                 stackOverflowQuestionsService,
                 gitHubRepositoriesService
         );
@@ -55,14 +53,12 @@ class JdbcLinksService implements LinksService {
     @Transactional
     public Link addLink(TgChat tgChat, URI url, GitHubRepository gitHubRepository) {
         checkIfLinkExists(jdbcLinksRepository.find(tgChat, gitHubRepository));
-        gitHubRepositoriesService.updateAllTimestamps(gitHubRepository, OffsetDateTime.now());
         return jdbcLinksRepository.add(new LinkAddParams(url, tgChat, gitHubRepository));
     }
 
     @Transactional
     public Link addLink(TgChat tgChat, URI url, StackOverflowQuestion stackOverflowQuestion) {
         checkIfLinkExists(jdbcLinksRepository.find(tgChat, stackOverflowQuestion));
-        stackOverflowQuestionsService.updateAllTimestamps(stackOverflowQuestion, OffsetDateTime.now());
         return jdbcLinksRepository.add(new LinkAddParams(url, tgChat, stackOverflowQuestion));
     }
 
@@ -109,5 +105,20 @@ class JdbcLinksService implements LinksService {
         }
 
         return linkParserResult.get();
+    }
+
+    @RequiredArgsConstructor
+    static class Add {
+        private final JdbcLinksService linksService;
+        private final TgChat tgChat;
+        private final URI url;
+
+        public Link add(GitHubRepository gitHubRepository) {
+            return linksService.addLink(tgChat, url, gitHubRepository);
+        }
+
+        public Link add(StackOverflowQuestion question) {
+            return linksService.addLink(tgChat, url, question);
+        }
     }
 }
