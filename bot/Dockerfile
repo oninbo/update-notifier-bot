@@ -2,6 +2,8 @@ FROM maven:3.8.3-openjdk-17-slim AS build
 
 COPY pom.xml /home/app/pom.xml
 
+COPY scrapper-jooq/pom.xml /home/app/scrapper-jooq/
+
 COPY link-parser/pom.xml /home/app/link-parser/
 COPY link-parser/src /home/app/link-parser/src
 

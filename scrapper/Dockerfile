@@ -2,6 +2,8 @@ FROM maven:3.8.3-openjdk-17-slim AS build
 
 COPY pom.xml /home/app/pom.xml
 
+COPY scrapper-jooq/pom.xml /home/app/scrapper-jooq/
+
 COPY link-parser/pom.xml /home/app/link-parser/
 COPY link-parser/src /home/app/link-parser/src
 
@@ -10,7 +12,6 @@ COPY scrapper/src /home/app/scrapper/src
 COPY scrapper/lombok.config /home/app/scrapper/
 
 COPY bot/pom.xml /home/app/bot/
-COPY bot/src /home/app/bot/src
 
 RUN mvn -f /home/app/pom.xml -Dmaven.test.skip=true clean package
 
