@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.function.Function;
+import java.util.function.BiFunction;
 
 public abstract class GitHubRepositoriesService {
     protected void checkIfGitHubRepositoryExists(
@@ -55,7 +55,7 @@ public abstract class GitHubRepositoriesService {
 
     protected List<GitHubIssueUpdate> getGitHubIssueUpdates(
             List<GitHubRepository> repositories,
-            Function<GitHubRepository, List<LinkWithChatId>> getLinks,
+            BiFunction<GitHubRepository, OffsetDateTime, List<LinkWithChatId>> getLinks,
             GitHubClient gitHubClient,
             ApplicationConfig applicationConfig
     ) {
@@ -67,14 +67,14 @@ public abstract class GitHubRepositoriesService {
                 continue;
             }
 
-            var links = getLinks.apply(repo);
-            if (links.isEmpty()) {
-                continue;
-            }
-            var link = links.get(0);
-
             issues.forEach(
-                    issue -> updates.add(
+                    issue -> {
+                        var links = getLinks.apply(repo, issue.createdAt());
+                        if (links.isEmpty()) {
+                            return;
+                        }
+                        var link = links.get(0);
+                        updates.add(
                             new GitHubIssueUpdate(
                                     issue.url(),
                                     new GitHubIssueUpdate.GitHubRepository(
@@ -84,7 +84,8 @@ public abstract class GitHubRepositoriesService {
                                     ),
                                     links.stream().map(LinkWithChatId::chatId).toList()
                             )
-                    )
+                    );
+                    }
             );
         }
         return updates;

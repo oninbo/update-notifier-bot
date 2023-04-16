@@ -8,10 +8,12 @@ import ru.tinkoff.edu.java.scrapper.dto.*;
 import ru.tinkoff.edu.java.scrapper.exception.StackOverflowQuestionNotFoundException;
 import ru.tinkoff.edu.java.scrapper.service.utils.LinkUpdateUtils;
 
+import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.BiFunction;
 import java.util.function.Function;
 
 public abstract class StackOverflowQuestionsService {
@@ -33,7 +35,7 @@ public abstract class StackOverflowQuestionsService {
             List<StackOverflowQuestion> questions,
             StackOverflowClient stackOverflowClient,
             ApplicationConfig applicationConfig,
-            Function<StackOverflowQuestion, List<LinkWithChatId>> getLinks
+            BiFunction<StackOverflowQuestion, OffsetDateTime, List<LinkWithChatId>> getLinks
     ) {
         var fetchedBatch = stackOverflowClient.getStackOverflowQuestions(
                 applicationConfig.webClient().stackExchange().apiVersion(),
@@ -67,7 +69,7 @@ public abstract class StackOverflowQuestionsService {
 
     protected List<StackOverflowAnswerUpdate> getAnswerUpdates(
             List<StackOverflowQuestion> questions,
-            Function<StackOverflowQuestion, List<LinkWithChatId>> getLinks,
+            BiFunction<StackOverflowQuestion, OffsetDateTime, List<LinkWithChatId>> getLinks,
             StackOverflowClient stackOverflowClient,
             ApplicationConfig applicationConfig
     ) {
@@ -111,10 +113,10 @@ public abstract class StackOverflowQuestionsService {
         return answers;
     }
 
-    protected Optional<StackOverflowAnswerUpdate> getAnswerUpdate(
+    private Optional<StackOverflowAnswerUpdate> getAnswerUpdate(
             StackExchangeAnswerResponse answer,
             List<StackOverflowQuestion> questions,
-            Function<StackOverflowQuestion, List<LinkWithChatId>> getLinks
+            BiFunction<StackOverflowQuestion, OffsetDateTime, List<LinkWithChatId>> getLinks
     ) {
         var questionResult = questions
                 .stream()
@@ -127,7 +129,7 @@ public abstract class StackOverflowQuestionsService {
         if (!question.answersUpdatedAt().isBefore(answer.creationDate())) {
             return Optional.empty();
         }
-        var links = getLinks.apply(question);
+        var links = getLinks.apply(question, answer.creationDate());
         if (links.isEmpty()) {
             return Optional.empty();
         }

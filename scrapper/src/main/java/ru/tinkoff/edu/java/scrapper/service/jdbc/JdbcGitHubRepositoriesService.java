@@ -98,11 +98,4 @@ class JdbcGitHubRepositoriesService
         return jdbcGitHubRepositoriesRepository
                 .findAllWithLinks(first, JdbcGitHubRepositoriesRepository.UpdateColumn.ISSUES_UPDATED_AT);
     }
-
-
-    public void updateAllTimestamps(GitHubRepository repository, OffsetDateTime value) {
-        var repos = List.of(repository);
-        updateUpdatedAt(repos, value);
-        updateIssuesUpdatedAt(repos, value);
-    }
 }

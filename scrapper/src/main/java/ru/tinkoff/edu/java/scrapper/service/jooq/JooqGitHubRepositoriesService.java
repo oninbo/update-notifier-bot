@@ -94,13 +94,4 @@ class JooqGitHubRepositoriesService
         return gitHubRepositoriesRepository
                 .findAllWithLinks(first, GITHUB_REPOSITORIES.UPDATED_AT);
     }
-
-    public void updateAllTimestamps(GitHubRepository gitHubRepository, OffsetDateTime now) {
-        gitHubRepositoriesRepository.update(
-                gitHubRepository,
-                record -> {
-                    record.setUpdatedAt(now);
-                    record.setIssuesUpdatedAt(now);
-                });
-    }
 }
