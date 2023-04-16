@@ -12,6 +12,7 @@ COPY scrapper/src /home/app/scrapper/src
 COPY scrapper/lombok.config /home/app/scrapper/
 
 COPY bot/pom.xml /home/app/bot/
+COPY bot/src /home/app/bot/src
 
 RUN mvn -f /home/app/pom.xml -Dmaven.test.skip=true clean package
 
