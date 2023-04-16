@@ -20,7 +20,6 @@ import ru.tinkoff.edu.java.scrapper.repository.TgChatsRepository;
 import ru.tinkoff.edu.java.scrapper.service.LinksService;
 
 import java.net.URI;
-import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Supplier;
@@ -42,13 +41,15 @@ class JdbcLinksService implements LinksService {
     }
 
     @Override
+    @Transactional
     public Link addLink(Long chatId, URI url) {
         TgChat tgChat = getTgChat(chatId);
 
         var linkBuilder = new LinkBuilder(
                 url,
                 tgChat,
-                getLinkParserResult(url)
+                getLinkParserResult(url),
+                this
         );
         return linkBuilder.build();
     }
@@ -56,14 +57,12 @@ class JdbcLinksService implements LinksService {
     @Transactional
     public Link addLink(TgChat tgChat, URI url, GitHubRepository gitHubRepository) {
         checkIfLinkExists(linksRepository.find(tgChat, gitHubRepository));
-        gitHubRepositoriesService.updateUpdatedAt(List.of(gitHubRepository), OffsetDateTime.now());
         return linksRepository.add(new LinkAddParams(url, tgChat, gitHubRepository));
     }
 
     @Transactional
     public Link addLink(TgChat tgChat, URI url, StackOverflowQuestion stackOverflowQuestion) {
         checkIfLinkExists(linksRepository.find(tgChat, stackOverflowQuestion));
-        stackOverflowQuestionsService.updateUpdatedAt(List.of(stackOverflowQuestion), OffsetDateTime.now());
         return linksRepository.add(new LinkAddParams(url, tgChat, stackOverflowQuestion));
     }
 
@@ -109,10 +108,11 @@ class JdbcLinksService implements LinksService {
     class LinkBuilder implements LinkParserResultVisitor {
         private final URI url;
         private final TgChat tgChat;
+        private final JdbcLinksService linksService;
         private Supplier<Link> onBuild;
 
-        public LinkBuilder(URI url, TgChat tgChat, LinkParserResult linkParserResult) {
-            this(url, tgChat);
+        public LinkBuilder(URI url, TgChat tgChat, LinkParserResult linkParserResult, JdbcLinksService linksService) {
+            this(url, tgChat, linksService);
             linkParserResult.acceptVisitor(this);
         }
 
@@ -122,12 +122,12 @@ class JdbcLinksService implements LinksService {
 
         @Override
         public void visit(GitHubParserResult gitHubParserResult) {
-            onBuild = () -> addLink(tgChat, url, gitHubRepositoriesService.findOrCreate(gitHubParserResult));
+            onBuild = () -> linksService.addLink(tgChat, url, gitHubRepositoriesService.findOrCreate(gitHubParserResult));
         }
 
         @Override
         public void visit(StackOverflowParserResult stackOverflowParserResult) {
-            onBuild = () -> addLink(
+            onBuild = () -> linksService.addLink(
                     tgChat,
                     url,
                     stackOverflowQuestionsService.findOrCreate(stackOverflowParserResult)
