@@ -39,7 +39,6 @@ class JdbcLinksService implements LinksService {
     }
 
     @Override
-    @Transactional
     public Link addLink(Long chatId, URI url) {
         TgChat tgChat = getTgChat(chatId);
 

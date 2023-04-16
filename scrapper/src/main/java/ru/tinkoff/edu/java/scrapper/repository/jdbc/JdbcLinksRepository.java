@@ -10,6 +10,7 @@ import ru.tinkoff.edu.java.scrapper.repository.BaseRepository;
 import java.net.URI;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -70,37 +71,39 @@ public class JdbcLinksRepository implements BaseRepository<Link, LinkAddParams> 
         return jdbcTemplate.query("SELECT * FROM links WHERE tg_chat_id = ?", rowMapper(), tgChat.id());
     }
 
-    public List<LinkWithChatId> findAllWithChatId(GitHubRepository gitHubRepository) {
+    public List<LinkWithChatId> findAllWithChatId(GitHubRepository gitHubRepository, OffsetDateTime createdBefore) {
         return jdbcTemplate.query(
                 """
                 SELECT links.*, tc.chat_id
                 FROM links
                 JOIN tg_chats tc on tc.id = links.tg_chat_id
-                WHERE github_repository_id = ?
+                WHERE github_repository_id = ? AND links.created_at < ?
                 """,
                 (rs, n) -> new LinkWithChatId(
                         rs.getObject("id", UUID.class),
                         URI.create(rs.getString("url")),
                         rs.getLong("chat_id")
                 ),
-                gitHubRepository.id()
+                gitHubRepository.id(),
+                createdBefore
         );
     }
 
-    public List<LinkWithChatId> findAllWithChatId(StackOverflowQuestion stackOverflowQuestion) {
+    public List<LinkWithChatId> findAllWithChatId(StackOverflowQuestion question, OffsetDateTime createdBefore) {
         return jdbcTemplate.query(
                 """
                 SELECT links.*, tc.chat_id
                 FROM links
                 JOIN tg_chats tc on tc.id = links.tg_chat_id
-                WHERE stackoverflow_question_id = ?
+                WHERE stackoverflow_question_id = ? AND links.created_at < ?
                 """,
                 (rs, n) -> new LinkWithChatId(
                         rs.getObject("id", UUID.class),
                         URI.create(rs.getString("url")),
                         rs.getLong("chat_id")
                 ),
-                stackOverflowQuestion.id()
+                question.id(),
+                createdBefore
         );
     }
 
