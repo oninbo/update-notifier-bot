@@ -17,7 +17,7 @@ app:
     stack_exchange:
       base_url: https://api.stackexchange.com/
       api_version: 2.3
-    bot_base_url: http://scrapper:8080
+    bot_base_url: http://bot:8080
   scheduler:
     interval: 1h
     batch_size: 100
