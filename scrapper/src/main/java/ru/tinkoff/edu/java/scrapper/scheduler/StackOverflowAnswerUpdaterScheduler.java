@@ -1,7 +1,6 @@
 package ru.tinkoff.edu.java.scrapper.scheduler;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -18,7 +17,6 @@ public class StackOverflowAnswerUpdaterScheduler {
     @SuppressWarnings("unused")
     private final SchedulerConfig schedulerConfig;
     private final ApplicationConfig applicationConfig;
-    @Qualifier("jooqStackOverflowQuestionsService")
     private final StackOverflowAnswersService stackOverflowAnswersService;
     private final BotClient botClient;
 

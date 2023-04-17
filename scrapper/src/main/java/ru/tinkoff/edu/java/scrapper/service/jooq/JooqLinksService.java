@@ -1,7 +1,6 @@
 package ru.tinkoff.edu.java.scrapper.service.jooq;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.tinkoff.edu.java.link_parser.LinkParserResult;
 import ru.tinkoff.edu.java.link_parser.LinkParserService;
@@ -20,10 +19,10 @@ import ru.tinkoff.edu.java.scrapper.service.utils.LinkFinder;
 import java.net.URI;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Supplier;
 
-@Service
 @RequiredArgsConstructor
-public class JooqLinksService implements LinksService {
+class JooqLinksService implements LinksService {
     private final JooqLinksRepository linksRepository;
     private final JooqTgChatsRepository tgChatsRepository;
     private final ApplicationConfig applicationConfig;
@@ -51,12 +50,12 @@ public class JooqLinksService implements LinksService {
     }
 
     private Link addLink(TgChat tgChat, URI url, StackOverflowQuestion stackOverflowQuestion) {
-        checkIfLinkExists(linksRepository.find(tgChat, stackOverflowQuestion));
+        checkIfLinkExists(() -> linksRepository.find(tgChat, stackOverflowQuestion));
         return linksRepository.add(new LinkAddParams(url, tgChat, stackOverflowQuestion));
     }
 
     private Link addLink(TgChat tgChat, URI url, GitHubRepository gitHubRepository) {
-        checkIfLinkExists(linksRepository.find(tgChat, gitHubRepository));
+        checkIfLinkExists(() -> linksRepository.find(tgChat, gitHubRepository));
         return linksRepository.add(new LinkAddParams(url, tgChat, gitHubRepository));
     }
 
@@ -97,8 +96,8 @@ public class JooqLinksService implements LinksService {
         return linkParserResult.get();
     }
 
-    private void checkIfLinkExists(Optional<Link> link) {
-        if (link.isPresent()) {
+    private void checkIfLinkExists(Supplier<Optional<Link>> link) {
+        if (link.get().isPresent()) {
             throw new LinkExistsException(applicationConfig);
         }
     }

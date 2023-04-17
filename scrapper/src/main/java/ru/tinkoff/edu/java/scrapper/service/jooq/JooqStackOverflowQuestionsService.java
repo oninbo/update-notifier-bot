@@ -1,7 +1,6 @@
 package ru.tinkoff.edu.java.scrapper.service.jooq;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
 import ru.tinkoff.edu.java.link_parser.stackoverflow.StackOverflowParserResult;
 import ru.tinkoff.edu.java.scrapper.client.StackOverflowClient;
 import ru.tinkoff.edu.java.scrapper.configuration.ApplicationConfig;
@@ -21,7 +20,6 @@ import java.util.List;
 
 import static ru.tinkoff.edu.java.scrapper.domain.jooq.Tables.STACKOVERFLOW_QUESTIONS;
 
-@Service
 @RequiredArgsConstructor
 class JooqStackOverflowQuestionsService
         extends StackOverflowQuestionsService

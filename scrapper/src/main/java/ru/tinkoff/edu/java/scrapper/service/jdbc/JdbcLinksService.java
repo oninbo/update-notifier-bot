@@ -1,7 +1,6 @@
 package ru.tinkoff.edu.java.scrapper.service.jdbc;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.tinkoff.edu.java.link_parser.LinkParserResult;
 import ru.tinkoff.edu.java.link_parser.LinkParserService;
@@ -20,8 +19,8 @@ import ru.tinkoff.edu.java.scrapper.service.utils.LinkFinder;
 import java.net.URI;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Supplier;
 
-@Service
 @RequiredArgsConstructor
 class JdbcLinksService implements LinksService {
     private final JdbcLinksRepository jdbcLinksRepository;
@@ -52,13 +51,13 @@ class JdbcLinksService implements LinksService {
 
     @Transactional
     public Link addLink(TgChat tgChat, URI url, GitHubRepository gitHubRepository) {
-        checkIfLinkExists(jdbcLinksRepository.find(tgChat, gitHubRepository));
+        checkIfLinkExists(() -> jdbcLinksRepository.find(tgChat, gitHubRepository));
         return jdbcLinksRepository.add(new LinkAddParams(url, tgChat, gitHubRepository));
     }
 
     @Transactional
     public Link addLink(TgChat tgChat, URI url, StackOverflowQuestion stackOverflowQuestion) {
-        checkIfLinkExists(jdbcLinksRepository.find(tgChat, stackOverflowQuestion));
+        checkIfLinkExists(() -> jdbcLinksRepository.find(tgChat, stackOverflowQuestion));
         return jdbcLinksRepository.add(new LinkAddParams(url, tgChat, stackOverflowQuestion));
     }
 
@@ -91,8 +90,8 @@ class JdbcLinksService implements LinksService {
         return result.get();
     }
 
-    private void checkIfLinkExists(Optional<Link> link) {
-        if (link.isPresent()) {
+    private void checkIfLinkExists(Supplier<Optional<Link>> getLink) {
+        if (getLink.get().isPresent()) {
             throw new LinkExistsException(applicationConfig);
         }
     }
