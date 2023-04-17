@@ -151,14 +151,14 @@ class JdbcLinksService implements LinksService {
 
         @Override
         public void visit(GitHubParserResult gitHubParserResult) {
-            onFind = () -> linksRepository.find(tgChat, gitHubRepositoriesService.findOrThrow(gitHubParserResult));
+            onFind = () -> linksRepository.find(tgChat, gitHubRepositoriesService.findOrCreate(gitHubParserResult));
         }
 
         @Override
         public void visit(StackOverflowParserResult stackOverflowParserResult) {
             onFind = () -> linksRepository.find(
                     tgChat,
-                    stackOverflowQuestionsService.findOrThrow(stackOverflowParserResult)
+                    stackOverflowQuestionsService.findOrCreate(stackOverflowParserResult)
             );
         }
     }
