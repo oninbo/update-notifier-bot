@@ -32,11 +32,6 @@ class JdbcStackOverflowQuestionsService
     private final ApplicationConfig applicationConfig;
 
     @Override
-    public StackOverflowQuestion findOrThrow(StackOverflowParserResult findParams) {
-        return find(findParams).orElseThrow(() -> new StackOverflowQuestionNotFoundException(applicationConfig));
-    }
-
-    @Override
     public StackOverflowQuestion findOrCreate(StackOverflowParserResult findParams) {
         return find(findParams).orElseGet(
                 () -> create(
