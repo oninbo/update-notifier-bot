@@ -29,6 +29,8 @@ app:
 server:
   port: 8081
 spring:
+  liquibase:
+    enabled: false
   devtools:
     livereload:
       port: 35730
