@@ -21,7 +21,8 @@ public record ApplicationConfig(
             @NotBlank String update,
             @NotBlank String unsupportedLink,
             @NotBlank String stackoverflowAnswerUpdate,
-            @NotBlank String githubIssueUpdate
+            @NotBlank String githubIssueUpdate,
+            @NotBlank String error
     ) {
     }
 }

@@ -72,7 +72,7 @@ public class BotUpdatesListener implements UpdatesListener {
     private void sendErrorMessage(Long userId) {
         userResponseService.sendMessage(
                 userId,
-                applicationConfig.command().common().message().botError()
+                applicationConfig.message().error()
         );
     }
 
