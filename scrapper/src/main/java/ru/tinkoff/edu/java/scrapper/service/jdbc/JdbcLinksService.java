@@ -22,7 +22,7 @@ import java.util.Optional;
 import java.util.function.Supplier;
 
 @RequiredArgsConstructor
-class JdbcLinksService implements LinksService {
+public class JdbcLinksService implements LinksService {
     private final JdbcLinksRepository jdbcLinksRepository;
     private final JdbcTgChatsRepository jdbcTgChatsRepository;
     private final ApplicationConfig applicationConfig;

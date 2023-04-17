@@ -22,7 +22,7 @@ import java.util.List;
 import static ru.tinkoff.edu.java.scrapper.domain.jooq.Tables.GITHUB_REPOSITORIES;
 
 @RequiredArgsConstructor
-class JooqGitHubRepositoriesService
+public class JooqGitHubRepositoriesService
         extends GitHubRepositoriesService
         implements FindOrDoService<GitHubRepository, GitHubParserResult>,
         GitHubIssuesService {

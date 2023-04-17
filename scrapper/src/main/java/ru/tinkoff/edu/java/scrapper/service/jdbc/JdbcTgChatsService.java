@@ -9,7 +9,7 @@ import ru.tinkoff.edu.java.scrapper.repository.jdbc.JdbcTgChatsRepository;
 import ru.tinkoff.edu.java.scrapper.service.TgChatsService;
 
 @RequiredArgsConstructor
-class JdbcTgChatsService implements TgChatsService {
+public class JdbcTgChatsService implements TgChatsService {
     private final JdbcTgChatsRepository jdbcTgChatsRepository;
     private final ApplicationConfig applicationConfig;
 

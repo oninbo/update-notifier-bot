@@ -21,7 +21,7 @@ import java.util.List;
 import java.util.Optional;
 
 @RequiredArgsConstructor
-class JdbcGitHubRepositoriesService
+public class JdbcGitHubRepositoriesService
         extends GitHubRepositoriesService
         implements FindOrDoService<GitHubRepository, GitHubParserResult>,
         GitHubIssuesService {

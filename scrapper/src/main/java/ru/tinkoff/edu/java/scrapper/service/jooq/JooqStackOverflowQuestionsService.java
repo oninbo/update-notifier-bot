@@ -21,7 +21,7 @@ import java.util.List;
 import static ru.tinkoff.edu.java.scrapper.domain.jooq.Tables.STACKOVERFLOW_QUESTIONS;
 
 @RequiredArgsConstructor
-class JooqStackOverflowQuestionsService
+public class JooqStackOverflowQuestionsService
         extends StackOverflowQuestionsService
         implements FindOrDoService<StackOverflowQuestion, StackOverflowParserResult>,
         StackOverflowAnswersService {

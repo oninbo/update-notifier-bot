@@ -20,7 +20,7 @@ import java.util.List;
 import java.util.Optional;
 
 @RequiredArgsConstructor
-class JdbcStackOverflowQuestionsService
+public class JdbcStackOverflowQuestionsService
         extends StackOverflowQuestionsService
         implements FindOrDoService<StackOverflowQuestion, StackOverflowParserResult>,
         StackOverflowAnswersService {

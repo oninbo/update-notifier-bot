@@ -22,7 +22,7 @@ import java.util.Optional;
 import java.util.function.Supplier;
 
 @RequiredArgsConstructor
-class JooqLinksService implements LinksService {
+public class JooqLinksService implements LinksService {
     private final JooqLinksRepository linksRepository;
     private final JooqTgChatsRepository tgChatsRepository;
     private final ApplicationConfig applicationConfig;
