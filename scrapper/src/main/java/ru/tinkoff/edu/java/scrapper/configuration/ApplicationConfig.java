@@ -12,10 +12,9 @@ public record ApplicationConfig(
         @Valid @NotNull WebClient webClient,
         @Valid @NotNull Scheduler scheduler,
         @Valid @NotNull Database database,
-        @NotNull AccessType databaseAccessType
+        @NotNull ApplicationConfig.DatabaseAccessType databaseAccessType
 ) {
-    // TODO: rename to DatabaseAccessType?
-    enum AccessType {
+    enum DatabaseAccessType {
         JDBC,
         JPA,
         JOOQ
