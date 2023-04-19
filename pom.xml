@@ -17,10 +17,12 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <spring-cloud.version>2022.0.0</spring-cloud.version>
         <spring-boot.version>3.0.1</spring-boot.version>
+        <spring.framework.version>6.0.3</spring.framework.version>
         <org.jetbrains.annotations.version>23.1.0</org.jetbrains.annotations.version>
         <maven-surefire-plugin.version>2.22.0</maven-surefire-plugin.version>
         <maven-failsafe-plugin.version>2.21.0</maven-failsafe-plugin.version>
         <maven-compiler-plugin.version>3.10.1</maven-compiler-plugin.version>
+        <aspectj-maven-plugin.version>1.14</aspectj-maven-plugin.version>
         <junit-jupiter-engine.version>5.9.2</junit-jupiter-engine.version>
         <junit-platform-surefire-provider.version>1.2.0</junit-platform-surefire-provider.version>
         <junit.extensions.version>2.6.0</junit.extensions.version>
@@ -168,6 +170,10 @@
                         </dependency>
                     </dependencies>
                     <configuration>
+                        <forkMode>once</forkMode>
+                        <argLine>
+                            -javaagent:"${settings.localRepository}/org/springframework/spring-instrument/${spring.framework.version}/spring-instrument-${spring.framework.version}.jar"
+                        </argLine>
                         <additionalClasspathElements>
                             <additionalClasspathElement>src/test/java/</additionalClasspathElement>
                         </additionalClasspathElements>
@@ -182,6 +188,19 @@
                             <goals>
                                 <goal>integration-test</goal>
                                 <goal>verify</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                </plugin>
+                <plugin>
+                    <groupId>org.codehaus.mojo</groupId>
+                    <artifactId>aspectj-maven-plugin</artifactId>
+                    <version>${aspectj-maven-plugin.version}</version>
+                    <executions>
+                        <execution>
+                            <goals>
+                                <goal>compile</goal>
+                                <goal>test-compile</goal>
                             </goals>
                         </execution>
                     </executions>
