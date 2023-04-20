@@ -3,15 +3,13 @@ package ru.tinkoff.edu.java.scrapper.repository.jpa;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
-import ru.tinkoff.edu.java.scrapper.dto.GitHubRepository;
-import ru.tinkoff.edu.java.scrapper.dto.Link;
-import ru.tinkoff.edu.java.scrapper.dto.StackOverflowQuestion;
-import ru.tinkoff.edu.java.scrapper.dto.TgChat;
+import ru.tinkoff.edu.java.scrapper.dto.*;
 import ru.tinkoff.edu.java.scrapper.entity.GitHubRepositoryEntity;
 import ru.tinkoff.edu.java.scrapper.entity.LinkEntity;
 import ru.tinkoff.edu.java.scrapper.entity.TgChatEntity;
 
 import java.net.URI;
+import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -50,4 +48,15 @@ public interface JpaLinksRepository extends JpaRepository<LinkEntity, UUID> {
                 WHERE l.tgChat.id = :#{#tgChat.id}
             """)
     List<Link> findAll(@Param("tgChat") TgChat tgChat);
+
+    @Query("""
+            SELECT new ru.tinkoff.edu.java.scrapper.dto.LinkWithChatId(l.id, l.url, tc.chatId)
+            FROM LinkEntity AS l
+            JOIN TgChatEntity AS tc
+            WHERE l.gitHubRepository.id = :#{#gitHubRepository.id} AND l.createdAt < :createdBefore
+            """)
+    List<LinkWithChatId> findAllWithChatId(
+            @Param("gitHubRepository") GitHubRepository gitHubRepository,
+            @Param("createdBefore") OffsetDateTime createdBefore
+    );
 }

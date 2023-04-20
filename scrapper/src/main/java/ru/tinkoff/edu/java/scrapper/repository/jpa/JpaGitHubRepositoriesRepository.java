@@ -5,6 +5,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import ru.tinkoff.edu.java.link_parser.github.GitHubParserResult;
 import ru.tinkoff.edu.java.scrapper.dto.GitHubRepository;
 import ru.tinkoff.edu.java.scrapper.dto.GitHubRepositoryAddParams;
 import ru.tinkoff.edu.java.scrapper.entity.GitHubRepositoryEntity;
@@ -54,6 +55,10 @@ public interface JpaGitHubRepositoriesRepository extends JpaRepository<GitHubRep
     static Pageable pageableSortedBy(int limit, OrderColumn orderColumn) {
         return PageRequest.ofSize(limit)
                 .withSort(Sort.by(Sort.Order.by(orderColumn.name())).ascending());
+    }
+
+    default Optional<GitHubRepository> find(GitHubParserResult findParams) {
+        return find(findParams.userName(), findParams.projectName());
     }
 
     enum OrderColumn {

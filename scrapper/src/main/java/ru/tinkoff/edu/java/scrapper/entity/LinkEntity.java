@@ -3,9 +3,11 @@ package ru.tinkoff.edu.java.scrapper.entity;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.CreationTimestamp;
 import ru.tinkoff.edu.java.scrapper.converter.UriPersistenceConverter;
 
 import java.net.URI;
+import java.time.OffsetDateTime;
 import java.util.UUID;
 
 @Getter
@@ -36,4 +38,8 @@ public class LinkEntity {
     @JoinColumn(name="github_repository_id")
     @Setter
     private GitHubRepositoryEntity gitHubRepository;
+
+    @Column(name = "created_at")
+    @CreationTimestamp
+    private OffsetDateTime createdAt;
 }
