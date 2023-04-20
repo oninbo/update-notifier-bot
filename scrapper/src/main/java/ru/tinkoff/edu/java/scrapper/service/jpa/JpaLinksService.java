@@ -1,4 +1,3 @@
-/* TODO
 package ru.tinkoff.edu.java.scrapper.service.jpa;
 
 import lombok.RequiredArgsConstructor;
@@ -6,11 +5,18 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.tinkoff.edu.java.link_parser.LinkParserResult;
 import ru.tinkoff.edu.java.link_parser.LinkParserService;
 import ru.tinkoff.edu.java.scrapper.configuration.ApplicationConfig;
-import ru.tinkoff.edu.java.scrapper.dto.*;
+import ru.tinkoff.edu.java.scrapper.dto.Link;
+import ru.tinkoff.edu.java.scrapper.dto.TgChat;
+import ru.tinkoff.edu.java.scrapper.entity.GitHubRepositoryEntity;
+import ru.tinkoff.edu.java.scrapper.entity.StackOverflowQuestionEntity;
+import ru.tinkoff.edu.java.scrapper.entity.TgChatEntity;
 import ru.tinkoff.edu.java.scrapper.exception.LinkExistsException;
 import ru.tinkoff.edu.java.scrapper.exception.LinkNotFoundException;
 import ru.tinkoff.edu.java.scrapper.exception.LinkNotSupportedException;
 import ru.tinkoff.edu.java.scrapper.exception.TgChatNotFoundException;
+import ru.tinkoff.edu.java.scrapper.mapper.GithubRepositoryMapper;
+import ru.tinkoff.edu.java.scrapper.mapper.LinkMapper;
+import ru.tinkoff.edu.java.scrapper.mapper.StackOverflowQuestionMapper;
 import ru.tinkoff.edu.java.scrapper.repository.jpa.JpaLinksRepository;
 import ru.tinkoff.edu.java.scrapper.repository.jpa.JpaTgChatsRepository;
 import ru.tinkoff.edu.java.scrapper.service.LinksService;
@@ -30,18 +36,24 @@ public class JpaLinksService implements LinksService {
     private final JpaStackOverflowQuestionsService stackOverflowQuestionsService;
     private final JpaGitHubRepositoriesService gitHubRepositoriesService;
     private final LinkParserService linkParserService;
+    private final LinkMapper linkMapper;
+    private final StackOverflowQuestionMapper stackOverflowQuestionMapper;
+    private final GithubRepositoryMapper githubRepositoryMapper;
 
     @Override
     public List<Link> getLinks(Long chatId) {
-        return linksRepository.findAll(chatId);
+        return linksRepository.findAllByChatId(chatId)
+                .stream()
+                .map(linkMapper::fromEntity)
+                .toList();
     }
 
     @Transactional
     @Override
     public Link addLink(Long chatId, URI url) {
-        TgChat tgChat = getTgChat(chatId);
+        TgChatEntity tgChat = getTgChat(chatId);
 
-        var linkBuilder = new LinkBuilder(
+        var linkBuilder = new LinkBuilder<>(
                 gitHubRepository -> addLink(tgChat, url, gitHubRepository),
                 stackOverflowQuestion -> addLink(tgChat, url, stackOverflowQuestion),
                 stackOverflowQuestionsService,
@@ -50,22 +62,30 @@ public class JpaLinksService implements LinksService {
         return linkBuilder.build(getLinkParserResult(url));
     }
 
-    private Link addLink(TgChat tgChat, URI url, StackOverflowQuestion stackOverflowQuestion) {
-        checkIfLinkExists(() -> linksRepository.find(tgChat, stackOverflowQuestion));
-        return linksRepository.add(new LinkAddParams(url, tgChat, stackOverflowQuestion));
+    private Link addLink(TgChatEntity tgChat, URI url, StackOverflowQuestionEntity stackOverflowQuestion) {
+        checkIfLinkExists(() -> linksRepository.find(
+                new TgChat(tgChat.getId(), tgChat.getChatId()),
+                stackOverflowQuestionMapper.fromEntity(stackOverflowQuestion)));
+        return linksRepository.add(url, tgChat, stackOverflowQuestion);
     }
 
-    private Link addLink(TgChat tgChat, URI url, GitHubRepository gitHubRepository) {
-        checkIfLinkExists(() -> linksRepository.find(tgChat, gitHubRepository));
-        return linksRepository.add(new LinkAddParams(url, tgChat, gitHubRepository));
+    private Link addLink(TgChatEntity tgChat, URI url, GitHubRepositoryEntity gitHubRepository) {
+        checkIfLinkExists(() -> linksRepository.find(
+                new TgChat(tgChat.getId(), tgChat.getChatId()),
+                githubRepositoryMapper.fromEntity(gitHubRepository)));
+        return linksRepository.add(url, tgChat, gitHubRepository);
     }
 
     @Override
     public Link deleteLink(Long chatId, URI url) {
         var tgChat = getTgChat(chatId);
-        var linkFinder = new LinkFinder(
-                gitHubRepository -> linksRepository.find(tgChat, gitHubRepository),
-                question -> linksRepository.find(tgChat, question),
+        var linkFinder = new LinkFinder<>(
+                gitHubRepository -> linksRepository.find(
+                        new TgChat(tgChat.getId(), tgChat.getChatId()),
+                        githubRepositoryMapper.fromEntity(gitHubRepository)),
+                question -> linksRepository.find(
+                        new TgChat(tgChat.getId(), tgChat.getChatId()),
+                        stackOverflowQuestionMapper.fromEntity(question)),
                 stackOverflowQuestionsService,
                 gitHubRepositoriesService
         );
@@ -73,14 +93,14 @@ public class JpaLinksService implements LinksService {
         return linkFinder
                 .find(getLinkParserResult(url))
                 .map(link -> {
-                    linksRepository.remove(link.id());
+                    linksRepository.deleteById(link.id());
                     return link;
                 })
                 .orElseThrow(() -> new LinkNotFoundException(applicationConfig));
     }
 
-    private TgChat getTgChat(Long chatId) {
-        var result = tgChatsRepository.find(chatId);
+    private TgChatEntity getTgChat(Long chatId) {
+        var result = tgChatsRepository.findByChatId(chatId);
         if (result.isEmpty()) {
             throw new TgChatNotFoundException(applicationConfig);
         }
@@ -103,4 +123,3 @@ public class JpaLinksService implements LinksService {
         }
     }
 }
-*/

@@ -40,7 +40,7 @@ public class JooqLinksService implements LinksService {
     public Link addLink(Long chatId, URI url) {
         TgChat tgChat = getTgChat(chatId);
 
-        var linkBuilder = new LinkBuilder(
+        var linkBuilder = new LinkBuilder<>(
                 gitHubRepository -> addLink(tgChat, url, gitHubRepository),
                 stackOverflowQuestion -> addLink(tgChat, url, stackOverflowQuestion),
                 stackOverflowQuestionsService,
@@ -62,7 +62,7 @@ public class JooqLinksService implements LinksService {
     @Override
     public Link deleteLink(Long chatId, URI url) {
         var tgChat = getTgChat(chatId);
-        var linkFinder = new LinkFinder(
+        var linkFinder = new LinkFinder<>(
                 gitHubRepository -> linksRepository.find(tgChat, gitHubRepository),
                 question -> linksRepository.find(tgChat, question),
                 stackOverflowQuestionsService,

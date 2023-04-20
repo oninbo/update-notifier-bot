@@ -17,11 +17,14 @@ import java.util.UUID;
 
 public interface JpaGitHubRepositoriesRepository extends JpaRepository<GitHubRepositoryEntity, UUID> {
     default GitHubRepository add(GitHubRepositoryAddParams addParams, GithubRepositoryMapper mapper) {
+        return mapper.fromEntity(add(addParams));
+    }
+
+    default GitHubRepositoryEntity add(GitHubRepositoryAddParams addParams) {
         var entity = new GitHubRepositoryEntity();
         entity.setName(addParams.name());
         entity.setUsername(addParams.username());
-        save(entity);
-        return mapper.fromEntity(entity);
+        return save(entity);
     }
 
     default List<GitHubRepository> findAllRepositories(GithubRepositoryMapper mapper) {

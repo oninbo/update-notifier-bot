@@ -8,6 +8,7 @@ import ru.tinkoff.edu.java.scrapper.dto.GitHubIssueUpdate;
 import ru.tinkoff.edu.java.scrapper.dto.GitHubRepository;
 import ru.tinkoff.edu.java.scrapper.dto.GitHubRepositoryAddParams;
 import ru.tinkoff.edu.java.scrapper.dto.LinkUpdate;
+import ru.tinkoff.edu.java.scrapper.entity.GitHubRepositoryEntity;
 import ru.tinkoff.edu.java.scrapper.exception.GitHubRepositoryNotFoundException;
 import ru.tinkoff.edu.java.scrapper.mapper.GithubRepositoryMapper;
 import ru.tinkoff.edu.java.scrapper.repository.jpa.JpaGitHubRepositoriesRepository;
@@ -23,7 +24,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class JpaGitHubRepositoriesService
         extends GitHubRepositoriesService
-        implements FindOrDoService<GitHubRepository, GitHubParserResult>,
+        implements FindOrDoService<GitHubRepositoryEntity, GitHubParserResult>,
         GitHubIssuesService {
     private final JpaGitHubRepositoriesRepository gitHubRepositoriesRepository;
     private final JpaLinksRepository linksRepository;
@@ -32,21 +33,21 @@ public class JpaGitHubRepositoriesService
     private final GithubRepositoryMapper mapper;
 
     @Override
-    public GitHubRepository findOrThrow(GitHubParserResult findParams) {
-        return gitHubRepositoriesRepository.find(findParams, mapper)
+    public GitHubRepositoryEntity findOrThrow(GitHubParserResult findParams) {
+        return gitHubRepositoriesRepository.findByUsernameAndName(findParams.userName(), findParams.projectName())
                 .orElseThrow(() -> new GitHubRepositoryNotFoundException(applicationConfig));
     }
 
     @Override
-    public GitHubRepository findOrCreate(GitHubParserResult findParams) {
-        return gitHubRepositoriesRepository.find(findParams, mapper)
+    public GitHubRepositoryEntity findOrCreate(GitHubParserResult findParams) {
+        return gitHubRepositoriesRepository.findByUsernameAndName(findParams.userName(), findParams.projectName())
                 .orElseGet(() -> {
                     var addParams = new GitHubRepositoryAddParams(
                             findParams.userName(),
                             findParams.projectName()
                     );
                     checkIfGitHubRepositoryExists(addParams, applicationConfig, gitHubClient);
-                    return gitHubRepositoriesRepository.add(addParams, mapper);
+                    return gitHubRepositoriesRepository.add(addParams);
                 });
     }
 

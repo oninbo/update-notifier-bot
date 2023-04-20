@@ -5,20 +5,18 @@ import ru.tinkoff.edu.java.link_parser.LinkParserResult;
 import ru.tinkoff.edu.java.link_parser.LinkParserResultVisitor;
 import ru.tinkoff.edu.java.link_parser.github.GitHubParserResult;
 import ru.tinkoff.edu.java.link_parser.stackoverflow.StackOverflowParserResult;
-import ru.tinkoff.edu.java.scrapper.dto.GitHubRepository;
 import ru.tinkoff.edu.java.scrapper.dto.Link;
-import ru.tinkoff.edu.java.scrapper.dto.StackOverflowQuestion;
 import ru.tinkoff.edu.java.scrapper.service.FindOrDoService;
 
 import java.util.function.Function;
 import java.util.function.Supplier;
 
 @RequiredArgsConstructor
-public class LinkBuilder {
-    private final Function<GitHubRepository, Link> addGitHubRepositoryLink;
-    private final Function<StackOverflowQuestion, Link> addStackOverflowQuestionLink;
-    private final FindOrDoService<StackOverflowQuestion, StackOverflowParserResult> stackOverflowQuestionsService;
-    private final FindOrDoService<GitHubRepository, GitHubParserResult> gitHubRepositoriesService;
+public class LinkBuilder<S, G> {
+    private final Function<G, Link> addGitHubRepositoryLink;
+    private final Function<S, Link> addStackOverflowQuestionLink;
+    private final FindOrDoService<S, StackOverflowParserResult> stackOverflowQuestionsService;
+    private final FindOrDoService<G, GitHubParserResult> gitHubRepositoriesService;
 
     private Supplier<Link> onBuild;
 

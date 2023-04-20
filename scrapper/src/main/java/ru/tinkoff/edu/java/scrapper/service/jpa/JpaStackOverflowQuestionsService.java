@@ -8,6 +8,7 @@ import ru.tinkoff.edu.java.scrapper.dto.LinkUpdate;
 import ru.tinkoff.edu.java.scrapper.dto.StackOverflowAnswerUpdate;
 import ru.tinkoff.edu.java.scrapper.dto.StackOverflowQuestion;
 import ru.tinkoff.edu.java.scrapper.dto.StackOverflowQuestionAddParams;
+import ru.tinkoff.edu.java.scrapper.entity.StackOverflowQuestionEntity;
 import ru.tinkoff.edu.java.scrapper.exception.StackOverflowQuestionNotFoundException;
 import ru.tinkoff.edu.java.scrapper.mapper.StackOverflowQuestionMapper;
 import ru.tinkoff.edu.java.scrapper.repository.jpa.JpaLinksRepository;
@@ -22,7 +23,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class JpaStackOverflowQuestionsService
         extends StackOverflowQuestionsService
-        implements FindOrDoService<StackOverflowQuestion, StackOverflowParserResult>,
+        implements FindOrDoService<StackOverflowQuestionEntity, StackOverflowParserResult>,
         StackOverflowAnswersService {
     private final JpaStackOverflowQuestionsRepository stackOverflowQuestionsRepository;
     private final JpaLinksRepository linksRepository;
@@ -31,20 +32,18 @@ public class JpaStackOverflowQuestionsService
     private final StackOverflowQuestionMapper mapper;
 
     @Override
-    public StackOverflowQuestion findOrThrow(StackOverflowParserResult findParams) {
+    public StackOverflowQuestionEntity findOrThrow(StackOverflowParserResult findParams) {
         return stackOverflowQuestionsRepository.findByQuestionId(findParams.questionId())
-                .map(mapper::fromEntity)
                 .orElseThrow(() -> new StackOverflowQuestionNotFoundException(applicationConfig));
     }
 
     @Override
-    public StackOverflowQuestion findOrCreate(StackOverflowParserResult findParams) {
+    public StackOverflowQuestionEntity findOrCreate(StackOverflowParserResult findParams) {
         return stackOverflowQuestionsRepository.findByQuestionId(findParams.questionId())
-                .map(mapper::fromEntity)
                 .orElseGet(() -> {
                     var addParams = new StackOverflowQuestionAddParams(findParams.questionId());
                     checkIfStackOverflowQuestionExists(addParams, stackOverflowClient, applicationConfig);
-                    return stackOverflowQuestionsRepository.add(addParams, mapper);
+                    return stackOverflowQuestionsRepository.add(addParams);
                 });
     }
 

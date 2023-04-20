@@ -6,6 +6,7 @@ import org.springframework.data.repository.query.Param;
 import ru.tinkoff.edu.java.scrapper.dto.*;
 import ru.tinkoff.edu.java.scrapper.entity.GitHubRepositoryEntity;
 import ru.tinkoff.edu.java.scrapper.entity.LinkEntity;
+import ru.tinkoff.edu.java.scrapper.entity.StackOverflowQuestionEntity;
 import ru.tinkoff.edu.java.scrapper.entity.TgChatEntity;
 
 import java.net.URI;
@@ -21,6 +22,15 @@ public interface JpaLinksRepository extends JpaRepository<LinkEntity, UUID> {
         entity.setUrl(url);
         entity.setTgChat(tgChat);
         entity.setGitHubRepository(gitHubRepository);
+        save(entity);
+        return new Link(entity.getId(), entity.getUrl());
+    }
+
+    default Link add(URI url, TgChatEntity tgChat, StackOverflowQuestionEntity stackOverflowQuestion) {
+        var entity = new LinkEntity();
+        entity.setUrl(url);
+        entity.setTgChat(tgChat);
+        entity.setStackOverflowQuestion(stackOverflowQuestion);
         save(entity);
         return new Link(entity.getId(), entity.getUrl());
     }
@@ -70,4 +80,7 @@ public interface JpaLinksRepository extends JpaRepository<LinkEntity, UUID> {
             @Param("stackOverflowQuestion") StackOverflowQuestion question,
             @Param("createdBefore") OffsetDateTime createdBefore
     );
+
+    @Query("SELECT l FROM LinkEntity AS l JOIN TgChatEntity AS c WHERE c.chatId = :chatId")
+    List<LinkEntity> findAllByChatId(@Param("chatId") Long chatId);
 }

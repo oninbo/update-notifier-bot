@@ -16,10 +16,13 @@ import java.util.UUID;
 
 public interface JpaStackOverflowQuestionsRepository extends JpaRepository<StackOverflowQuestionEntity, UUID> {
     default StackOverflowQuestion add(StackOverflowQuestionAddParams addParams, StackOverflowQuestionMapper mapper) {
+        return mapper.fromEntity(add(addParams));
+    }
+
+    default StackOverflowQuestionEntity add(StackOverflowQuestionAddParams addParams) {
         var entity = new StackOverflowQuestionEntity();
         entity.setQuestionId(addParams.questionId());
-        save(entity);
-        return mapper.fromEntity(entity);
+        return save(entity);
     }
 
     Optional<StackOverflowQuestionEntity> findByQuestionId(Long questionId);

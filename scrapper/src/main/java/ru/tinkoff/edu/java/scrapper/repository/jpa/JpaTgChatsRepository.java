@@ -29,4 +29,6 @@ public interface JpaTgChatsRepository extends JpaRepository<TgChatEntity, UUID> 
             WHERE chat.chatId = :chatId
             """)
     Optional<TgChat> find(@Param("chatId") Long chatId);
+
+    Optional<TgChatEntity> findByChatId(Long chatId);
 }
