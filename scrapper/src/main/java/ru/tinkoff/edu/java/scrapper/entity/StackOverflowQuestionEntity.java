@@ -33,6 +33,7 @@ public class StackOverflowQuestionEntity {
     private OffsetDateTime updatedAt;
 
     @CreationTimestamp
+    @Setter
     @Column(name = "answers_updated_at")
     private OffsetDateTime answersUpdatedAt;
 }

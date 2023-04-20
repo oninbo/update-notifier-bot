@@ -4,12 +4,14 @@ import io.github.glytching.junit.extension.random.Random;
 import io.github.glytching.junit.extension.random.RandomBeansExtension;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mapstruct.factory.Mappers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
 import ru.tinkoff.edu.java.scrapper.dto.StackOverflowQuestion;
 import ru.tinkoff.edu.java.scrapper.dto.StackOverflowQuestionAddParams;
+import ru.tinkoff.edu.java.scrapper.mapper.StackOverflowQuestionMapper;
 
 import java.time.OffsetDateTime;
 import java.util.List;
@@ -19,6 +21,8 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @ExtendWith(RandomBeansExtension.class)
 public class JpaStackOverflowQuestionsRepositoryTest extends JpaRepositoryTest {
+    StackOverflowQuestionMapper mapper = Mappers.getMapper(StackOverflowQuestionMapper.class);
+
     @Autowired
     JpaStackOverflowQuestionsRepository jpaStackOverflowQuestionsRepository;
 
@@ -36,7 +40,7 @@ public class JpaStackOverflowQuestionsRepositoryTest extends JpaRepositoryTest {
     @Rollback
     public void shouldAddStackOverflowQuestion() {
         var addParams = new StackOverflowQuestionAddParams(questionId);
-        var stackOverflowQuestion = jpaStackOverflowQuestionsRepository.add(addParams);
+        var stackOverflowQuestion = jpaStackOverflowQuestionsRepository.add(addParams, mapper);
         assertEquals(questionId, stackOverflowQuestion.questionId());
 
         entityManager.flush();
@@ -54,7 +58,7 @@ public class JpaStackOverflowQuestionsRepositoryTest extends JpaRepositoryTest {
         var foundIds = jpaStackOverflowQuestionsRepository
                 .findAll()
                 .stream()
-                .map(jpaStackOverflowQuestionsRepository::mapEntity)
+                .map(mapper::fromEntity)
                 .map(StackOverflowQuestion::id)
                 .toList();
         assertIterableEquals(List.of(id), foundIds);

@@ -1,4 +1,3 @@
-/* TODO
 package ru.tinkoff.edu.java.scrapper.service.jpa;
 
 import lombok.RequiredArgsConstructor;
@@ -10,6 +9,7 @@ import ru.tinkoff.edu.java.scrapper.dto.StackOverflowAnswerUpdate;
 import ru.tinkoff.edu.java.scrapper.dto.StackOverflowQuestion;
 import ru.tinkoff.edu.java.scrapper.dto.StackOverflowQuestionAddParams;
 import ru.tinkoff.edu.java.scrapper.exception.StackOverflowQuestionNotFoundException;
+import ru.tinkoff.edu.java.scrapper.mapper.StackOverflowQuestionMapper;
 import ru.tinkoff.edu.java.scrapper.repository.jpa.JpaLinksRepository;
 import ru.tinkoff.edu.java.scrapper.repository.jpa.JpaStackOverflowQuestionsRepository;
 import ru.tinkoff.edu.java.scrapper.service.FindOrDoService;
@@ -28,20 +28,23 @@ public class JpaStackOverflowQuestionsService
     private final JpaLinksRepository linksRepository;
     private final ApplicationConfig applicationConfig;
     private final StackOverflowClient stackOverflowClient;
+    private final StackOverflowQuestionMapper mapper;
 
     @Override
     public StackOverflowQuestion findOrThrow(StackOverflowParserResult findParams) {
-        return stackOverflowQuestionsRepository.find(findParams.questionId())
+        return stackOverflowQuestionsRepository.findByQuestionId(findParams.questionId())
+                .map(mapper::fromEntity)
                 .orElseThrow(() -> new StackOverflowQuestionNotFoundException(applicationConfig));
     }
 
     @Override
     public StackOverflowQuestion findOrCreate(StackOverflowParserResult findParams) {
-        return stackOverflowQuestionsRepository.find(findParams.questionId())
+        return stackOverflowQuestionsRepository.findByQuestionId(findParams.questionId())
+                .map(mapper::fromEntity)
                 .orElseGet(() -> {
                     var addParams = new StackOverflowQuestionAddParams(findParams.questionId());
                     checkIfStackOverflowQuestionExists(addParams, stackOverflowClient, applicationConfig);
-                    return stackOverflowQuestionsRepository.add(addParams);
+                    return stackOverflowQuestionsRepository.add(addParams, mapper);
                 });
     }
 
@@ -59,12 +62,18 @@ public class JpaStackOverflowQuestionsService
 
     @Override
     public void updateUpdatedAt(List<StackOverflowQuestion> questions, OffsetDateTime updatedAt) {
-        stackOverflowQuestionsRepository.update(questions, STACKOVERFLOW_QUESTIONS.UPDATED_AT, updatedAt);
+        var entities = questions.stream().map(mapper::toEntity).toList();
+        entities.forEach(e -> e.setUpdatedAt(updatedAt));
+        stackOverflowQuestionsRepository.saveAll(entities);
     }
 
     @Override
     public List<StackOverflowQuestion> getForLinksUpdate(int first) {
-        return stackOverflowQuestionsRepository.findWithLinks(first, STACKOVERFLOW_QUESTIONS.UPDATED_AT);
+        return stackOverflowQuestionsRepository.findWithLinks(
+                first,
+                JpaStackOverflowQuestionsRepository.OrderColumn.updatedAt,
+                mapper
+        );
     }
 
     @Override
@@ -81,12 +90,17 @@ public class JpaStackOverflowQuestionsService
 
     @Override
     public void updateAnswersUpdatedAt(List<StackOverflowQuestion> questions, OffsetDateTime updatedAt) {
-        stackOverflowQuestionsRepository.update(questions, STACKOVERFLOW_QUESTIONS.ANSWERS_UPDATED_AT, updatedAt);
+        var entities = questions.stream().map(mapper::toEntity).toList();
+        entities.forEach(e -> e.setAnswersUpdatedAt(updatedAt));
+        stackOverflowQuestionsRepository.saveAll(entities);
     }
 
     @Override
     public List<StackOverflowQuestion> getForAnswersUpdate(int first) {
-        return stackOverflowQuestionsRepository.findWithLinks(first, STACKOVERFLOW_QUESTIONS.ANSWERS_UPDATED_AT);
+        return stackOverflowQuestionsRepository.findWithLinks(
+                first,
+                JpaStackOverflowQuestionsRepository.OrderColumn.answersUpdatedAt,
+                mapper
+        );
     }
 }
-*/

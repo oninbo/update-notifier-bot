@@ -59,4 +59,15 @@ public interface JpaLinksRepository extends JpaRepository<LinkEntity, UUID> {
             @Param("gitHubRepository") GitHubRepository gitHubRepository,
             @Param("createdBefore") OffsetDateTime createdBefore
     );
+
+    @Query("""
+            SELECT new ru.tinkoff.edu.java.scrapper.dto.LinkWithChatId(l.id, l.url, tc.chatId)
+            FROM LinkEntity AS l
+            JOIN TgChatEntity AS tc
+            WHERE l.stackOverflowQuestion.id = :#{#stackOverflowQuestion.id} AND l.createdAt < :createdBefore
+            """)
+    List<LinkWithChatId> findAllWithChatId(
+            @Param("stackOverflowQuestion") StackOverflowQuestion question,
+            @Param("createdBefore") OffsetDateTime createdBefore
+    );
 }
