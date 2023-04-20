@@ -6,17 +6,15 @@ import ru.tinkoff.edu.java.link_parser.LinkParserResult;
 import ru.tinkoff.edu.java.link_parser.LinkParserService;
 import ru.tinkoff.edu.java.scrapper.configuration.ApplicationConfig;
 import ru.tinkoff.edu.java.scrapper.dto.Link;
-import ru.tinkoff.edu.java.scrapper.dto.TgChat;
 import ru.tinkoff.edu.java.scrapper.entity.GitHubRepositoryEntity;
+import ru.tinkoff.edu.java.scrapper.entity.LinkEntity;
 import ru.tinkoff.edu.java.scrapper.entity.StackOverflowQuestionEntity;
 import ru.tinkoff.edu.java.scrapper.entity.TgChatEntity;
 import ru.tinkoff.edu.java.scrapper.exception.LinkExistsException;
 import ru.tinkoff.edu.java.scrapper.exception.LinkNotFoundException;
 import ru.tinkoff.edu.java.scrapper.exception.LinkNotSupportedException;
 import ru.tinkoff.edu.java.scrapper.exception.TgChatNotFoundException;
-import ru.tinkoff.edu.java.scrapper.mapper.GithubRepositoryMapper;
 import ru.tinkoff.edu.java.scrapper.mapper.LinkMapper;
-import ru.tinkoff.edu.java.scrapper.mapper.StackOverflowQuestionMapper;
 import ru.tinkoff.edu.java.scrapper.repository.jpa.JpaLinksRepository;
 import ru.tinkoff.edu.java.scrapper.repository.jpa.JpaTgChatsRepository;
 import ru.tinkoff.edu.java.scrapper.service.LinksService;
@@ -37,8 +35,6 @@ public class JpaLinksService implements LinksService {
     private final JpaGitHubRepositoriesService gitHubRepositoriesService;
     private final LinkParserService linkParserService;
     private final LinkMapper linkMapper;
-    private final StackOverflowQuestionMapper stackOverflowQuestionMapper;
-    private final GithubRepositoryMapper githubRepositoryMapper;
 
     @Override
     public List<Link> getLinks(Long chatId) {
@@ -63,16 +59,12 @@ public class JpaLinksService implements LinksService {
     }
 
     private Link addLink(TgChatEntity tgChat, URI url, StackOverflowQuestionEntity stackOverflowQuestion) {
-        checkIfLinkExists(() -> linksRepository.find(
-                new TgChat(tgChat.getId(), tgChat.getChatId()),
-                stackOverflowQuestionMapper.fromEntity(stackOverflowQuestion)));
+        checkIfLinkExists(() -> linksRepository.findByTgChatAndStackOverflowQuestion(tgChat, stackOverflowQuestion));
         return linksRepository.add(url, tgChat, stackOverflowQuestion);
     }
 
     private Link addLink(TgChatEntity tgChat, URI url, GitHubRepositoryEntity gitHubRepository) {
-        checkIfLinkExists(() -> linksRepository.find(
-                new TgChat(tgChat.getId(), tgChat.getChatId()),
-                githubRepositoryMapper.fromEntity(gitHubRepository)));
+        checkIfLinkExists(() -> linksRepository.findByTgChatAndGitHubRepository(tgChat, gitHubRepository));
         return linksRepository.add(url, tgChat, gitHubRepository);
     }
 
@@ -80,12 +72,12 @@ public class JpaLinksService implements LinksService {
     public Link deleteLink(Long chatId, URI url) {
         var tgChat = getTgChat(chatId);
         var linkFinder = new LinkFinder<>(
-                gitHubRepository -> linksRepository.find(
-                        new TgChat(tgChat.getId(), tgChat.getChatId()),
-                        githubRepositoryMapper.fromEntity(gitHubRepository)),
-                question -> linksRepository.find(
-                        new TgChat(tgChat.getId(), tgChat.getChatId()),
-                        stackOverflowQuestionMapper.fromEntity(question)),
+                gitHubRepository -> linksRepository
+                        .findByTgChatAndGitHubRepository(tgChat, gitHubRepository)
+                        .map(linkMapper::fromEntity),
+                question -> linksRepository
+                        .findByTgChatAndStackOverflowQuestion(tgChat, question)
+                        .map(linkMapper::fromEntity),
                 stackOverflowQuestionsService,
                 gitHubRepositoriesService
         );
@@ -117,7 +109,7 @@ public class JpaLinksService implements LinksService {
         return linkParserResult.get();
     }
 
-    private void checkIfLinkExists(Supplier<Optional<Link>> link) {
+    private void checkIfLinkExists(Supplier<Optional<LinkEntity>> link) {
         if (link.get().isPresent()) {
             throw new LinkExistsException(applicationConfig);
         }

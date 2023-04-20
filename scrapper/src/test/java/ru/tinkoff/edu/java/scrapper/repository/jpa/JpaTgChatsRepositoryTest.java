@@ -8,8 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
-import ru.tinkoff.edu.java.scrapper.dto.TgChat;
 import ru.tinkoff.edu.java.scrapper.dto.TgChatAddParams;
+import ru.tinkoff.edu.java.scrapper.entity.TgChatEntity;
 
 import java.util.List;
 import java.util.UUID;
@@ -47,7 +47,7 @@ public class JpaTgChatsRepositoryTest extends JpaRepositoryTest {
         for (var charId : chatIds) {
             jdbcTemplate.update("INSERT INTO tg_chats (chat_id) VALUES (?) ON CONFLICT DO NOTHING", charId);
         }
-        var foundChatIds = jpaTgChatsRepository.findAllTgChats().stream().map(TgChat::chatId).sorted().toList();
+        var foundChatIds = jpaTgChatsRepository.findAll().stream().map(TgChatEntity::getChatId).sorted().toList();
         var expectedChatIds = chatIds.stream().sorted().distinct().toList();
         assertIterableEquals(expectedChatIds, foundChatIds);
     }

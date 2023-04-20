@@ -11,6 +11,7 @@ import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
 import ru.tinkoff.edu.java.scrapper.dto.GitHubRepository;
 import ru.tinkoff.edu.java.scrapper.dto.GitHubRepositoryAddParams;
+import ru.tinkoff.edu.java.scrapper.entity.GitHubRepositoryEntity;
 import ru.tinkoff.edu.java.scrapper.mapper.GithubRepositoryMapper;
 
 import java.time.OffsetDateTime;
@@ -63,7 +64,7 @@ public class JpaGitHubRepositoriesRepositoryTest extends JpaRepositoryTest {
     public void shouldFindAllGitHubRepositories() {
         var id = insertGitHubRepository();
         var foundIds =
-                jpaGitHubRepositoriesRepository.findAllRepositories(mapper).stream().map(GitHubRepository::id).toList();
+                jpaGitHubRepositoriesRepository.findAll().stream().map(GitHubRepositoryEntity::getId).toList();
         assertIterableEquals(List.of(id), foundIds);
     }
 

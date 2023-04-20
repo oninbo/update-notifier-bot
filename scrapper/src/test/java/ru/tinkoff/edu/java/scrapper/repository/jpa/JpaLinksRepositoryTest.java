@@ -16,6 +16,7 @@ import ru.tinkoff.edu.java.scrapper.dto.Link;
 import ru.tinkoff.edu.java.scrapper.dto.StackOverflowQuestion;
 import ru.tinkoff.edu.java.scrapper.dto.TgChat;
 import ru.tinkoff.edu.java.scrapper.entity.GitHubRepositoryEntity;
+import ru.tinkoff.edu.java.scrapper.entity.LinkEntity;
 import ru.tinkoff.edu.java.scrapper.entity.TgChatEntity;
 
 import java.net.URI;
@@ -80,8 +81,8 @@ public class JpaLinksRepositoryTest extends JpaRepositoryTest {
     public void shouldFindAllLinks() {
         insertGitHubRepository();
         var linkId = insertLink();
-        var foundLinks = jpaLinksRepository.findAllLinks();
-        assertIterableEquals(List.of(new Link(linkId, url)), foundLinks);
+        var foundIds = jpaLinksRepository.findAll().stream().map(LinkEntity::getId).toList();
+        assertIterableEquals(List.of(linkId), foundIds);
     }
 
     @Test

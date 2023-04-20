@@ -40,7 +40,7 @@ public class JdbcLinksService implements LinksService {
     public Link addLink(Long chatId, URI url) {
         TgChat tgChat = getTgChat(chatId);
 
-        var linkBuilder = new LinkBuilder(
+        var linkBuilder = new LinkBuilder<>(
                 gitHubRepository -> new Add(this, tgChat, url).add(gitHubRepository),
                 stackOverflowQuestion -> new Add(this, tgChat, url).add(stackOverflowQuestion),
                 stackOverflowQuestionsService,
@@ -64,7 +64,7 @@ public class JdbcLinksService implements LinksService {
     @Override
     public Link deleteLink(Long chatId, URI url) {
         var tgChat = getTgChat(chatId);
-        var linkResult = new LinkFinder(
+        var linkResult = new LinkFinder<>(
                 gitHubRepository -> jdbcLinksRepository.find(tgChat, gitHubRepository),
                 question -> jdbcLinksRepository.find(tgChat, question),
                 stackOverflowQuestionsService,

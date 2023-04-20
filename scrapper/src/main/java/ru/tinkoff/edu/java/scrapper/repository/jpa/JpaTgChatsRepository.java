@@ -7,7 +7,6 @@ import ru.tinkoff.edu.java.scrapper.dto.TgChat;
 import ru.tinkoff.edu.java.scrapper.dto.TgChatAddParams;
 import ru.tinkoff.edu.java.scrapper.entity.TgChatEntity;
 
-import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -19,9 +18,6 @@ public interface JpaTgChatsRepository extends JpaRepository<TgChatEntity, UUID> 
         save(entity);
         return new TgChat(entity.getId(), entity.getChatId());
     }
-
-    @Query("SELECT new ru.tinkoff.edu.java.scrapper.dto.TgChat(chat.id, chat.chatId) FROM TgChatEntity AS chat")
-    List<TgChat> findAllTgChats();
 
     @Query("""
             SELECT new ru.tinkoff.edu.java.scrapper.dto.TgChat(chat.id, chat.chatId)

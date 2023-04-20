@@ -35,9 +35,6 @@ public interface JpaLinksRepository extends JpaRepository<LinkEntity, UUID> {
         return new Link(entity.getId(), entity.getUrl());
     }
 
-    @Query("SELECT new ru.tinkoff.edu.java.scrapper.dto.Link(l.id, l.url) FROM LinkEntity AS l")
-    List<Link> findAllLinks();
-
     @Query("""
                 SELECT new ru.tinkoff.edu.java.scrapper.dto.Link(l.id, l.url)
                 FROM LinkEntity AS l
@@ -83,4 +80,10 @@ public interface JpaLinksRepository extends JpaRepository<LinkEntity, UUID> {
 
     @Query("SELECT l FROM LinkEntity AS l JOIN TgChatEntity AS c WHERE c.chatId = :chatId")
     List<LinkEntity> findAllByChatId(@Param("chatId") Long chatId);
+
+    Optional<LinkEntity> findByTgChatAndGitHubRepository(TgChatEntity tgChat,
+                                                         GitHubRepositoryEntity gitHubRepository);
+
+    Optional<LinkEntity> findByTgChatAndStackOverflowQuestion(TgChatEntity tgChat,
+                                                              StackOverflowQuestionEntity stackOverflowQuestion);
 }

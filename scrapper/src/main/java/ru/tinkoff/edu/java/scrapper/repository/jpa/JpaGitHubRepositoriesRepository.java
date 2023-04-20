@@ -27,10 +27,6 @@ public interface JpaGitHubRepositoriesRepository extends JpaRepository<GitHubRep
         return save(entity);
     }
 
-    default List<GitHubRepository> findAllRepositories(GithubRepositoryMapper mapper) {
-        return findAll().stream().map(mapper::fromEntity).toList();
-    }
-
     @Query("SELECT r FROM GitHubRepositoryEntity AS r JOIN LinkEntity l ON l.gitHubRepository = r")
     List<GitHubRepositoryEntity> findAllWithLinks(Pageable pageable);
 
