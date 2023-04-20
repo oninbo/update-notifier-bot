@@ -37,6 +37,7 @@ public class GitHubRepositoryEntity {
     private OffsetDateTime updatedAt;
 
     @CreationTimestamp
+    @Setter
     @Column(name = "issues_updated_at")
     private OffsetDateTime issuesUpdatedAt;
 }

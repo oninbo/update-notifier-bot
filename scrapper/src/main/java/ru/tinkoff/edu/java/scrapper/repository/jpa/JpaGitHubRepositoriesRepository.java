@@ -9,47 +9,37 @@ import ru.tinkoff.edu.java.link_parser.github.GitHubParserResult;
 import ru.tinkoff.edu.java.scrapper.dto.GitHubRepository;
 import ru.tinkoff.edu.java.scrapper.dto.GitHubRepositoryAddParams;
 import ru.tinkoff.edu.java.scrapper.entity.GitHubRepositoryEntity;
+import ru.tinkoff.edu.java.scrapper.mapper.GithubRepositoryMapper;
 
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
 public interface JpaGitHubRepositoriesRepository extends JpaRepository<GitHubRepositoryEntity, UUID> {
-    default GitHubRepository add(GitHubRepositoryAddParams addParams) {
+    default GitHubRepository add(GitHubRepositoryAddParams addParams, GithubRepositoryMapper mapper) {
         var entity = new GitHubRepositoryEntity();
         entity.setName(addParams.name());
         entity.setUsername(addParams.username());
         save(entity);
-        return mapEntity(entity);
+        return mapper.fromEntity(entity);
     }
 
-    default List<GitHubRepository> findAllRepositories() {
-        return findAll().stream().map(this::mapEntity).toList();
-    }
-
-    default GitHubRepository mapEntity(GitHubRepositoryEntity entity) {
-        return new GitHubRepository(
-                entity.getId(),
-                entity.getUsername(),
-                entity.getName(),
-                entity.getUpdatedAt(),
-                entity.getCreatedAt(),
-                entity.getIssuesUpdatedAt()
-        );
+    default List<GitHubRepository> findAllRepositories(GithubRepositoryMapper mapper) {
+        return findAll().stream().map(mapper::fromEntity).toList();
     }
 
     @Query("SELECT r FROM GitHubRepositoryEntity AS r JOIN LinkEntity l ON l.gitHubRepository = r")
     List<GitHubRepositoryEntity> findAllWithLinks(Pageable pageable);
 
-    default List<GitHubRepository> findAllWithLinks(int limit, OrderColumn orderColumn) {
+    default List<GitHubRepository> findAllWithLinks(int limit, OrderColumn orderColumn, GithubRepositoryMapper mapper) {
         return findAllWithLinks(pageableSortedBy(limit, orderColumn))
-                .stream().map(this::mapEntity).toList();
+                .stream().map(mapper::fromEntity).toList();
     }
 
     Optional<GitHubRepositoryEntity> findByUsernameAndName(String username, String name);
 
-    default Optional<GitHubRepository> find(String username, String name) {
-        return findByUsernameAndName(username, name).map(this::mapEntity);
+    default Optional<GitHubRepository> find(String username, String name, GithubRepositoryMapper mapper) {
+        return findByUsernameAndName(username, name).map(mapper::fromEntity);
     }
 
     static Pageable pageableSortedBy(int limit, OrderColumn orderColumn) {
@@ -57,8 +47,8 @@ public interface JpaGitHubRepositoriesRepository extends JpaRepository<GitHubRep
                 .withSort(Sort.by(Sort.Order.by(orderColumn.name())).ascending());
     }
 
-    default Optional<GitHubRepository> find(GitHubParserResult findParams) {
-        return find(findParams.userName(), findParams.projectName());
+    default Optional<GitHubRepository> find(GitHubParserResult findParams, GithubRepositoryMapper mapper) {
+        return find(findParams.userName(), findParams.projectName(), mapper);
     }
 
     enum OrderColumn {

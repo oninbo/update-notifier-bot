@@ -9,6 +9,7 @@ import ru.tinkoff.edu.java.scrapper.dto.GitHubRepository;
 import ru.tinkoff.edu.java.scrapper.dto.GitHubRepositoryAddParams;
 import ru.tinkoff.edu.java.scrapper.dto.LinkUpdate;
 import ru.tinkoff.edu.java.scrapper.exception.GitHubRepositoryNotFoundException;
+import ru.tinkoff.edu.java.scrapper.mapper.GithubRepositoryMapper;
 import ru.tinkoff.edu.java.scrapper.repository.jpa.JpaGitHubRepositoriesRepository;
 import ru.tinkoff.edu.java.scrapper.repository.jpa.JpaLinksRepository;
 import ru.tinkoff.edu.java.scrapper.service.FindOrDoService;
@@ -28,23 +29,24 @@ public class JpaGitHubRepositoriesService
     private final JpaLinksRepository linksRepository;
     private final ApplicationConfig applicationConfig;
     private final GitHubClient gitHubClient;
+    private final GithubRepositoryMapper mapper;
 
     @Override
     public GitHubRepository findOrThrow(GitHubParserResult findParams) {
-        return gitHubRepositoriesRepository.find(findParams)
+        return gitHubRepositoriesRepository.find(findParams, mapper)
                 .orElseThrow(() -> new GitHubRepositoryNotFoundException(applicationConfig));
     }
 
     @Override
     public GitHubRepository findOrCreate(GitHubParserResult findParams) {
-        return gitHubRepositoriesRepository.find(findParams)
+        return gitHubRepositoriesRepository.find(findParams, mapper)
                 .orElseGet(() -> {
                     var addParams = new GitHubRepositoryAddParams(
                             findParams.userName(),
                             findParams.projectName()
                     );
                     checkIfGitHubRepositoryExists(addParams, applicationConfig, gitHubClient);
-                    return gitHubRepositoriesRepository.add(addParams);
+                    return gitHubRepositoriesRepository.add(addParams, mapper);
                 });
     }
 
@@ -60,15 +62,15 @@ public class JpaGitHubRepositoriesService
 
     @Override
     public void updateIssuesUpdatedAt(List<GitHubRepository> repositories, OffsetDateTime updatedAt) {
-
-        // TODO add map struct mapper
-//        gitHubRepositoriesRepository.update(repositories, GITHUB_REPOSITORIES.ISSUES_UPDATED_AT, updatedAt);
+        var entities = repositories.stream().map(mapper::toEntity).toList();
+        entities.forEach(e -> e.setIssuesUpdatedAt(updatedAt));
+        gitHubRepositoriesRepository.saveAll(entities);
     }
 
     @Override
     public List<GitHubRepository> getForIssuesUpdate(int first) {
         return gitHubRepositoriesRepository
-                .findAllWithLinks(first, JpaGitHubRepositoriesRepository.OrderColumn.issuesUpdatedAt);
+                .findAllWithLinks(first, JpaGitHubRepositoriesRepository.OrderColumn.issuesUpdatedAt, mapper);
     }
 
     @Override
@@ -83,14 +85,15 @@ public class JpaGitHubRepositoriesService
     }
 
     @Override
-    public void updateUpdatedAt(List<GitHubRepository> repos, OffsetDateTime updatedAt) {
-        // TODO add map struct mapper
-//        gitHubRepositoriesRepository.update(repos, GITHUB_REPOSITORIES.UPDATED_AT, updatedAt);
+    public void updateUpdatedAt(List<GitHubRepository> repositories, OffsetDateTime updatedAt) {
+        var entities = repositories.stream().map(mapper::toEntity).toList();
+        entities.forEach(e -> e.setUpdatedAt(updatedAt));
+        gitHubRepositoriesRepository.saveAll(entities);
     }
 
     @Override
     public List<GitHubRepository> getForLinksUpdate(int first) {
         return gitHubRepositoriesRepository
-                .findAllWithLinks(first, JpaGitHubRepositoriesRepository.OrderColumn.updatedAt);
+                .findAllWithLinks(first, JpaGitHubRepositoriesRepository.OrderColumn.updatedAt, mapper);
     }
 }

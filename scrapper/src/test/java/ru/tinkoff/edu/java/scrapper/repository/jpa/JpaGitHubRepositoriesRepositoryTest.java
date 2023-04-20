@@ -4,12 +4,14 @@ import io.github.glytching.junit.extension.random.Random;
 import io.github.glytching.junit.extension.random.RandomBeansExtension;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mapstruct.factory.Mappers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
 import ru.tinkoff.edu.java.scrapper.dto.GitHubRepository;
 import ru.tinkoff.edu.java.scrapper.dto.GitHubRepositoryAddParams;
+import ru.tinkoff.edu.java.scrapper.mapper.GithubRepositoryMapper;
 
 import java.time.OffsetDateTime;
 import java.util.List;
@@ -21,6 +23,8 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @ExtendWith(RandomBeansExtension.class)
 public class JpaGitHubRepositoriesRepositoryTest extends JpaRepositoryTest {
+    GithubRepositoryMapper mapper = Mappers.getMapper(GithubRepositoryMapper.class);
+
     @Autowired
     JpaGitHubRepositoriesRepository jpaGitHubRepositoriesRepository;
 
@@ -41,7 +45,7 @@ public class JpaGitHubRepositoriesRepositoryTest extends JpaRepositoryTest {
     @Rollback
     public void shouldAddGitHubRepository() {
         var addParams = new GitHubRepositoryAddParams(username, name);
-        var gitHubRepository = jpaGitHubRepositoriesRepository.add(addParams);
+        var gitHubRepository = jpaGitHubRepositoriesRepository.add(addParams, mapper);
         assertEquals(addParams.name(), gitHubRepository.name());
         assertEquals(addParams.username(), gitHubRepository.username());
 
@@ -58,7 +62,8 @@ public class JpaGitHubRepositoriesRepositoryTest extends JpaRepositoryTest {
     @Rollback
     public void shouldFindAllGitHubRepositories() {
         var id = insertGitHubRepository();
-        var foundIds = jpaGitHubRepositoriesRepository.findAllRepositories().stream().map(GitHubRepository::id).toList();
+        var foundIds =
+                jpaGitHubRepositoriesRepository.findAllRepositories(mapper).stream().map(GitHubRepository::id).toList();
         assertIterableEquals(List.of(id), foundIds);
     }
 
@@ -69,7 +74,7 @@ public class JpaGitHubRepositoriesRepositoryTest extends JpaRepositoryTest {
         var gitHubRepositoryId = insertGitHubRepository();
         var limit = 100;
         Supplier<List<UUID>> findIds = () -> jpaGitHubRepositoriesRepository
-                .findAllWithLinks(limit, JpaGitHubRepositoriesRepository.OrderColumn.updatedAt)
+                .findAllWithLinks(limit, JpaGitHubRepositoriesRepository.OrderColumn.updatedAt, mapper)
                 .stream()
                 .map(GitHubRepository::id)
                 .toList();
@@ -93,7 +98,7 @@ public class JpaGitHubRepositoriesRepositoryTest extends JpaRepositoryTest {
     @Rollback
     public void shouldFindAllGitHubRepository() {
         var id = insertGitHubRepository();
-        var foundId = jpaGitHubRepositoriesRepository.find(username, name).map(GitHubRepository::id);
+        var foundId = jpaGitHubRepositoriesRepository.find(username, name, mapper).map(GitHubRepository::id);
         assertEquals(Optional.of(id), foundId);
     }
 
