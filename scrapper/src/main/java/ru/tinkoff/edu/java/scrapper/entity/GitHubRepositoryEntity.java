@@ -13,10 +13,6 @@ import java.util.UUID;
 @NoArgsConstructor
 @Table(name = "github_repositories")
 public class GitHubRepositoryEntity {
-    public GitHubRepositoryEntity(UUID id) {
-        this.id = id;
-    }
-
     @Id
     @GeneratedValue
     @Column(name = "id")

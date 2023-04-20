@@ -8,18 +8,14 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.context.annotation.FilterType;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
-import ru.tinkoff.edu.java.scrapper.configuration.TestDataSourceConfig;
-import ru.tinkoff.edu.java.scrapper.dto.*;
+import ru.tinkoff.edu.java.scrapper.dto.GitHubRepository;
+import ru.tinkoff.edu.java.scrapper.dto.Link;
+import ru.tinkoff.edu.java.scrapper.dto.StackOverflowQuestion;
+import ru.tinkoff.edu.java.scrapper.dto.TgChat;
 import ru.tinkoff.edu.java.scrapper.entity.GitHubRepositoryEntity;
-import ru.tinkoff.edu.java.scrapper.entity.LinkEntity;
 import ru.tinkoff.edu.java.scrapper.entity.TgChatEntity;
 
 import java.net.URI;
@@ -31,17 +27,7 @@ import static org.mockito.Mockito.when;
 
 @ExtendWith(RandomBeansExtension.class)
 @ExtendWith(MockitoExtension.class)
-@DataJpaTest(includeFilters = {
-        @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE,
-                classes = {
-                        TestDataSourceConfig.class
-                })
-})
-@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
-public class JpaLinksRepositoryTest {
-    @Autowired
-    TestEntityManager entityManager;
-
+public class JpaLinksRepositoryTest extends JpaRepositoryTest {
     @Autowired
     JpaLinksRepository jpaLinksRepository;
 
@@ -74,9 +60,12 @@ public class JpaLinksRepositoryTest {
     @Rollback
     public void shouldAddLink() {
         insertGitHubRepository();
-        var link = jpaLinksRepository.add(new LinkAddParams(url, tgChat, gitHubRepository));
+        TgChatEntity tgChatEntity = entityManager.find(TgChatEntity.class, tgChat.id());
+        GitHubRepositoryEntity gitHubRepositoryEntity =
+                entityManager.find(GitHubRepositoryEntity.class, gitHubRepository.id());
+        var link = jpaLinksRepository.add(url, tgChatEntity, gitHubRepositoryEntity);
         assertEquals(url, link.url());
-
+        entityManager.flush();
         var sqlRowSet = jdbcTemplate
                 .queryForRowSet("SELECT tg_chat_id, github_repository_id from links");
         assertTrue(sqlRowSet.next());
@@ -86,68 +75,64 @@ public class JpaLinksRepositoryTest {
     }
 
     @Test
+    @Transactional
+    @Rollback
     public void shouldFindAllLinks() {
         insertGitHubRepository();
-        var link = new LinkEntity();
-        link.setUrl(url);
-        link.setTgChat(new TgChatEntity(tgChat.id()));
-        link.setGitHubRepository(new GitHubRepositoryEntity(gitHubRepository.id()));
-        entityManager.persist(link);
-        var linkId = link.getId();
-        var foundLinks = jpaLinksRepository.findAll();
+        var linkId = insertLink();
+        var foundLinks = jpaLinksRepository.findAllLinks();
         assertIterableEquals(List.of(new Link(linkId, url)), foundLinks);
     }
 
-    // TODO: uncomment
-//    @Test
-//    @Transactional
-//    @Rollback
-//    public void shouldFindAllLinksByTgChat() {
-//        insertGitHubRepository();
-//        var linkId = insertLink();
-//        var foundLinks = jpaLinksRepository.findAll(tgChat);
-//        assertIterableEquals(List.of(new Link(linkId, url)), foundLinks);
-//    }
-//
-//    @Test
-//    @Transactional
-//    @Rollback
-//    public void shouldFindLinkWithGitHubRepository() {
-//        insertGitHubRepository();
-//        var linkId = insertLink();
-//        var foundLink = jpaLinksRepository.find(tgChat, gitHubRepository);
-//        assertTrue(foundLink.isPresent());
-//        assertEquals(new Link(linkId, url), foundLink.get());
-//    }
-//
-//    @Test
-//    @Transactional
-//    @Rollback
-//    public void shouldFindLinkWithStackOverflowQuestion() {
-//        var stackOverflowQuestionId = jdbcTemplate.queryForObject(
-//                """
-//                        INSERT INTO stackoverflow_questions (question_id)
-//                        VALUES (1) RETURNING id
-//                        """,
-//                UUID.class
-//        );
-//        when(stackOverflowQuestion.id()).thenReturn(stackOverflowQuestionId);
-//
-//        var linkId = jdbcTemplate.queryForObject(
-//                """
-//                        INSERT INTO links (url, tg_chat_id, stackoverflow_question_id)
-//                        VALUES (?, ?, ?) RETURNING id
-//                        """,
-//                UUID.class,
-//                url.toString(),
-//                tgChat.id(),
-//                stackOverflowQuestion.id()
-//        );
-//
-//        var foundLink = jpaLinksRepository.find(tgChat, stackOverflowQuestion);
-//        assertTrue(foundLink.isPresent());
-//        assertEquals(new Link(linkId, url), foundLink.get());
-//    }
+    @Test
+    @Transactional
+    @Rollback
+    public void shouldFindAllLinksByTgChat() {
+        insertGitHubRepository();
+        var linkId = insertLink();
+        var foundLinks = jpaLinksRepository.findAll(tgChat);
+        assertIterableEquals(List.of(new Link(linkId, url)), foundLinks);
+    }
+
+    @Test
+    @Transactional
+    @Rollback
+    public void shouldFindLinkWithGitHubRepository() {
+        insertGitHubRepository();
+        var linkId = insertLink();
+        var foundLink = jpaLinksRepository.find(tgChat, gitHubRepository);
+        assertTrue(foundLink.isPresent());
+        assertEquals(new Link(linkId, url), foundLink.get());
+    }
+
+    @Test
+    @Transactional
+    @Rollback
+    public void shouldFindLinkWithStackOverflowQuestion() {
+        var stackOverflowQuestionId = jdbcTemplate.queryForObject(
+                """
+                        INSERT INTO stackoverflow_questions (question_id)
+                        VALUES (1) RETURNING id
+                        """,
+                UUID.class
+        );
+        when(stackOverflowQuestion.id()).thenReturn(stackOverflowQuestionId);
+
+        var linkId = jdbcTemplate.queryForObject(
+                """
+                        INSERT INTO links (url, tg_chat_id, stackoverflow_question_id)
+                        VALUES (?, ?, ?) RETURNING id
+                        """,
+                UUID.class,
+                url.toString(),
+                tgChat.id(),
+                stackOverflowQuestion.id()
+        );
+
+        var foundLink = jpaLinksRepository.find(tgChat, stackOverflowQuestion);
+        assertTrue(foundLink.isPresent());
+        assertEquals(new Link(linkId, url), foundLink.get());
+    }
 
     @Test
     @Transactional
@@ -155,7 +140,8 @@ public class JpaLinksRepositoryTest {
     public void shouldRemoveLink() {
         insertGitHubRepository();
         var id = insertLink();
-        jpaLinksRepository.remove(id);
+        jpaLinksRepository.deleteById(id);
+        entityManager.flush();
 
         var ids = jdbcTemplate.queryForList("SELECT id from links where id = ?", UUID.class, id);
         assertTrue(ids.isEmpty());

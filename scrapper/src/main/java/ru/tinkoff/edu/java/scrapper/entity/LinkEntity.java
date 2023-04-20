@@ -3,6 +3,7 @@ package ru.tinkoff.edu.java.scrapper.entity;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import ru.tinkoff.edu.java.scrapper.converter.UriPersistenceConverter;
 
 import java.net.URI;
 import java.util.UUID;
@@ -18,6 +19,7 @@ public class LinkEntity {
 
     @Column(name = "url")
     @Setter
+    @Convert(converter = UriPersistenceConverter.class)
     private URI url;
 
     @ManyToOne(fetch = FetchType.LAZY)

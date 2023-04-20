@@ -11,10 +11,6 @@ import java.util.UUID;
 @NoArgsConstructor
 @Table(name = "tg_chats")
 public class TgChatEntity {
-    public TgChatEntity(UUID id) {
-        this.id = id;
-    }
-
     @Id
     @GeneratedValue
     @Column(name = "id")
