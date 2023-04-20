@@ -16,7 +16,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-@SuppressWarnings("JpaQlInspection")
+@SuppressWarnings("JpaQlInspection") // Ругается на вызов конструктора DTO в запросах
 public interface JpaLinksRepository extends JpaRepository<LinkEntity, UUID> {
     default Link add(URI url, TgChatEntity tgChat, GitHubRepositoryEntity gitHubRepository) {
         var entity = new LinkEntity();
@@ -31,23 +31,23 @@ public interface JpaLinksRepository extends JpaRepository<LinkEntity, UUID> {
     List<Link> findAllLinks();
 
     @Query("""
-        SELECT new ru.tinkoff.edu.java.scrapper.dto.Link(l.id, l.url)
-        FROM LinkEntity AS l
-        WHERE l.gitHubRepository.id = :#{#gitHubRepository.id} AND l.tgChat.id = :#{#tgChat.id}
-    """)
+                SELECT new ru.tinkoff.edu.java.scrapper.dto.Link(l.id, l.url)
+                FROM LinkEntity AS l
+                WHERE l.gitHubRepository.id = :#{#gitHubRepository.id} AND l.tgChat.id = :#{#tgChat.id}
+            """)
     Optional<Link> find(@Param("tgChat") TgChat tgChat, @Param("gitHubRepository") GitHubRepository gitHubRepository);
 
     @Query("""
-        SELECT new ru.tinkoff.edu.java.scrapper.dto.Link(l.id, l.url)
-        FROM LinkEntity AS l
-        WHERE l.stackOverflowQuestion.id = :#{#stackOverflowQuestion.id} AND l.tgChat.id = :#{#tgChat.id}
-    """)
+                SELECT new ru.tinkoff.edu.java.scrapper.dto.Link(l.id, l.url)
+                FROM LinkEntity AS l
+                WHERE l.stackOverflowQuestion.id = :#{#stackOverflowQuestion.id} AND l.tgChat.id = :#{#tgChat.id}
+            """)
     Optional<Link> find(@Param("tgChat") TgChat tgChat, @Param("stackOverflowQuestion") StackOverflowQuestion stackOverflowQuestion);
 
     @Query("""
-            SELECT new ru.tinkoff.edu.java.scrapper.dto.Link(l.id, l.url)
-            FROM LinkEntity AS l
-            WHERE l.tgChat.id = :#{#tgChat.id}
+                SELECT new ru.tinkoff.edu.java.scrapper.dto.Link(l.id, l.url)
+                FROM LinkEntity AS l
+                WHERE l.tgChat.id = :#{#tgChat.id}
             """)
     List<Link> findAll(@Param("tgChat") TgChat tgChat);
 }

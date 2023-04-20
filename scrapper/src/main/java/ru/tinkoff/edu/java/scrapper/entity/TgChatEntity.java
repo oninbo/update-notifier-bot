@@ -3,6 +3,7 @@ package ru.tinkoff.edu.java.scrapper.entity;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.util.UUID;
 
@@ -17,5 +18,6 @@ public class TgChatEntity {
     private UUID id;
 
     @Column(name = "chat_id")
+    @Setter
     private Long chatId;
 }
