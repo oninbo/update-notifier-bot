@@ -2,6 +2,7 @@ package ru.tinkoff.edu.java.scrapper.entity;
 
 import jakarta.persistence.*;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.OffsetDateTime;
@@ -9,8 +10,13 @@ import java.util.UUID;
 
 @Getter
 @Entity
+@NoArgsConstructor
 @Table(name = "stackoverflow_questions")
 public class StackOverflowQuestionEntity {
+    public StackOverflowQuestionEntity(UUID id) {
+        this.id = id;
+    }
+
     @Id
     @GeneratedValue
     @Column(name = "id")

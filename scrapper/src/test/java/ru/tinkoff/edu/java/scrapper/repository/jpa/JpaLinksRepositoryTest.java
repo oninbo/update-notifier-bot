@@ -10,6 +10,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.FilterType;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -17,6 +18,9 @@ import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
 import ru.tinkoff.edu.java.scrapper.configuration.TestDataSourceConfig;
 import ru.tinkoff.edu.java.scrapper.dto.*;
+import ru.tinkoff.edu.java.scrapper.entity.GitHubRepositoryEntity;
+import ru.tinkoff.edu.java.scrapper.entity.LinkEntity;
+import ru.tinkoff.edu.java.scrapper.entity.TgChatEntity;
 
 import java.net.URI;
 import java.util.List;
@@ -25,16 +29,19 @@ import java.util.UUID;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
 
+@ExtendWith(RandomBeansExtension.class)
+@ExtendWith(MockitoExtension.class)
 @DataJpaTest(includeFilters = {
         @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE,
                 classes = {
-                        TestDataSourceConfig.class,
+                        TestDataSourceConfig.class
                 })
 })
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
-@ExtendWith(RandomBeansExtension.class)
-@ExtendWith(MockitoExtension.class)
 public class JpaLinksRepositoryTest {
+    @Autowired
+    TestEntityManager entityManager;
+
     @Autowired
     JpaLinksRepository jpaLinksRepository;
 
@@ -79,11 +86,14 @@ public class JpaLinksRepositoryTest {
     }
 
     @Test
-    @Transactional
-    @Rollback
     public void shouldFindAllLinks() {
         insertGitHubRepository();
-        var linkId = insertLink();
+        var link = new LinkEntity();
+        link.setUrl(url);
+        link.setTgChat(new TgChatEntity(tgChat.id()));
+        link.setGitHubRepository(new GitHubRepositoryEntity(gitHubRepository.id()));
+        entityManager.persist(link);
+        var linkId = link.getId();
         var foundLinks = jpaLinksRepository.findAll();
         assertIterableEquals(List.of(new Link(linkId, url)), foundLinks);
     }
