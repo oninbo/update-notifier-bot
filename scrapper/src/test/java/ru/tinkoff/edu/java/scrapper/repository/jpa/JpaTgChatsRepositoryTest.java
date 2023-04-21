@@ -33,7 +33,7 @@ public class JpaTgChatsRepositoryTest extends JpaRepositoryTest {
     public void shouldAddTgChat() {
         var chatId = chatIds.get(0);
         var tgChat = jpaTgChatsRepository.add(new TgChatAddParams(chatId));
-        assertEquals(chatId, tgChat.chatId());
+        assertEquals(chatId, tgChat.getChatId());
 
         entityManager.flush();
         var addedChatId = jdbcTemplate.queryForObject("SELECT chat_id from tg_chats", Long.class);

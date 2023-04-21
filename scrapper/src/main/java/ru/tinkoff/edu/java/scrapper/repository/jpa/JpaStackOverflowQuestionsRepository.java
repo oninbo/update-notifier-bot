@@ -5,20 +5,14 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
-import ru.tinkoff.edu.java.scrapper.dto.StackOverflowQuestion;
 import ru.tinkoff.edu.java.scrapper.dto.StackOverflowQuestionAddParams;
 import ru.tinkoff.edu.java.scrapper.entity.StackOverflowQuestionEntity;
-import ru.tinkoff.edu.java.scrapper.mapper.StackOverflowQuestionMapper;
 
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
 public interface JpaStackOverflowQuestionsRepository extends JpaRepository<StackOverflowQuestionEntity, UUID> {
-    default StackOverflowQuestion add(StackOverflowQuestionAddParams addParams, StackOverflowQuestionMapper mapper) {
-        return mapper.fromEntity(add(addParams));
-    }
-
     default StackOverflowQuestionEntity add(StackOverflowQuestionAddParams addParams) {
         var entity = new StackOverflowQuestionEntity();
         entity.setQuestionId(addParams.questionId());
@@ -30,15 +24,12 @@ public interface JpaStackOverflowQuestionsRepository extends JpaRepository<Stack
     @Query("SELECT sq FROM StackOverflowQuestionEntity AS sq JOIN LinkEntity AS l ON l.stackOverflowQuestion = sq")
     List<StackOverflowQuestionEntity> findAllWithLinks(Pageable pageable);
 
-    default List<StackOverflowQuestion> findAllWithLinks(
+    default List<StackOverflowQuestionEntity> findAllWithLinks(
             int first,
-            OrderColumn orderColumn,
-            StackOverflowQuestionMapper mapper
+            OrderColumn orderColumn
     ) {
         return findAllWithLinks(PageRequest.ofSize(first)
-                .withSort(Sort.by(Sort.Order.by(orderColumn.name())).ascending()))
-                .stream().map(mapper::fromEntity)
-                .toList();
+                .withSort(Sort.by(Sort.Order.by(orderColumn.name())).ascending()));
     }
 
     enum OrderColumn {

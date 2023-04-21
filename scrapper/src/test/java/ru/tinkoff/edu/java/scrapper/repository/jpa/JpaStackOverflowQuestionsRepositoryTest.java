@@ -4,17 +4,14 @@ import io.github.glytching.junit.extension.random.Random;
 import io.github.glytching.junit.extension.random.RandomBeansExtension;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mapstruct.factory.Mappers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
-import ru.tinkoff.edu.java.scrapper.dto.StackOverflowQuestion;
 import ru.tinkoff.edu.java.scrapper.dto.StackOverflowQuestionAddParams;
 import ru.tinkoff.edu.java.scrapper.entity.LinkEntity;
 import ru.tinkoff.edu.java.scrapper.entity.StackOverflowQuestionEntity;
 import ru.tinkoff.edu.java.scrapper.entity.TgChatEntity;
-import ru.tinkoff.edu.java.scrapper.mapper.StackOverflowQuestionMapper;
 
 import java.net.URI;
 import java.time.OffsetDateTime;
@@ -26,8 +23,6 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @ExtendWith(RandomBeansExtension.class)
 public class JpaStackOverflowQuestionsRepositoryTest extends JpaRepositoryTest {
-    StackOverflowQuestionMapper mapper = Mappers.getMapper(StackOverflowQuestionMapper.class);
-
     @Autowired
     JpaStackOverflowQuestionsRepository jpaStackOverflowQuestionsRepository;
 
@@ -51,8 +46,8 @@ public class JpaStackOverflowQuestionsRepositoryTest extends JpaRepositoryTest {
     @Rollback
     public void shouldAddStackOverflowQuestion() {
         var addParams = new StackOverflowQuestionAddParams(questionId);
-        var stackOverflowQuestion = jpaStackOverflowQuestionsRepository.add(addParams, mapper);
-        assertEquals(questionId, stackOverflowQuestion.questionId());
+        var stackOverflowQuestion = jpaStackOverflowQuestionsRepository.add(addParams);
+        assertEquals(questionId, stackOverflowQuestion.getQuestionId());
 
         entityManager.flush();
         var sqlRowSet = jdbcTemplate.queryForRowSet("SELECT * from stackoverflow_questions");
@@ -69,8 +64,7 @@ public class JpaStackOverflowQuestionsRepositoryTest extends JpaRepositoryTest {
         var foundIds = jpaStackOverflowQuestionsRepository
                 .findAll()
                 .stream()
-                .map(mapper::fromEntity)
-                .map(StackOverflowQuestion::id)
+                .map(StackOverflowQuestionEntity::getId)
                 .toList();
         assertIterableEquals(List.of(id), foundIds);
     }
@@ -123,9 +117,9 @@ public class JpaStackOverflowQuestionsRepositoryTest extends JpaRepositoryTest {
         var stackOverflowQuestionId = insertStackOverflowQuestion();
         var limit = 100;
         Supplier<List<UUID>> findIds = () -> jpaStackOverflowQuestionsRepository
-                .findAllWithLinks(limit, JpaStackOverflowQuestionsRepository.OrderColumn.updatedAt, mapper)
+                .findAllWithLinks(limit, JpaStackOverflowQuestionsRepository.OrderColumn.updatedAt)
                 .stream()
-                .map(StackOverflowQuestion::id)
+                .map(StackOverflowQuestionEntity::getId)
                 .toList();
         var foundIds = findIds.get();
         assertIterableEquals(List.of(otherStackOverflowQuestion.getId()), foundIds);

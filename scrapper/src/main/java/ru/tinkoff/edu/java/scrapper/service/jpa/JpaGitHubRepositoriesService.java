@@ -72,7 +72,9 @@ public class JpaGitHubRepositoriesService
     @Override
     public List<GitHubRepository> getForIssuesUpdate(int first) {
         return gitHubRepositoriesRepository
-                .findAllWithLinks(first, JpaGitHubRepositoriesRepository.OrderColumn.issuesUpdatedAt, mapper);
+                .findAllWithLinks(first, JpaGitHubRepositoriesRepository.OrderColumn.issuesUpdatedAt)
+                .stream().map(mapper::fromEntity)
+                .toList();
     }
 
     @Override
@@ -97,6 +99,8 @@ public class JpaGitHubRepositoriesService
     @Override
     public List<GitHubRepository> getForLinksUpdate(int first) {
         return gitHubRepositoriesRepository
-                .findAllWithLinks(first, JpaGitHubRepositoriesRepository.OrderColumn.updatedAt, mapper);
+                .findAllWithLinks(first, JpaGitHubRepositoriesRepository.OrderColumn.updatedAt)
+                .stream().map(mapper::fromEntity)
+                .toList();
     }
 }

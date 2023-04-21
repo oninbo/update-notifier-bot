@@ -70,10 +70,11 @@ public class JpaStackOverflowQuestionsService
     @Override
     public List<StackOverflowQuestion> getForLinksUpdate(int first) {
         return stackOverflowQuestionsRepository.findAllWithLinks(
-                first,
-                JpaStackOverflowQuestionsRepository.OrderColumn.updatedAt,
-                mapper
-        );
+                        first,
+                        JpaStackOverflowQuestionsRepository.OrderColumn.updatedAt
+                )
+                .stream().map(mapper::fromEntity)
+                .toList();
     }
 
     @Override
@@ -98,9 +99,10 @@ public class JpaStackOverflowQuestionsService
     @Override
     public List<StackOverflowQuestion> getForAnswersUpdate(int first) {
         return stackOverflowQuestionsRepository.findAllWithLinks(
-                first,
-                JpaStackOverflowQuestionsRepository.OrderColumn.answersUpdatedAt,
-                mapper
-        );
+                        first,
+                        JpaStackOverflowQuestionsRepository.OrderColumn.answersUpdatedAt
+                )
+                .stream().map(mapper::fromEntity)
+                .toList();
     }
 }

@@ -12,11 +12,10 @@ import java.util.UUID;
 
 @SuppressWarnings("JpaQlInspection") // Ругается на вызов конструктора DTO в запросах
 public interface JpaTgChatsRepository extends JpaRepository<TgChatEntity, UUID> {
-    default TgChat add(TgChatAddParams addParams) {
+    default TgChatEntity add(TgChatAddParams addParams) {
         var entity = new TgChatEntity();
         entity.setChatId(addParams.chatId());
-        save(entity);
-        return new TgChat(entity.getId(), entity.getChatId());
+        return save(entity);
     }
 
     @Query("""
