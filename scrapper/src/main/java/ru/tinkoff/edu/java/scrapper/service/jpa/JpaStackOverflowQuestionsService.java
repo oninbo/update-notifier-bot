@@ -61,14 +61,15 @@ public class JpaStackOverflowQuestionsService
 
     @Override
     public void updateUpdatedAt(List<StackOverflowQuestion> questions, OffsetDateTime updatedAt) {
-        var entities = questions.stream().map(mapper::toEntity).toList();
+        var ids = questions.stream().map(StackOverflowQuestion::id).toList();
+        var entities = stackOverflowQuestionsRepository.findAllById(ids);
         entities.forEach(e -> e.setUpdatedAt(updatedAt));
-        stackOverflowQuestionsRepository.saveAll(entities);
+        stackOverflowQuestionsRepository.saveAllAndFlush(entities);
     }
 
     @Override
     public List<StackOverflowQuestion> getForLinksUpdate(int first) {
-        return stackOverflowQuestionsRepository.findWithLinks(
+        return stackOverflowQuestionsRepository.findAllWithLinks(
                 first,
                 JpaStackOverflowQuestionsRepository.OrderColumn.updatedAt,
                 mapper
@@ -89,14 +90,14 @@ public class JpaStackOverflowQuestionsService
 
     @Override
     public void updateAnswersUpdatedAt(List<StackOverflowQuestion> questions, OffsetDateTime updatedAt) {
-        var entities = questions.stream().map(mapper::toEntity).toList();
-        entities.forEach(e -> e.setAnswersUpdatedAt(updatedAt));
-        stackOverflowQuestionsRepository.saveAll(entities);
+        var ids = questions.stream().map(StackOverflowQuestion::id).toList();
+        var entities = stackOverflowQuestionsRepository.findAllById(ids);
+        stackOverflowQuestionsRepository.saveAllAndFlush(entities);
     }
 
     @Override
     public List<StackOverflowQuestion> getForAnswersUpdate(int first) {
-        return stackOverflowQuestionsRepository.findWithLinks(
+        return stackOverflowQuestionsRepository.findAllWithLinks(
                 first,
                 JpaStackOverflowQuestionsRepository.OrderColumn.answersUpdatedAt,
                 mapper

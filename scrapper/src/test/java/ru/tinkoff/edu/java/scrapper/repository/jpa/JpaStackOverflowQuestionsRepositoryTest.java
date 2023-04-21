@@ -11,11 +11,16 @@ import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
 import ru.tinkoff.edu.java.scrapper.dto.StackOverflowQuestion;
 import ru.tinkoff.edu.java.scrapper.dto.StackOverflowQuestionAddParams;
+import ru.tinkoff.edu.java.scrapper.entity.LinkEntity;
+import ru.tinkoff.edu.java.scrapper.entity.StackOverflowQuestionEntity;
+import ru.tinkoff.edu.java.scrapper.entity.TgChatEntity;
 import ru.tinkoff.edu.java.scrapper.mapper.StackOverflowQuestionMapper;
 
+import java.net.URI;
 import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.UUID;
+import java.util.function.Supplier;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -34,6 +39,12 @@ public class JpaStackOverflowQuestionsRepositoryTest extends JpaRepositoryTest {
 
     @Random
     OffsetDateTime updatedAt;
+
+    @Random
+    Long otherQuestionId;
+
+    @Random
+    URI url;
 
     @Test
     @Transactional
@@ -93,6 +104,40 @@ public class JpaStackOverflowQuestionsRepositoryTest extends JpaRepositoryTest {
                 .queryForObject("SELECT updated_at from stackoverflow_questions", OffsetDateTime.class);
         assertNotNull(result);
         assertTrue(updatedAt.isEqual(result));
+    }
+    @Test
+    @Transactional
+    @Rollback
+    public void shouldFindAllGitHubRepositoriesWithLinks() {
+        var tgChatId = jdbcTemplate
+                .queryForObject("INSERT INTO tg_chats (chat_id) VALUES (1) RETURNING id", UUID.class);
+        StackOverflowQuestionEntity otherStackOverflowQuestion = new StackOverflowQuestionEntity();
+        otherStackOverflowQuestion.setQuestionId(otherQuestionId);
+        entityManager.persistAndFlush(otherStackOverflowQuestion);
+        LinkEntity link = new LinkEntity();
+        link.setUrl(url);
+        link.setTgChat(entityManager.find(TgChatEntity.class, tgChatId));
+        link.setStackOverflowQuestion(otherStackOverflowQuestion);
+        entityManager.persistAndFlush(link);
+
+        var stackOverflowQuestionId = insertStackOverflowQuestion();
+        var limit = 100;
+        Supplier<List<UUID>> findIds = () -> jpaStackOverflowQuestionsRepository
+                .findAllWithLinks(limit, JpaStackOverflowQuestionsRepository.OrderColumn.updatedAt, mapper)
+                .stream()
+                .map(StackOverflowQuestion::id)
+                .toList();
+        var foundIds = findIds.get();
+        assertIterableEquals(List.of(otherStackOverflowQuestion.getId()), foundIds);
+
+        jdbcTemplate.update(
+                "INSERT INTO links (url, tg_chat_id, stackoverflow_question_id) VALUES (?, ?, ?)",
+                "test",
+                tgChatId,
+                stackOverflowQuestionId
+        );
+        foundIds = findIds.get();
+        assertIterableEquals(List.of(stackOverflowQuestionId, otherStackOverflowQuestion.getId()), foundIds);
     }
 
     private UUID insertStackOverflowQuestion() {

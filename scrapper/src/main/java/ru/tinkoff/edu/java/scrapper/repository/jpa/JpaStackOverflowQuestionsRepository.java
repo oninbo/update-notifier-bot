@@ -27,15 +27,15 @@ public interface JpaStackOverflowQuestionsRepository extends JpaRepository<Stack
 
     Optional<StackOverflowQuestionEntity> findByQuestionId(Long questionId);
 
-    @Query("SELECT sq FROM StackOverflowQuestionEntity AS sq JOIN LinkEntity AS l")
-    List<StackOverflowQuestionEntity> findWithLinks(Pageable pageable);
+    @Query("SELECT sq FROM StackOverflowQuestionEntity AS sq JOIN LinkEntity AS l ON l.stackOverflowQuestion = sq")
+    List<StackOverflowQuestionEntity> findAllWithLinks(Pageable pageable);
 
-    default List<StackOverflowQuestion> findWithLinks(
+    default List<StackOverflowQuestion> findAllWithLinks(
             int first,
             OrderColumn orderColumn,
             StackOverflowQuestionMapper mapper
     ) {
-        return findWithLinks(PageRequest.ofSize(first)
+        return findAllWithLinks(PageRequest.ofSize(first)
                 .withSort(Sort.by(Sort.Order.by(orderColumn.name())).ascending()))
                 .stream().map(mapper::fromEntity)
                 .toList();

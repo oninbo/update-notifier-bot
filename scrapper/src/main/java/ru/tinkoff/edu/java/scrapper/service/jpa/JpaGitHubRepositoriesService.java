@@ -63,9 +63,9 @@ public class JpaGitHubRepositoriesService
 
     @Override
     public void updateIssuesUpdatedAt(List<GitHubRepository> repositories, OffsetDateTime updatedAt) {
-        var entities = repositories.stream().map(mapper::toEntity).toList();
-        entities.forEach(e -> e.setIssuesUpdatedAt(updatedAt));
-        gitHubRepositoriesRepository.saveAll(entities);
+        var ids = repositories.stream().map(GitHubRepository::id).toList();
+        var entities = gitHubRepositoriesRepository.findAllById(ids);
+        gitHubRepositoriesRepository.saveAllAndFlush(entities);
     }
 
     @Override
@@ -87,9 +87,10 @@ public class JpaGitHubRepositoriesService
 
     @Override
     public void updateUpdatedAt(List<GitHubRepository> repositories, OffsetDateTime updatedAt) {
-        var entities = repositories.stream().map(mapper::toEntity).toList();
+        var ids = repositories.stream().map(GitHubRepository::id).toList();
+        var entities = gitHubRepositoriesRepository.findAllById(ids);
         entities.forEach(e -> e.setUpdatedAt(updatedAt));
-        gitHubRepositoriesRepository.saveAll(entities);
+        gitHubRepositoriesRepository.saveAllAndFlush(entities);
     }
 
     @Override
