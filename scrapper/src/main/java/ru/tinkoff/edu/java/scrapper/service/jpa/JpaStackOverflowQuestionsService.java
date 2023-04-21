@@ -93,6 +93,7 @@ public class JpaStackOverflowQuestionsService
     public void updateAnswersUpdatedAt(List<StackOverflowQuestion> questions, OffsetDateTime updatedAt) {
         var ids = questions.stream().map(StackOverflowQuestion::id).toList();
         var entities = stackOverflowQuestionsRepository.findAllById(ids);
+        entities.forEach(e -> e.setAnswersUpdatedAt(updatedAt));
         stackOverflowQuestionsRepository.saveAllAndFlush(entities);
     }
 
