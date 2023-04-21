@@ -65,6 +65,7 @@ public class JpaGitHubRepositoriesService
     public void updateIssuesUpdatedAt(List<GitHubRepository> repositories, OffsetDateTime updatedAt) {
         var ids = repositories.stream().map(GitHubRepository::id).toList();
         var entities = gitHubRepositoriesRepository.findAllById(ids);
+        entities.forEach(e -> e.setIssuesUpdatedAt(updatedAt));
         gitHubRepositoriesRepository.saveAllAndFlush(entities);
     }
 
