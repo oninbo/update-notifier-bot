@@ -13,23 +13,23 @@ import java.util.function.Function;
 
 public class LinkUpdateUtils {
     public static <T> List<LinkUpdate> getUpdates(
-            Iterable<T> updated,
+            Iterable<T> trackedObjects,
             Function<T, OffsetDateTime> getFetchedUpdatedAt,
             BiFunction<T, OffsetDateTime, List<LinkWithChatId>> getLinks,
             Function<T, OffsetDateTime> getUpdatedAt,
             Function<T, OffsetDateTime> getCreatedAt
     ) {
         List<LinkUpdate> linkUpdates = new ArrayList<>();
-        for (var u : updated) {
-            var fetchedUpdatedAt = getFetchedUpdatedAt.apply(u);
+        for (var object : trackedObjects) {
+            var fetchedUpdatedAt = getFetchedUpdatedAt.apply(object);
 
             if (Objects.isNull(fetchedUpdatedAt)) {
                 continue;
             }
 
-            var updatedAt = ObjectUtils.max(getUpdatedAt.apply(u), getCreatedAt.apply(u));
+            var updatedAt = ObjectUtils.max(getUpdatedAt.apply(object), getCreatedAt.apply(object));
             if (updatedAt.isBefore(fetchedUpdatedAt)) {
-                var links = getLinks.apply(u, fetchedUpdatedAt);
+                var links = getLinks.apply(object, fetchedUpdatedAt);
 
                 if (links.isEmpty()) {
                     continue;

@@ -129,7 +129,7 @@ public abstract class GitHubRepositoriesService {
                                 perPage
                         )
                         .stream()
-                        .filter(i -> Objects.isNull(i.pullRequest()))
+                        .filter(i -> Objects.isNull(i.pullRequest()) && i.createdAt().isAfter(repo.issuesUpdatedAt()))
                         .toList();
                 result.addAll(issues);
                 page++;
