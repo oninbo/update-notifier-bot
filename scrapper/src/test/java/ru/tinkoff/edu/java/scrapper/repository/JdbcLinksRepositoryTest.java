@@ -28,15 +28,15 @@ import static org.mockito.Mockito.when;
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = {
         TransactionConfig.class,
-        LinksRepository.class,
+        JdbcLinksRepository.class,
         TestDataSourceConfig.class,
         JdbcConfig.class
 })
 @ExtendWith(RandomBeansExtension.class)
 @ExtendWith(MockitoExtension.class)
-public class LinksRepositoryTest {
+public class JdbcLinksRepositoryTest {
     @Autowired
-    LinksRepository linksRepository;
+    JdbcLinksRepository linksRepository;
 
     @Autowired
     JdbcTemplate jdbcTemplate;

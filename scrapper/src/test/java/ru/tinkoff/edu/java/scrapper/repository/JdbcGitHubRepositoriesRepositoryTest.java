@@ -28,14 +28,14 @@ import static org.mockito.Mockito.when;
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = {
         TransactionConfig.class,
-        GitHubRepositoriesRepository.class,
+        JdbcGitHubRepositoriesRepository.class,
         TestDataSourceConfig.class,
         JdbcConfig.class
 })
 @ExtendWith(RandomBeansExtension.class)
-public class GitHubRepositoriesRepositoryTest {
+public class JdbcGitHubRepositoriesRepositoryTest {
     @Autowired
-    GitHubRepositoriesRepository gitHubRepositoriesRepository;
+    JdbcGitHubRepositoriesRepository gitHubRepositoriesRepository;
 
     @Autowired
     JdbcTemplate jdbcTemplate;

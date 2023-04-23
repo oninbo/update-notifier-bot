@@ -6,13 +6,13 @@ import ru.tinkoff.edu.java.scrapper.configuration.ApplicationConfig;
 import ru.tinkoff.edu.java.scrapper.dto.TgChatAddParams;
 import ru.tinkoff.edu.java.scrapper.exception.TgChatExistsException;
 import ru.tinkoff.edu.java.scrapper.exception.TgChatNotFoundException;
-import ru.tinkoff.edu.java.scrapper.repository.TgChatsRepository;
+import ru.tinkoff.edu.java.scrapper.repository.JdbcTgChatsRepository;
 import ru.tinkoff.edu.java.scrapper.service.TgChatsService;
 
 @Service
 @RequiredArgsConstructor
 class JdbcTgChatsService implements TgChatsService {
-    private final TgChatsRepository tgChatsRepository;
+    private final JdbcTgChatsRepository tgChatsRepository;
     private final ApplicationConfig applicationConfig;
 
     @Override

@@ -15,8 +15,8 @@ import ru.tinkoff.edu.java.scrapper.exception.LinkExistsException;
 import ru.tinkoff.edu.java.scrapper.exception.LinkNotFoundException;
 import ru.tinkoff.edu.java.scrapper.exception.LinkNotSupportedException;
 import ru.tinkoff.edu.java.scrapper.exception.TgChatNotFoundException;
-import ru.tinkoff.edu.java.scrapper.repository.LinksRepository;
-import ru.tinkoff.edu.java.scrapper.repository.TgChatsRepository;
+import ru.tinkoff.edu.java.scrapper.repository.JdbcLinksRepository;
+import ru.tinkoff.edu.java.scrapper.repository.JdbcTgChatsRepository;
 import ru.tinkoff.edu.java.scrapper.service.LinksService;
 
 import java.net.URI;
@@ -27,8 +27,8 @@ import java.util.function.Supplier;
 @Service
 @RequiredArgsConstructor
 class JdbcLinksService implements LinksService {
-    private final LinksRepository linksRepository;
-    private final TgChatsRepository tgChatsRepository;
+    private final JdbcLinksRepository linksRepository;
+    private final JdbcTgChatsRepository tgChatsRepository;
     private final ApplicationConfig applicationConfig;
     private final LinkParserService linkParserService;
     private final JdbcGitHubRepositoriesService gitHubRepositoriesService;

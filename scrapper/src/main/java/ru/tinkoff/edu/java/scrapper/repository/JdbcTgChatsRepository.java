@@ -15,7 +15,7 @@ import java.util.UUID;
 
 @Repository
 @RequiredArgsConstructor
-public class TgChatsRepository implements BaseRepository<TgChat, TgChatAddParams> {
+public class JdbcTgChatsRepository implements BaseRepository<TgChat, TgChatAddParams> {
     private final JdbcTemplate jdbcTemplate;
 
     @Override

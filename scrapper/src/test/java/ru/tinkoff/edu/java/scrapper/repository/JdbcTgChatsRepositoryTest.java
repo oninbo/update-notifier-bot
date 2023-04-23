@@ -24,14 +24,14 @@ import static org.junit.jupiter.api.Assertions.*;
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = {
         TransactionConfig.class,
-        TgChatsRepository.class,
+        JdbcTgChatsRepository.class,
         TestDataSourceConfig.class,
         JdbcConfig.class
 })
 @ExtendWith(RandomBeansExtension.class)
-public class TgChatsRepositoryTest {
+public class JdbcTgChatsRepositoryTest {
     @Autowired
-    TgChatsRepository tgChatsRepository;
+    JdbcTgChatsRepository tgChatsRepository;
 
     @Autowired
     JdbcTemplate jdbcTemplate;

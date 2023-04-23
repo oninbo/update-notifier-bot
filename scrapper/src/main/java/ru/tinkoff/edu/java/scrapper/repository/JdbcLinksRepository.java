@@ -16,7 +16,7 @@ import java.util.UUID;
 
 @Repository
 @RequiredArgsConstructor
-public class LinksRepository implements BaseRepository<Link, LinkAddParams> {
+public class JdbcLinksRepository implements BaseRepository<Link, LinkAddParams> {
     private final JdbcTemplate jdbcTemplate;
 
     @Override

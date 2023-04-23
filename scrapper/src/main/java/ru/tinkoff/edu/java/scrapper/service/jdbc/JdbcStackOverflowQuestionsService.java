@@ -10,8 +10,8 @@ import ru.tinkoff.edu.java.scrapper.dto.LinkUpdate;
 import ru.tinkoff.edu.java.scrapper.dto.StackOverflowQuestion;
 import ru.tinkoff.edu.java.scrapper.dto.StackOverflowQuestionAddParams;
 import ru.tinkoff.edu.java.scrapper.exception.StackOverflowQuestionNotFoundException;
-import ru.tinkoff.edu.java.scrapper.repository.LinksRepository;
-import ru.tinkoff.edu.java.scrapper.repository.StackOverflowQuestionsRepository;
+import ru.tinkoff.edu.java.scrapper.repository.JdbcLinksRepository;
+import ru.tinkoff.edu.java.scrapper.repository.JdbcStackOverflowQuestionsRepository;
 import ru.tinkoff.edu.java.scrapper.service.FindOrDoService;
 import ru.tinkoff.edu.java.scrapper.service.utils.LinkUpdateUtils;
 import ru.tinkoff.edu.java.scrapper.service.UpdatesService;
@@ -26,8 +26,8 @@ import java.util.Optional;
 public class JdbcStackOverflowQuestionsService implements
         FindOrDoService<StackOverflowQuestion, StackOverflowParserResult>,
         UpdatesService <StackOverflowQuestion> {
-    private final StackOverflowQuestionsRepository stackOverflowQuestionsRepository;
-    private final LinksRepository linksRepository;
+    private final JdbcStackOverflowQuestionsRepository stackOverflowQuestionsRepository;
+    private final JdbcLinksRepository linksRepository;
     private final StackOverflowClient stackOverflowClient;
     private final ApplicationConfig applicationConfig;
 

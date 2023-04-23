@@ -12,8 +12,8 @@ import ru.tinkoff.edu.java.scrapper.dto.GitHubRepositoryAddParams;
 import ru.tinkoff.edu.java.scrapper.dto.GitHubRepositoryResponse;
 import ru.tinkoff.edu.java.scrapper.dto.LinkUpdate;
 import ru.tinkoff.edu.java.scrapper.exception.GitHubRepositoryNotFoundException;
-import ru.tinkoff.edu.java.scrapper.repository.GitHubRepositoriesRepository;
-import ru.tinkoff.edu.java.scrapper.repository.LinksRepository;
+import ru.tinkoff.edu.java.scrapper.repository.JdbcGitHubRepositoriesRepository;
+import ru.tinkoff.edu.java.scrapper.repository.JdbcLinksRepository;
 import ru.tinkoff.edu.java.scrapper.service.FindOrDoService;
 import ru.tinkoff.edu.java.scrapper.service.utils.LinkUpdateUtils;
 import ru.tinkoff.edu.java.scrapper.service.UpdatesService;
@@ -27,8 +27,8 @@ import java.util.Optional;
 public class JdbcGitHubRepositoriesService implements
         FindOrDoService<GitHubRepository, GitHubParserResult>,
         UpdatesService<GitHubRepository> {
-    private final GitHubRepositoriesRepository gitHubRepositoriesRepository;
-    private final LinksRepository linksRepository;
+    private final JdbcGitHubRepositoriesRepository gitHubRepositoriesRepository;
+    private final JdbcLinksRepository linksRepository;
     private final ApplicationConfig applicationConfig;
     private final GitHubClient gitHubClient;
 

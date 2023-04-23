@@ -19,7 +19,7 @@ import java.util.UUID;
 
 @Repository
 @RequiredArgsConstructor
-public class StackOverflowQuestionsRepository implements BaseRepository<StackOverflowQuestion, StackOverflowQuestionAddParams> {
+public class JdbcStackOverflowQuestionsRepository implements BaseRepository<StackOverflowQuestion, StackOverflowQuestionAddParams> {
     private final JdbcTemplate jdbcTemplate;
 
     @Override
