@@ -8,7 +8,6 @@ import ru.tinkoff.edu.java.scrapper.dto.LinkUpdate;
 import ru.tinkoff.edu.java.scrapper.dto.StackOverflowAnswerUpdate;
 import ru.tinkoff.edu.java.scrapper.dto.StackOverflowQuestion;
 import ru.tinkoff.edu.java.scrapper.dto.StackOverflowQuestionAddParams;
-import ru.tinkoff.edu.java.scrapper.exception.StackOverflowQuestionNotFoundException;
 import ru.tinkoff.edu.java.scrapper.repository.jooq.JooqLinksRepository;
 import ru.tinkoff.edu.java.scrapper.repository.jooq.JooqStackOverflowQuestionsRepository;
 import ru.tinkoff.edu.java.scrapper.service.FindOrDoService;
@@ -29,12 +28,6 @@ public class JooqStackOverflowQuestionsService
     private final JooqLinksRepository linksRepository;
     private final ApplicationConfig applicationConfig;
     private final StackOverflowClient stackOverflowClient;
-
-    @Override
-    public StackOverflowQuestion findOrThrow(StackOverflowParserResult findParams) {
-        return stackOverflowQuestionsRepository.find(findParams.questionId())
-                .orElseThrow(() -> new StackOverflowQuestionNotFoundException(applicationConfig));
-    }
 
     @Override
     public StackOverflowQuestion findOrCreate(StackOverflowParserResult findParams) {

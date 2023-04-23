@@ -28,13 +28,13 @@ public class LinkFinder<S, G> {
     class Visitor implements LinkParserResultVisitor {
         @Override
         public void visit(GitHubParserResult gitHubParserResult) {
-            onFind = () -> findGitHubRepositoryLink.apply(gitHubRepositoriesService.findOrThrow(gitHubParserResult));
+            onFind = () -> findGitHubRepositoryLink.apply(gitHubRepositoriesService.findOrCreate(gitHubParserResult));
         }
 
         @Override
         public void visit(StackOverflowParserResult stackOverflowParserResult) {
             onFind = () -> findStackOverflowQuestionLink
-                    .apply(stackOverflowQuestionsService.findOrThrow(stackOverflowParserResult));
+                    .apply(stackOverflowQuestionsService.findOrCreate(stackOverflowParserResult));
         }
     }
 }

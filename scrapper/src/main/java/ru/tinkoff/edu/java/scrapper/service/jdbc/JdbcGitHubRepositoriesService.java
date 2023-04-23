@@ -31,11 +31,6 @@ public class JdbcGitHubRepositoriesService
     private final GitHubClient gitHubClient;
 
     @Override
-    public GitHubRepository findOrThrow(GitHubParserResult findParams) {
-        return find(findParams).orElseThrow(() -> new GitHubRepositoryNotFoundException(applicationConfig));
-    }
-
-    @Override
     public GitHubRepository findOrCreate(GitHubParserResult findParams) {
         return find(findParams).orElseGet(
                 () -> create(
