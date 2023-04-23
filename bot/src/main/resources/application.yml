@@ -1,14 +1,16 @@
 #file: noinspection SpringBootApplicationYaml
 app:
+  message:
+    unsupported_link: Ссылка не поддерживается
+    update: Получено обновление по ссылке на
+    error: Произошла ошибка
   error_description:
     api: Некорректные параметры запроса
     server: Ошибка сервера
   command:
     common:
       message:
-        bot_error: Произошла ошибка
         unsupported_command: Команда не поддерживается
-        unsupported_link: Ссылка не поддерживается
         invalid_link: Ссылка невалидна
     start:
       description: Зарегистрировать пользователя

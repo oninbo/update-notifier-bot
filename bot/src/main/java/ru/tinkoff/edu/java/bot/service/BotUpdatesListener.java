@@ -33,7 +33,7 @@ public class BotUpdatesListener implements UpdatesListener {
         for (var update : updates) {
             try {
                 processUpdate(update);
-            } catch (WebClientResponseException.NotFound exception) {
+            } catch (WebClientResponseException exception) {
                 webClientErrorHandler
                         .handleWebClientException(
                                 exception,
@@ -48,7 +48,7 @@ public class BotUpdatesListener implements UpdatesListener {
     }
 
     private void processUpdate(Update update) {
-        log.info(UpdateLog.fromUpdate(update).toString());
+        log.info(new UpdateLog(update).toString());
         var message = Optional.ofNullable(update.message());
 
         message.map(Message::entities).ifPresentOrElse(
@@ -72,7 +72,7 @@ public class BotUpdatesListener implements UpdatesListener {
     private void sendErrorMessage(Long userId) {
         userResponseService.sendMessage(
                 userId,
-                applicationConfig.command().common().message().botError()
+                applicationConfig.message().error()
         );
     }
 

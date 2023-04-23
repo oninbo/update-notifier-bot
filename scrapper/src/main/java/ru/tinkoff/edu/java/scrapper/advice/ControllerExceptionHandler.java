@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import ru.tinkoff.edu.java.scrapper.configuration.ApplicationConfig;
 import ru.tinkoff.edu.java.scrapper.dto.ApiErrorResponse;
+import ru.tinkoff.edu.java.scrapper.exception.ServiceException;
 import ru.tinkoff.edu.java.scrapper.exception.TgChatNotFoundException;
 
 @RestControllerAdvice
@@ -41,10 +42,20 @@ public class ControllerExceptionHandler {
 
     @ExceptionHandler(value = {TgChatNotFoundException.class})
     @ResponseStatus(value = HttpStatus.NOT_FOUND)
-    public ApiErrorResponse tgChatNotFoundErrorResponse(TgChatNotFoundException ex) {
+    public ApiErrorResponse tgChatNotFoundErrorResponse(ServiceException ex) {
         return new ApiErrorResponse(
-                config.errorDescription().tgChatNotFound(),
-                Integer.toString(HttpStatus.NOT_FOUND.value()),
+                ex.description(),
+                ex.code(),
+                ex
+        );
+    }
+
+    @ExceptionHandler(value = {ServiceException.class})
+    @ResponseStatus(value = HttpStatus.BAD_REQUEST)
+    public ApiErrorResponse serviceErrorResponse(ServiceException ex) {
+        return new ApiErrorResponse(
+                ex.description(),
+                ex.code(),
                 ex
         );
     }

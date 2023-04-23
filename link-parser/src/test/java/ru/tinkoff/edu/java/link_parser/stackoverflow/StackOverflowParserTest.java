@@ -6,7 +6,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import ru.tinkoff.edu.java.link_parser.base_parser.LinkParserIncorrectLinkException;
-import ru.tinkoff.edu.java.link_parser.configuration.ApplicationConfig;
+import ru.tinkoff.edu.java.link_parser.configuration.LinkParserConfig;
 
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -18,7 +18,7 @@ public class StackOverflowParserTest {
 
     @BeforeAll
     public static void initialize() {
-        var context = new AnnotationConfigApplicationContext(ApplicationConfig.class);
+        var context = new AnnotationConfigApplicationContext(LinkParserConfig.class);
         parser = context.getBean(StackOverflowParser.class);
     }
 
@@ -28,7 +28,7 @@ public class StackOverflowParserTest {
         "https://stackoverflow.com/questions/1642028/"
     })
     public void shouldParseCorrectLinks(String correctLink) throws URISyntaxException {
-        var expectedResult = new StackOverflowParserResult("1642028");
+        var expectedResult = new StackOverflowParserResult(1642028L);
         assertEquals(parser.parse(new URI(correctLink)), expectedResult);
     }
 

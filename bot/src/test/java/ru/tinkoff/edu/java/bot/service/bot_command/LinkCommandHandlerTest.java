@@ -16,11 +16,13 @@ import ru.tinkoff.edu.java.bot.dto.ListLinksResponse;
 import ru.tinkoff.edu.java.bot.service.UserResponseService;
 import ru.tinkoff.edu.java.bot.service.bot_command.handler.ListCommandHandler;
 import ru.tinkoff.edu.java.link_parser.LinkParserService;
+import ru.tinkoff.edu.java.link_parser.configuration.LinkParserConfig;
 
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertIterableEquals;
 import static org.mockito.Mockito.*;
@@ -45,10 +47,10 @@ public class LinkCommandHandlerTest {
     private ListCommandHandler listCommandHandler;
 
     @Random
-    private static Long RANDOM_LINK_ID1;
+    private static UUID RANDOM_LINK_ID1;
 
     @Random
-    private static Long RANDOM_LINK_ID2;
+    private static UUID RANDOM_LINK_ID2;
 
     @Random
     private static Long RANDOM_USER_ID;
@@ -67,7 +69,7 @@ public class LinkCommandHandlerTest {
         when(applicationConfig.command().list()).thenReturn(mock(Command.List.class));
 
         var context = new AnnotationConfigApplicationContext(
-                ru.tinkoff.edu.java.link_parser.configuration.ApplicationConfig.class
+                LinkParserConfig.class
         );
         listCommandHandler = new ListCommandHandler(
                 userResponseService,

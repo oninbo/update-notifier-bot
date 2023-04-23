@@ -5,7 +5,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
-import ru.tinkoff.edu.java.link_parser.configuration.ApplicationConfig;
+import ru.tinkoff.edu.java.link_parser.configuration.LinkParserConfig;
 import ru.tinkoff.edu.java.link_parser.base_parser.LinkParserIncorrectLinkException;
 
 import java.net.URI;
@@ -18,7 +18,7 @@ public class GitHubParserTest {
 
     @BeforeAll
     public static void initialize() {
-        var context = new AnnotationConfigApplicationContext(ApplicationConfig.class);
+        var context = new AnnotationConfigApplicationContext(LinkParserConfig.class);
         parser = context.getBean(GitHubParser.class);
     }
 

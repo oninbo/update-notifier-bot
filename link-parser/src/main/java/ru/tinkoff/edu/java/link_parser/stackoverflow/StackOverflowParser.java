@@ -6,10 +6,12 @@ import ru.tinkoff.edu.java.link_parser.base_parser.LinkParser;
 
 import java.net.URI;
 import java.util.List;
+import java.util.regex.Pattern;
 
 @Component
 public class StackOverflowParser extends LinkParser {
     private final String stackOverflowHost;
+    private final Pattern questionIdPattern = Pattern.compile("\\d+");
 
     public StackOverflowParser(@Value("${stackoverflow.host}") String stackOverflowHost) {
         this.stackOverflowHost = stackOverflowHost;
@@ -18,7 +20,7 @@ public class StackOverflowParser extends LinkParser {
     @Override
     protected StackOverflowParserResult createResult(URI uri) {
         List<String> segments = getURIPathSegments(uri);
-        return new StackOverflowParserResult(segments.get(1));
+        return new StackOverflowParserResult(Long.parseLong(segments.get(1)));
     }
 
     @Override
@@ -29,6 +31,9 @@ public class StackOverflowParser extends LinkParser {
     @Override
     protected boolean canTakeDataFromURI(URI uri) {
         List<String> segments = getURIPathSegments(uri);
-        return segments.size() >= 2 && segments.get(0).equals("questions");
+        if (!(segments.size() >= 2 && segments.get(0).equals("questions"))) {
+            return false;
+        }
+        return questionIdPattern.matcher(segments.get(1)).matches();
     }
 }

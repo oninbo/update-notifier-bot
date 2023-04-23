@@ -26,7 +26,7 @@ public class IntegrationEnvironment {
         );
     }
 
-    static final JdbcDatabaseContainer<?> DATABASE_CONTAINER;
+    public static final JdbcDatabaseContainer<?> DATABASE_CONTAINER;
 
     static {
         DATABASE_CONTAINER = new PostgreSQLContainer<>("postgres:15");

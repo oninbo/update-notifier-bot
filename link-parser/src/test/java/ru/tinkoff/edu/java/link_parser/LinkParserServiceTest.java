@@ -3,7 +3,7 @@ package ru.tinkoff.edu.java.link_parser;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
-import ru.tinkoff.edu.java.link_parser.configuration.ApplicationConfig;
+import ru.tinkoff.edu.java.link_parser.configuration.LinkParserConfig;
 import ru.tinkoff.edu.java.link_parser.github.GitHubParserResult;
 import ru.tinkoff.edu.java.link_parser.stackoverflow.StackOverflowParserResult;
 
@@ -18,7 +18,7 @@ public class LinkParserServiceTest {
 
     @BeforeAll
     public static void initialize() {
-        var context = new AnnotationConfigApplicationContext(ApplicationConfig.class);
+        var context = new AnnotationConfigApplicationContext(LinkParserConfig.class);
         service = context.getBean(LinkParserService.class);
     }
 
@@ -35,7 +35,7 @@ public class LinkParserServiceTest {
         var link = new URI(
                 "https://stackoverflow.com/questions/42307687/get-complete-jdk-source-code-in-intellij-or-other-ide"
         );
-        var result = new StackOverflowParserResult("42307687");
+        var result = new StackOverflowParserResult(42307687L);
 
         assertEquals(service.parse(link), Optional.of(result));
     }

@@ -19,9 +19,7 @@ public record Command(
     public record Common(@Valid @NotNull Message message) {
         @Validated
         public record Message(
-                @NotBlank String botError,
                 @NotBlank String unsupportedCommand,
-                @NotBlank String unsupportedLink,
                 @NotBlank String invalidLink
         ) {
         }
