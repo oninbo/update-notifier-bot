@@ -13,15 +13,8 @@ public record ApplicationConfig(
         @Valid @NotNull WebClient webClient,
         @Valid @NotNull Scheduler scheduler,
         @Valid @NotNull Database database,
-        @NotNull ApplicationConfig.DatabaseAccessType databaseAccessType,
         @NotNull @Valid ApplicationConfig.RabbitMQ rabbitMQ
 ) {
-    enum DatabaseAccessType {
-        JDBC,
-        JPA,
-        JOOQ
-    }
-
     @Validated
     record RabbitMQ(@NotBlank String queueName, @NotBlank String exchangeName) {
     }
