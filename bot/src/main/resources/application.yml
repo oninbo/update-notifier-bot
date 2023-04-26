@@ -3,6 +3,8 @@ app:
   message:
     unsupported_link: Ссылка не поддерживается
     update: Получено обновление по ссылке на
+    stackoverflow_answer_update: Получен новый [ответ](%s) на [вопрос](%s) на Stack Overflow
+    github_issue_update: Добавлен новый [тикет](%s) в GitHub [репозиторий %s](%s) пользователя %s
     error: Произошла ошибка
   error_description:
     api: Некорректные параметры запроса

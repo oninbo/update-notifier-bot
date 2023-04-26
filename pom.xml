@@ -30,6 +30,7 @@
         <okhttp.version>4.0.1</okhttp.version>
         <java-telegram-bot-api.version>6.5.0</java-telegram-bot-api.version>
         <hibernate.version>6.2.0.Final</hibernate.version>
+        <jooq.version>3.17.6</jooq.version>
         <maven.compiler.source>17</maven.compiler.source>
         <maven.compiler.target>17</maven.compiler.target>
     </properties>
@@ -111,6 +112,11 @@
                 <artifactId>hibernate-core</artifactId>
                 <version>${hibernate.version}</version>
             </dependency>
+            <dependency>
+                <groupId>org.jooq</groupId>
+                <artifactId>jooq-meta-extensions-liquibase</artifactId>
+                <version>${jooq.version}</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 
@@ -188,5 +194,6 @@
         <module>bot</module>
         <module>link-parser</module>
         <module>scrapper</module>
+        <module>scrapper-jooq</module>
     </modules>
 </project>

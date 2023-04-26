@@ -1,6 +1,7 @@
 package ru.tinkoff.edu.java.scrapper.controller;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.web.bind.annotation.*;
 import ru.tinkoff.edu.java.scrapper.service.TgChatsService;
 
@@ -8,6 +9,7 @@ import ru.tinkoff.edu.java.scrapper.service.TgChatsService;
 @RequestMapping("/tg-chat")
 @RequiredArgsConstructor
 public class TgChatsController {
+    @Qualifier("jooqTgChatsService")
     private final TgChatsService tgChatsService;
 
     @PostMapping("/{id}")

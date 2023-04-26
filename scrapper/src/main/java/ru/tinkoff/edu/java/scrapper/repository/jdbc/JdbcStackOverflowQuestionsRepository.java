@@ -1,4 +1,4 @@
-package ru.tinkoff.edu.java.scrapper.repository;
+package ru.tinkoff.edu.java.scrapper.repository.jdbc;
 
 import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;
@@ -8,6 +8,7 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 import ru.tinkoff.edu.java.scrapper.dto.StackOverflowQuestion;
 import ru.tinkoff.edu.java.scrapper.dto.StackOverflowQuestionAddParams;
+import ru.tinkoff.edu.java.scrapper.repository.BaseRepository;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -44,19 +45,24 @@ public class JdbcStackOverflowQuestionsRepository implements BaseRepository<Stac
         return jdbcTemplate.query("SELECT * FROM stackoverflow_questions", rowMapper());
     }
 
-    public List<StackOverflowQuestion> findAllWithLinks(int limit) {
-        return jdbcTemplate.query(
+    public enum UpdateColumn {
+        UPDATED_AT,
+        ANSWERS_UPDATED_AT
+    }
+
+    public List<StackOverflowQuestion> findAllWithLinks(int limit, UpdateColumn updateColumn) {
+        String sql = String.format(
                 """
                         SELECT sq.*
                         FROM links
                         JOIN stackoverflow_questions sq on sq.id = links.stackoverflow_question_id
                         GROUP BY sq.id, sq.question_id, sq.created_at, sq.updated_at
-                        ORDER BY sq.updated_at NULLS FIRST
+                        ORDER BY sq.%s NULLS FIRST
                         LIMIT ?
                         """,
-                rowMapper(),
-                limit
+                updateColumn.name().toLowerCase()
         );
+        return jdbcTemplate.query(sql, rowMapper(), limit);
     }
 
     public Optional<StackOverflowQuestion> find(Long questionId) {
@@ -86,6 +92,24 @@ public class JdbcStackOverflowQuestionsRepository implements BaseRepository<Stac
         );
     }
 
+    public void updateAnswersUpdatedAt(List<StackOverflowQuestion> questions, OffsetDateTime updatedAt) {
+        jdbcTemplate.batchUpdate(
+                "UPDATE stackoverflow_questions SET answers_updated_at = ? WHERE id = ?",
+                new BatchPreparedStatementSetter() {
+
+                    public void setValues(@NotNull PreparedStatement ps, int i)
+                            throws SQLException {
+                        ps.setObject(1, updatedAt);
+                        ps.setObject(2, questions.get(i).id());
+                    }
+
+                    public int getBatchSize() {
+                        return questions.size();
+                    }
+                }
+        );
+    }
+
     @Override
     public void remove(UUID id) {
         jdbcTemplate.update("DELETE FROM stackoverflow_questions WHERE id = ?", id);
@@ -100,7 +124,8 @@ public class JdbcStackOverflowQuestionsRepository implements BaseRepository<Stac
                 rs.getObject("id", UUID.class),
                 rs.getLong("question_id"),
                 rs.getObject("updated_at", OffsetDateTime.class),
-                rs.getObject("created_at", OffsetDateTime.class)
+                rs.getObject("created_at", OffsetDateTime.class),
+                rs.getObject("answers_updated_at", OffsetDateTime.class)
         );
     }
 }

@@ -1,33 +1,33 @@
 package ru.tinkoff.edu.java.scrapper.service.jdbc;
 
 import lombok.RequiredArgsConstructor;
-import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.stereotype.Service;
 import ru.tinkoff.edu.java.link_parser.stackoverflow.StackOverflowParserResult;
 import ru.tinkoff.edu.java.scrapper.client.StackOverflowClient;
 import ru.tinkoff.edu.java.scrapper.configuration.ApplicationConfig;
 import ru.tinkoff.edu.java.scrapper.dto.LinkUpdate;
+import ru.tinkoff.edu.java.scrapper.dto.StackOverflowAnswerUpdate;
 import ru.tinkoff.edu.java.scrapper.dto.StackOverflowQuestion;
 import ru.tinkoff.edu.java.scrapper.dto.StackOverflowQuestionAddParams;
 import ru.tinkoff.edu.java.scrapper.exception.StackOverflowQuestionNotFoundException;
-import ru.tinkoff.edu.java.scrapper.repository.JdbcLinksRepository;
-import ru.tinkoff.edu.java.scrapper.repository.JdbcStackOverflowQuestionsRepository;
+import ru.tinkoff.edu.java.scrapper.repository.jdbc.JdbcLinksRepository;
+import ru.tinkoff.edu.java.scrapper.repository.jdbc.JdbcStackOverflowQuestionsRepository;
 import ru.tinkoff.edu.java.scrapper.service.FindOrDoService;
-import ru.tinkoff.edu.java.scrapper.service.utils.LinkUpdateUtils;
-import ru.tinkoff.edu.java.scrapper.service.UpdatesService;
+import ru.tinkoff.edu.java.scrapper.service.StackOverflowAnswersService;
+import ru.tinkoff.edu.java.scrapper.service.StackOverflowQuestionsService;
 
 import java.time.OffsetDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
-public class JdbcStackOverflowQuestionsService implements
-        FindOrDoService<StackOverflowQuestion, StackOverflowParserResult>,
-        UpdatesService <StackOverflowQuestion> {
-    private final JdbcStackOverflowQuestionsRepository stackOverflowQuestionsRepository;
-    private final JdbcLinksRepository linksRepository;
+class JdbcStackOverflowQuestionsService
+        extends StackOverflowQuestionsService
+        implements FindOrDoService<StackOverflowQuestion, StackOverflowParserResult>,
+        StackOverflowAnswersService {
+    private final JdbcStackOverflowQuestionsRepository jdbcStackOverflowQuestionsRepository;
+    private final JdbcLinksRepository jdbcLinksRepository;
     private final StackOverflowClient stackOverflowClient;
     private final ApplicationConfig applicationConfig;
 
@@ -43,57 +43,61 @@ public class JdbcStackOverflowQuestionsService implements
     }
 
     public Optional<StackOverflowQuestion> find(StackOverflowParserResult findParams) {
-        return stackOverflowQuestionsRepository.find(findParams.questionId());
+        return jdbcStackOverflowQuestionsRepository.find(findParams.questionId());
     }
 
     public StackOverflowQuestion create(StackOverflowQuestionAddParams stackOverflowQuestion) {
-        checkIfStackOverflowQuestionExists(stackOverflowQuestion);
-        return stackOverflowQuestionsRepository.add(stackOverflowQuestion);
-    }
-
-    private void checkIfStackOverflowQuestionExists(StackOverflowQuestionAddParams stackOverflowQuestion) {
-        var response = stackOverflowClient.getStackOverflowQuestions(
-                applicationConfig.webClient().stackExchange().apiVersion(),
-                List.of(stackOverflowQuestion.questionId())
-        );
-        if (response.items().isEmpty()) {
-            throw new StackOverflowQuestionNotFoundException(applicationConfig);
-        }
+        checkIfStackOverflowQuestionExists(stackOverflowQuestion, stackOverflowClient, applicationConfig);
+        return jdbcStackOverflowQuestionsRepository.add(stackOverflowQuestion);
     }
 
     @Override
-    public List<LinkUpdate> getUpdates(List<StackOverflowQuestion> questions) {
-        int batchSize = 100;
-        List<LinkUpdate> result = new ArrayList<>();
-        for (int i = 0; i < questions.size(); i += batchSize) {
-            var batch = questions.subList(i, Math.min(i + batchSize, questions.size()));
-            var fetchedBatch = stackOverflowClient.getStackOverflowQuestions(
-                    applicationConfig.webClient().stackExchange().apiVersion(),
-                    batch.stream().map(StackOverflowQuestion::questionId).toList()
-            );
-            List<LinkUpdate> batchResult = LinkUpdateUtils.getUpdates(
-                    batch,
-                    question -> fetchedBatch.items().stream()
-                            .filter(item -> item.questionId().equals(question.questionId()))
-                            .findFirst()
-                            .map(sq -> ObjectUtils.max(sq.lastActivityDate(), sq.lastEditDate()))
-                            .orElse(null),
-                    linksRepository::findAllWithChatId,
-                    StackOverflowQuestion::updatedAt,
-                    StackOverflowQuestion::createdAt
-            );
-            result.addAll(batchResult);
-        }
-        return result;
+    public List<LinkUpdate> getLinkUpdates(List<StackOverflowQuestion> questions) {
+        return getBatchedUpdates(
+                questions,
+                batch -> getUpdates(
+                        batch,
+                        stackOverflowClient,
+                        applicationConfig,
+                        jdbcLinksRepository::findAllWithChatId
+                ));
     }
 
     @Override
     public void updateUpdatedAt(List<StackOverflowQuestion> questions, OffsetDateTime updatedAt) {
-        stackOverflowQuestionsRepository.updateUpdatedAt(questions, updatedAt);
+        jdbcStackOverflowQuestionsRepository.updateUpdatedAt(questions, updatedAt);
     }
 
     @Override
-    public List<StackOverflowQuestion> getObjectsForUpdate(int first) {
-        return stackOverflowQuestionsRepository.findAllWithLinks(first);
+    public List<StackOverflowQuestion> getForLinksUpdate(int first) {
+        return jdbcStackOverflowQuestionsRepository.findAllWithLinks(
+                first,
+                JdbcStackOverflowQuestionsRepository.UpdateColumn.UPDATED_AT
+        );
+    }
+
+    @Override
+    public List<StackOverflowAnswerUpdate> getStackOverflowAnswerUpdates(List<StackOverflowQuestion> questions) {
+        return getBatchedUpdates(
+                questions,
+                batch -> getAnswerUpdates(
+                        batch,
+                        jdbcLinksRepository::findAllWithChatId,
+                        stackOverflowClient,
+                        applicationConfig
+                ));
+    }
+
+    @Override
+    public void updateAnswersUpdatedAt(List<StackOverflowQuestion> questions, OffsetDateTime updatedAt) {
+        jdbcStackOverflowQuestionsRepository.updateAnswersUpdatedAt(questions, updatedAt);
+    }
+
+    @Override
+    public List<StackOverflowQuestion> getForAnswersUpdate(int first) {
+        return jdbcStackOverflowQuestionsRepository.findAllWithLinks(
+                first,
+                JdbcStackOverflowQuestionsRepository.UpdateColumn.ANSWERS_UPDATED_AT
+        );
     }
 }
