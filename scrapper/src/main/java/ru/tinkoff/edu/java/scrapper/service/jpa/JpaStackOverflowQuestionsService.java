@@ -9,7 +9,6 @@ import ru.tinkoff.edu.java.scrapper.dto.StackOverflowAnswerUpdate;
 import ru.tinkoff.edu.java.scrapper.dto.StackOverflowQuestion;
 import ru.tinkoff.edu.java.scrapper.dto.StackOverflowQuestionAddParams;
 import ru.tinkoff.edu.java.scrapper.entity.StackOverflowQuestionEntity;
-import ru.tinkoff.edu.java.scrapper.exception.StackOverflowQuestionNotFoundException;
 import ru.tinkoff.edu.java.scrapper.mapper.StackOverflowQuestionMapper;
 import ru.tinkoff.edu.java.scrapper.repository.jpa.JpaLinksRepository;
 import ru.tinkoff.edu.java.scrapper.repository.jpa.JpaStackOverflowQuestionsRepository;
@@ -30,12 +29,6 @@ public class JpaStackOverflowQuestionsService
     private final ApplicationConfig applicationConfig;
     private final StackOverflowClient stackOverflowClient;
     private final StackOverflowQuestionMapper mapper;
-
-    @Override
-    public StackOverflowQuestionEntity findOrThrow(StackOverflowParserResult findParams) {
-        return stackOverflowQuestionsRepository.findByQuestionId(findParams.questionId())
-                .orElseThrow(() -> new StackOverflowQuestionNotFoundException(applicationConfig));
-    }
 
     @Override
     public StackOverflowQuestionEntity findOrCreate(StackOverflowParserResult findParams) {

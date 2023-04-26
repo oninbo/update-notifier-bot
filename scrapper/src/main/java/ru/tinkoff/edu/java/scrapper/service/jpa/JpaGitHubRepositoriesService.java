@@ -9,7 +9,6 @@ import ru.tinkoff.edu.java.scrapper.dto.GitHubRepository;
 import ru.tinkoff.edu.java.scrapper.dto.GitHubRepositoryAddParams;
 import ru.tinkoff.edu.java.scrapper.dto.LinkUpdate;
 import ru.tinkoff.edu.java.scrapper.entity.GitHubRepositoryEntity;
-import ru.tinkoff.edu.java.scrapper.exception.GitHubRepositoryNotFoundException;
 import ru.tinkoff.edu.java.scrapper.mapper.GithubRepositoryMapper;
 import ru.tinkoff.edu.java.scrapper.repository.jpa.JpaGitHubRepositoriesRepository;
 import ru.tinkoff.edu.java.scrapper.repository.jpa.JpaLinksRepository;
@@ -31,12 +30,6 @@ public class JpaGitHubRepositoriesService
     private final ApplicationConfig applicationConfig;
     private final GitHubClient gitHubClient;
     private final GithubRepositoryMapper mapper;
-
-    @Override
-    public GitHubRepositoryEntity findOrThrow(GitHubParserResult findParams) {
-        return gitHubRepositoriesRepository.findByUsernameAndName(findParams.userName(), findParams.projectName())
-                .orElseThrow(() -> new GitHubRepositoryNotFoundException(applicationConfig));
-    }
 
     @Override
     public GitHubRepositoryEntity findOrCreate(GitHubParserResult findParams) {
