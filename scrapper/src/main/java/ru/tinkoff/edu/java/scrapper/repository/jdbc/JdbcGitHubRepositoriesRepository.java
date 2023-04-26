@@ -1,4 +1,4 @@
-package ru.tinkoff.edu.java.scrapper.repository;
+package ru.tinkoff.edu.java.scrapper.repository.jdbc;
 
 import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;
@@ -8,6 +8,7 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 import ru.tinkoff.edu.java.scrapper.dto.GitHubRepository;
 import ru.tinkoff.edu.java.scrapper.dto.GitHubRepositoryAddParams;
+import ru.tinkoff.edu.java.scrapper.repository.BaseRepository;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -51,24 +52,47 @@ public class JdbcGitHubRepositoriesRepository implements BaseRepository<GitHubRe
         return jdbcTemplate.query("SELECT * FROM github_repositories", rowMapper());
     }
 
-    public List<GitHubRepository> findAllWithLinks(int limit) {
-        return jdbcTemplate.query(
+    public enum UpdateColumn {
+        UPDATED_AT,
+        ISSUES_UPDATED_AT,
+    }
+
+    public List<GitHubRepository> findAllWithLinks(int limit, UpdateColumn updateColumn) {
+        String sql = String.format(
                 """
                         SELECT gr.*
                         FROM links
                         JOIN github_repositories gr on links.github_repository_id = gr.id
                         GROUP BY gr.id, gr.username, gr.name, gr.created_at, gr.updated_at
-                        ORDER BY gr.updated_at NULLS FIRST
+                        ORDER BY gr.%s NULLS FIRST
                         LIMIT ?
                         """,
-                rowMapper(),
-                limit
+                updateColumn.name().toLowerCase()
         );
+        return jdbcTemplate.query(sql, rowMapper(), limit);
     }
 
     public void updateUpdatedAt(List<GitHubRepository> repositories, OffsetDateTime updatedAt) {
         jdbcTemplate.batchUpdate(
                 "UPDATE github_repositories SET updated_at = ? WHERE id = ?",
+                new BatchPreparedStatementSetter() {
+
+                    public void setValues(@NotNull PreparedStatement ps, int i)
+                            throws SQLException {
+                        ps.setObject(1, updatedAt);
+                        ps.setObject(2, repositories.get(i).id());
+                    }
+
+                    public int getBatchSize() {
+                        return repositories.size();
+                    }
+                }
+        );
+    }
+
+    public void updateIssuesUpdatedAt(List<GitHubRepository> repositories, OffsetDateTime updatedAt) {
+        jdbcTemplate.batchUpdate(
+                "UPDATE github_repositories SET issues_updated_at = ? WHERE id = ?",
                 new BatchPreparedStatementSetter() {
 
                     public void setValues(@NotNull PreparedStatement ps, int i)
@@ -99,7 +123,8 @@ public class JdbcGitHubRepositoriesRepository implements BaseRepository<GitHubRe
                 rs.getString("username"),
                 rs.getString("name"),
                 rs.getObject("updated_at", OffsetDateTime.class),
-                rs.getObject("created_at", OffsetDateTime.class)
+                rs.getObject("created_at", OffsetDateTime.class),
+                rs.getObject("issues_updated_at", OffsetDateTime.class)
         );
     }
 }

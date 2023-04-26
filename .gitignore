@@ -1,2 +1,3 @@
 target/
 secrets.yml
+/scrapper/src/main/java/ru/tinkoff/edu/java/scrapper/domain/jooq/

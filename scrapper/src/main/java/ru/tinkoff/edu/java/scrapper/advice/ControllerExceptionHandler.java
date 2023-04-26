@@ -1,6 +1,7 @@
 package ru.tinkoff.edu.java.scrapper.advice;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -14,6 +15,7 @@ import ru.tinkoff.edu.java.scrapper.exception.TgChatNotFoundException;
 
 @RestControllerAdvice
 @RequiredArgsConstructor
+@Slf4j
 public class ControllerExceptionHandler {
     private final ApplicationConfig config;
 
@@ -33,6 +35,7 @@ public class ControllerExceptionHandler {
     @ExceptionHandler(value = {Exception.class})
     @ResponseStatus(value = HttpStatus.BAD_REQUEST)
     public ApiErrorResponse serverErrorResponse(Exception ex) {
+        log.error(ex.toString());
         return new ApiErrorResponse(
                 config.errorDescription().server(),
                 Integer.toString(HttpStatus.INTERNAL_SERVER_ERROR.value()),
