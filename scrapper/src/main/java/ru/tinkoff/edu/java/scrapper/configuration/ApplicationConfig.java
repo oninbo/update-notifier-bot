@@ -16,6 +16,6 @@ public record ApplicationConfig(
         @NotNull @Valid ApplicationConfig.RabbitMQ rabbitMQ
 ) {
     @Validated
-    record RabbitMQ(@NotBlank String queueName, @NotBlank String exchangeName) {
+    public record RabbitMQ(@NotBlank String queueName, @NotBlank String exchangeName) {
     }
 }
