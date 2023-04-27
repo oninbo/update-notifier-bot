@@ -1,7 +1,6 @@
 package ru.tinkoff.edu.java.scrapper.scheduler;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,8 +20,6 @@ public class LinkUpdaterScheduler {
     @SuppressWarnings("unused")
     private final SchedulerConfig schedulerConfig;
     private final ApplicationConfig applicationConfig;
-
-    @Qualifier("jooqLinksUpdatesServices")
     private final List<LinksUpdatesService<?>> linksUpdatesServices;
     private final BotClient botClient;
     private final UpdatesQueueProducer updatesQueueProducer;

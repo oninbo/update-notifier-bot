@@ -1,4 +1,4 @@
-package ru.tinkoff.edu.java.scrapper.service.jooq;
+package ru.tinkoff.edu.java.scrapper.service.jpa;
 
 import lombok.RequiredArgsConstructor;
 import ru.tinkoff.edu.java.link_parser.github.GitHubParserResult;
@@ -8,8 +8,10 @@ import ru.tinkoff.edu.java.scrapper.dto.GitHubIssueUpdate;
 import ru.tinkoff.edu.java.scrapper.dto.GitHubRepository;
 import ru.tinkoff.edu.java.scrapper.dto.GitHubRepositoryAddParams;
 import ru.tinkoff.edu.java.scrapper.dto.LinkUpdate;
-import ru.tinkoff.edu.java.scrapper.repository.jooq.JooqGitHubRepositoriesRepository;
-import ru.tinkoff.edu.java.scrapper.repository.jooq.JooqLinksRepository;
+import ru.tinkoff.edu.java.scrapper.entity.GitHubRepositoryEntity;
+import ru.tinkoff.edu.java.scrapper.mapper.GithubRepositoryMapper;
+import ru.tinkoff.edu.java.scrapper.repository.jpa.JpaGitHubRepositoriesRepository;
+import ru.tinkoff.edu.java.scrapper.repository.jpa.JpaLinksRepository;
 import ru.tinkoff.edu.java.scrapper.service.FindOrDoService;
 import ru.tinkoff.edu.java.scrapper.service.GitHubIssuesService;
 import ru.tinkoff.edu.java.scrapper.service.GitHubRepositoriesService;
@@ -18,21 +20,20 @@ import ru.tinkoff.edu.java.scrapper.service.utils.LinkUpdateUtils;
 import java.time.OffsetDateTime;
 import java.util.List;
 
-import static ru.tinkoff.edu.java.scrapper.domain.jooq.Tables.GITHUB_REPOSITORIES;
-
 @RequiredArgsConstructor
-public class JooqGitHubRepositoriesService
+public class JpaGitHubRepositoriesService
         extends GitHubRepositoriesService
-        implements FindOrDoService<GitHubRepository, GitHubParserResult>,
+        implements FindOrDoService<GitHubRepositoryEntity, GitHubParserResult>,
         GitHubIssuesService {
-    private final JooqGitHubRepositoriesRepository gitHubRepositoriesRepository;
-    private final JooqLinksRepository linksRepository;
+    private final JpaGitHubRepositoriesRepository gitHubRepositoriesRepository;
+    private final JpaLinksRepository linksRepository;
     private final ApplicationConfig applicationConfig;
     private final GitHubClient gitHubClient;
+    private final GithubRepositoryMapper mapper;
 
     @Override
-    public GitHubRepository findOrCreate(GitHubParserResult findParams) {
-        return gitHubRepositoriesRepository.find(findParams)
+    public GitHubRepositoryEntity findOrCreate(GitHubParserResult findParams) {
+        return gitHubRepositoriesRepository.findByUsernameAndName(findParams.userName(), findParams.projectName())
                 .orElseGet(() -> {
                     var addParams = new GitHubRepositoryAddParams(
                             findParams.userName(),
@@ -55,13 +56,18 @@ public class JooqGitHubRepositoriesService
 
     @Override
     public void updateIssuesUpdatedAt(List<GitHubRepository> repositories, OffsetDateTime updatedAt) {
-        gitHubRepositoriesRepository.update(repositories, GITHUB_REPOSITORIES.ISSUES_UPDATED_AT, updatedAt);
+        var ids = repositories.stream().map(GitHubRepository::id).toList();
+        var entities = gitHubRepositoriesRepository.findAllById(ids);
+        entities.forEach(e -> e.setIssuesUpdatedAt(updatedAt));
+        gitHubRepositoriesRepository.saveAllAndFlush(entities);
     }
 
     @Override
     public List<GitHubRepository> getForIssuesUpdate(int first) {
         return gitHubRepositoriesRepository
-                .findAllWithLinks(first, GITHUB_REPOSITORIES.ISSUES_UPDATED_AT);
+                .findAllWithLinks(first, JpaGitHubRepositoriesRepository.OrderColumn.issuesUpdatedAt)
+                .stream().map(mapper::fromEntity)
+                .toList();
     }
 
     @Override
@@ -76,13 +82,18 @@ public class JooqGitHubRepositoriesService
     }
 
     @Override
-    public void updateUpdatedAt(List<GitHubRepository> repos, OffsetDateTime updatedAt) {
-        gitHubRepositoriesRepository.update(repos, GITHUB_REPOSITORIES.UPDATED_AT, updatedAt);
+    public void updateUpdatedAt(List<GitHubRepository> repositories, OffsetDateTime updatedAt) {
+        var ids = repositories.stream().map(GitHubRepository::id).toList();
+        var entities = gitHubRepositoriesRepository.findAllById(ids);
+        entities.forEach(e -> e.setUpdatedAt(updatedAt));
+        gitHubRepositoriesRepository.saveAllAndFlush(entities);
     }
 
     @Override
     public List<GitHubRepository> getForLinksUpdate(int first) {
         return gitHubRepositoriesRepository
-                .findAllWithLinks(first, GITHUB_REPOSITORIES.UPDATED_AT);
+                .findAllWithLinks(first, JpaGitHubRepositoriesRepository.OrderColumn.updatedAt)
+                .stream().map(mapper::fromEntity)
+                .toList();
     }
 }

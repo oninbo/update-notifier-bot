@@ -1,7 +1,6 @@
 package ru.tinkoff.edu.java.scrapper.service.jdbc;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
 import ru.tinkoff.edu.java.link_parser.stackoverflow.StackOverflowParserResult;
 import ru.tinkoff.edu.java.scrapper.client.StackOverflowClient;
 import ru.tinkoff.edu.java.scrapper.configuration.ApplicationConfig;
@@ -20,9 +19,8 @@ import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.Optional;
 
-@Service
 @RequiredArgsConstructor
-class JdbcStackOverflowQuestionsService
+public class JdbcStackOverflowQuestionsService
         extends StackOverflowQuestionsService
         implements FindOrDoService<StackOverflowQuestion, StackOverflowParserResult>,
         StackOverflowAnswersService {

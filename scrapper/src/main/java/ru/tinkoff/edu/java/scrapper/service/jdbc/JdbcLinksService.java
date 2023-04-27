@@ -1,7 +1,6 @@
 package ru.tinkoff.edu.java.scrapper.service.jdbc;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.tinkoff.edu.java.link_parser.LinkParserResult;
 import ru.tinkoff.edu.java.link_parser.LinkParserService;
@@ -20,10 +19,10 @@ import ru.tinkoff.edu.java.scrapper.service.utils.LinkFinder;
 import java.net.URI;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Supplier;
 
-@Service
 @RequiredArgsConstructor
-class JdbcLinksService implements LinksService {
+public class JdbcLinksService implements LinksService {
     private final JdbcLinksRepository jdbcLinksRepository;
     private final JdbcTgChatsRepository jdbcTgChatsRepository;
     private final ApplicationConfig applicationConfig;
@@ -41,7 +40,7 @@ class JdbcLinksService implements LinksService {
     public Link addLink(Long chatId, URI url) {
         TgChat tgChat = getTgChat(chatId);
 
-        var linkBuilder = new LinkBuilder(
+        var linkBuilder = new LinkBuilder<>(
                 gitHubRepository -> new Add(this, tgChat, url).add(gitHubRepository),
                 stackOverflowQuestion -> new Add(this, tgChat, url).add(stackOverflowQuestion),
                 stackOverflowQuestionsService,
@@ -52,20 +51,20 @@ class JdbcLinksService implements LinksService {
 
     @Transactional
     public Link addLink(TgChat tgChat, URI url, GitHubRepository gitHubRepository) {
-        checkIfLinkExists(jdbcLinksRepository.find(tgChat, gitHubRepository));
+        checkIfLinkExists(() -> jdbcLinksRepository.find(tgChat, gitHubRepository));
         return jdbcLinksRepository.add(new LinkAddParams(url, tgChat, gitHubRepository));
     }
 
     @Transactional
     public Link addLink(TgChat tgChat, URI url, StackOverflowQuestion stackOverflowQuestion) {
-        checkIfLinkExists(jdbcLinksRepository.find(tgChat, stackOverflowQuestion));
+        checkIfLinkExists(() -> jdbcLinksRepository.find(tgChat, stackOverflowQuestion));
         return jdbcLinksRepository.add(new LinkAddParams(url, tgChat, stackOverflowQuestion));
     }
 
     @Override
     public Link deleteLink(Long chatId, URI url) {
         var tgChat = getTgChat(chatId);
-        var linkResult = new LinkFinder(
+        var linkResult = new LinkFinder<>(
                 gitHubRepository -> jdbcLinksRepository.find(tgChat, gitHubRepository),
                 question -> jdbcLinksRepository.find(tgChat, question),
                 stackOverflowQuestionsService,
@@ -91,8 +90,8 @@ class JdbcLinksService implements LinksService {
         return result.get();
     }
 
-    private void checkIfLinkExists(Optional<Link> link) {
-        if (link.isPresent()) {
+    private void checkIfLinkExists(Supplier<Optional<Link>> getLink) {
+        if (getLink.get().isPresent()) {
             throw new LinkExistsException(applicationConfig);
         }
     }

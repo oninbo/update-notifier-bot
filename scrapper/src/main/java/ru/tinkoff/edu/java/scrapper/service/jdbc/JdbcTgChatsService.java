@@ -1,7 +1,6 @@
 package ru.tinkoff.edu.java.scrapper.service.jdbc;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
 import ru.tinkoff.edu.java.scrapper.configuration.ApplicationConfig;
 import ru.tinkoff.edu.java.scrapper.dto.TgChatAddParams;
 import ru.tinkoff.edu.java.scrapper.exception.TgChatExistsException;
@@ -9,9 +8,8 @@ import ru.tinkoff.edu.java.scrapper.exception.TgChatNotFoundException;
 import ru.tinkoff.edu.java.scrapper.repository.jdbc.JdbcTgChatsRepository;
 import ru.tinkoff.edu.java.scrapper.service.TgChatsService;
 
-@Service
 @RequiredArgsConstructor
-class JdbcTgChatsService implements TgChatsService {
+public class JdbcTgChatsService implements TgChatsService {
     private final JdbcTgChatsRepository jdbcTgChatsRepository;
     private final ApplicationConfig applicationConfig;
 
