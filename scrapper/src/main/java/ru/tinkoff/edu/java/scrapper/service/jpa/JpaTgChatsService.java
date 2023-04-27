@@ -1,16 +1,16 @@
-package ru.tinkoff.edu.java.scrapper.service.jooq;
+package ru.tinkoff.edu.java.scrapper.service.jpa;
 
 import lombok.RequiredArgsConstructor;
 import ru.tinkoff.edu.java.scrapper.configuration.ApplicationConfig;
 import ru.tinkoff.edu.java.scrapper.dto.TgChatAddParams;
 import ru.tinkoff.edu.java.scrapper.exception.TgChatExistsException;
 import ru.tinkoff.edu.java.scrapper.exception.TgChatNotFoundException;
-import ru.tinkoff.edu.java.scrapper.repository.jooq.JooqTgChatsRepository;
+import ru.tinkoff.edu.java.scrapper.repository.jpa.JpaTgChatsRepository;
 import ru.tinkoff.edu.java.scrapper.service.TgChatsService;
 
 @RequiredArgsConstructor
-public class JooqTgChatsService implements TgChatsService {
-    private final JooqTgChatsRepository tgChatsRepository;
+public class JpaTgChatsService implements TgChatsService {
+    private final JpaTgChatsRepository tgChatsRepository;
     private final ApplicationConfig applicationConfig;
 
     @Override
@@ -25,7 +25,7 @@ public class JooqTgChatsService implements TgChatsService {
     @Override
     public void deleteTgChat(long chatId) {
         tgChatsRepository.find(chatId).ifPresentOrElse(
-                tgChat -> tgChatsRepository.remove(tgChat.id()),
+                tgChat -> tgChatsRepository.deleteById(tgChat.id()),
                 () -> { throw new TgChatNotFoundException(applicationConfig); }
         );
     }

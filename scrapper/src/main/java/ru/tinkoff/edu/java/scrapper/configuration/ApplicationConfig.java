@@ -11,6 +11,12 @@ public record ApplicationConfig(
         @Valid @NotNull ErrorDescription errorDescription,
         @Valid @NotNull WebClient webClient,
         @Valid @NotNull Scheduler scheduler,
-        @Valid @NotNull Database database
+        @Valid @NotNull Database database,
+        @NotNull ApplicationConfig.DatabaseAccessType databaseAccessType
 ) {
+    enum DatabaseAccessType {
+        JDBC,
+        JPA,
+        JOOQ
+    }
 }

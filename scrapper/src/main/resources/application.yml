@@ -12,10 +12,10 @@ app:
     link_exists: Ссылка уже добавлена
   web_client:
     github:
-      base_url: https://api.github.com/
+      base_url: https://api.github.com
       api_version: 2022-11-28
     stack_exchange:
-      base_url: https://api.stackexchange.com/
+      base_url: https://api.stackexchange.com
       api_version: 2.3
     bot_base_url: http://localhost:8080
   scheduler:
@@ -26,6 +26,7 @@ app:
     url: jdbc:postgresql://localhost:5432/scrapper
     username: postgres
     password: postgres
+  database-access-type: jpa
 server:
   port: 8081
 spring:

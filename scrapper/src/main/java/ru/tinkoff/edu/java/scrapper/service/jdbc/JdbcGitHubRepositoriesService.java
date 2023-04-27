@@ -1,11 +1,13 @@
 package ru.tinkoff.edu.java.scrapper.service.jdbc;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
 import ru.tinkoff.edu.java.link_parser.github.GitHubParserResult;
 import ru.tinkoff.edu.java.scrapper.client.GitHubClient;
 import ru.tinkoff.edu.java.scrapper.configuration.ApplicationConfig;
-import ru.tinkoff.edu.java.scrapper.dto.*;
+import ru.tinkoff.edu.java.scrapper.dto.GitHubIssueUpdate;
+import ru.tinkoff.edu.java.scrapper.dto.GitHubRepository;
+import ru.tinkoff.edu.java.scrapper.dto.GitHubRepositoryAddParams;
+import ru.tinkoff.edu.java.scrapper.dto.LinkUpdate;
 import ru.tinkoff.edu.java.scrapper.exception.GitHubRepositoryNotFoundException;
 import ru.tinkoff.edu.java.scrapper.repository.jdbc.JdbcGitHubRepositoriesRepository;
 import ru.tinkoff.edu.java.scrapper.repository.jdbc.JdbcLinksRepository;
@@ -18,9 +20,8 @@ import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.Optional;
 
-@Service
 @RequiredArgsConstructor
-class JdbcGitHubRepositoriesService
+public class JdbcGitHubRepositoriesService
         extends GitHubRepositoriesService
         implements FindOrDoService<GitHubRepository, GitHubParserResult>,
         GitHubIssuesService {

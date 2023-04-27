@@ -2,7 +2,6 @@ package ru.tinkoff.edu.java.scrapper.controller;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.web.bind.annotation.*;
 import ru.tinkoff.edu.java.scrapper.dto.AddLinkRequest;
 import ru.tinkoff.edu.java.scrapper.dto.LinkResponse;
@@ -14,7 +13,6 @@ import ru.tinkoff.edu.java.scrapper.service.LinksService;
 @RequestMapping("/links")
 @RequiredArgsConstructor
 public class LinksController {
-    @Qualifier("jooqLinksService")
     private final LinksService linksService;
 
     @GetMapping
