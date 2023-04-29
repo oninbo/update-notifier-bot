@@ -50,16 +50,9 @@ public interface JpaLinksRepository extends JpaRepository<LinkEntity, UUID> {
     Optional<Link> find(@Param("tgChat") TgChat tgChat, @Param("stackOverflowQuestion") StackOverflowQuestion stackOverflowQuestion);
 
     @Query("""
-                SELECT new ru.tinkoff.edu.java.scrapper.dto.Link(l.id, l.url)
-                FROM LinkEntity AS l
-                WHERE l.tgChat.id = :#{#tgChat.id}
-            """)
-    List<Link> findAll(@Param("tgChat") TgChat tgChat);
-
-    @Query("""
             SELECT new ru.tinkoff.edu.java.scrapper.dto.LinkWithChatId(l.id, l.url, tc.chatId)
             FROM LinkEntity AS l
-            JOIN TgChatEntity AS tc
+            JOIN TgChatEntity AS tc ON tc.id = l.tgChat.id
             WHERE l.gitHubRepository.id = :#{#gitHubRepository.id} AND l.createdAt < :createdBefore
             """)
     List<LinkWithChatId> findAllWithChatId(
@@ -70,7 +63,7 @@ public interface JpaLinksRepository extends JpaRepository<LinkEntity, UUID> {
     @Query("""
             SELECT new ru.tinkoff.edu.java.scrapper.dto.LinkWithChatId(l.id, l.url, tc.chatId)
             FROM LinkEntity AS l
-            JOIN TgChatEntity AS tc
+            JOIN TgChatEntity AS tc ON tc.id = l.tgChat.id
             WHERE l.stackOverflowQuestion.id = :#{#stackOverflowQuestion.id} AND l.createdAt < :createdBefore
             """)
     List<LinkWithChatId> findAllWithChatId(
@@ -78,7 +71,7 @@ public interface JpaLinksRepository extends JpaRepository<LinkEntity, UUID> {
             @Param("createdBefore") OffsetDateTime createdBefore
     );
 
-    @Query("SELECT l FROM LinkEntity AS l JOIN TgChatEntity AS c WHERE c.chatId = :chatId")
+    @Query("SELECT l FROM LinkEntity AS l JOIN TgChatEntity AS c ON c.id = l.tgChat.id WHERE c.chatId = :chatId")
     List<LinkEntity> findAllByChatId(@Param("chatId") Long chatId);
 
     Optional<LinkEntity> findByTgChatAndGitHubRepository(TgChatEntity tgChat,

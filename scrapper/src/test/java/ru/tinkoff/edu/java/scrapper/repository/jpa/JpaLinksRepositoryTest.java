@@ -91,7 +91,7 @@ public class JpaLinksRepositoryTest extends JpaRepositoryTest {
     public void shouldFindAllLinksByTgChat() {
         insertGitHubRepository();
         var linkId = insertLink();
-        var foundLinks = jpaLinksRepository.findAll(tgChat);
+        var foundLinks = jpaLinksRepository.findAllByChatId(tgChat.chatId());
         assertIterableEquals(List.of(new Link(linkId, url)), foundLinks);
     }
 
