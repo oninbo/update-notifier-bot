@@ -4,11 +4,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
-import ru.tinkoff.edu.java.scrapper.client.BotClient;
 import ru.tinkoff.edu.java.scrapper.configuration.ApplicationConfig;
 import ru.tinkoff.edu.java.scrapper.configuration.SchedulerConfig;
 import ru.tinkoff.edu.java.scrapper.dto.LinkUpdate;
-import ru.tinkoff.edu.java.scrapper.queue.producer.UpdatesQueueProducer;
+import ru.tinkoff.edu.java.scrapper.service.LinkUpdateSendService;
 import ru.tinkoff.edu.java.scrapper.service.LinksUpdatesService;
 
 import java.time.OffsetDateTime;
@@ -21,8 +20,7 @@ public class LinkUpdaterScheduler {
     private final SchedulerConfig schedulerConfig;
     private final ApplicationConfig applicationConfig;
     private final List<LinksUpdatesService<?>> linksUpdatesServices;
-    private final BotClient botClient;
-    private final UpdatesQueueProducer updatesQueueProducer;
+    private final LinkUpdateSendService linkUpdateSendService;
 
     @Scheduled(fixedDelayString = "#{@schedulerConfig.getInterval()}")
     public void update() {
@@ -34,6 +32,6 @@ public class LinkUpdaterScheduler {
         var objects = linksUpdatesService.getForLinksUpdate(applicationConfig.scheduler().batchSize());
         List<LinkUpdate> linkUpdates = linksUpdatesService.getLinkUpdates(objects);
         linksUpdatesService.updateUpdatedAt(objects, OffsetDateTime.now());
-        linkUpdates.forEach(updatesQueueProducer::sendLinkUpdate);
+        linkUpdates.forEach(linkUpdateSendService::sendUpdate);
     }
 }

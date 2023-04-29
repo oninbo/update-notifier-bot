@@ -30,6 +30,7 @@ app:
     exchange_name: scrapper_bot_exchange
     queue_name: updates_queue
   database-access-type: jpa
+  use_queue: true
 server:
   port: 8081
 spring:

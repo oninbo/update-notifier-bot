@@ -14,7 +14,8 @@ public record ApplicationConfig(
         @Valid @NotNull Scheduler scheduler,
         @NotNull ApplicationConfig.DatabaseAccessType databaseAccessType,
         @Valid @NotNull Database database,
-        @NotNull @Valid ApplicationConfig.RabbitMQ rabbitMQ
+        @NotNull @Valid ApplicationConfig.RabbitMQ rabbitMQ,
+        @NotNull Boolean useQueue
 ) {
     enum DatabaseAccessType {
         JDBC,
