@@ -29,6 +29,15 @@ public record ApplicationConfig(
 
     @Validated
     public record RabbitMQ(@NotBlank String queueName, @NotBlank String exchangeName) {
+        private static final String DEAD_LETTER_QUEUE_SUFFIX = ".dlq";
+
+        public String deadLetterQueueName() {
+            return queueName.concat(DEAD_LETTER_QUEUE_SUFFIX);
+        }
+
+        public String deadLetterExchangeName() {
+            return exchangeName.concat(DEAD_LETTER_QUEUE_SUFFIX);
+        }
     }
 }
 

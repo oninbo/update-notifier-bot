@@ -1,10 +1,6 @@
 package ru.tinkoff.edu.java.scrapper.configuration;
 
-import org.springframework.amqp.core.Binding;
-import org.springframework.amqp.core.BindingBuilder;
-import org.springframework.amqp.core.DirectExchange;
-import org.springframework.amqp.core.Queue;
-import org.springframework.amqp.rabbit.connection.CachingConnectionFactory;
+import org.springframework.amqp.core.*;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.amqp.support.converter.ClassMapper;
@@ -22,7 +18,10 @@ import java.util.Map;
 public class RabbitMQConfiguration {
     @Bean
     Queue queue(ApplicationConfig applicationConfig) {
-        return new Queue(applicationConfig.rabbitMQ().queueName());
+        return QueueBuilder
+                .durable(applicationConfig.rabbitMQ().queueName())
+                .deadLetterExchange(applicationConfig.rabbitMQ().deadLetterExchangeName())
+                .build();
     }
 
     @Bean
@@ -50,11 +49,6 @@ public class RabbitMQConfiguration {
         Jackson2JsonMessageConverter jsonConverter = new Jackson2JsonMessageConverter();
         jsonConverter.setClassMapper(classMapper);
         return jsonConverter;
-    }
-
-    @Bean
-    public ConnectionFactory connectionFactory() {
-        return new CachingConnectionFactory("localhost");
     }
 
     @Bean
