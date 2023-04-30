@@ -26,7 +26,11 @@ app:
     url: jdbc:postgresql://localhost:5432/scrapper
     username: postgres
     password: postgres
+  rabbit_mq:
+    exchange_name: scrapper_bot_exchange
+    queue_name: updates_queue
   database-access-type: jpa
+  use_queue: true
 server:
   port: 8081
 spring:

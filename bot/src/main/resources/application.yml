@@ -51,10 +51,17 @@ app:
   web_client:
     scrapper:
       base_url: http://localhost:8081
+  rabbit_mq:
+    exchange_name: scrapper_bot_exchange
+    queue_name: updates_queue
 server.port: 8080
 springdoc:
   swagger-ui:
     path: /swagger-ui
 spring:
+  rabbitmq:
+    listener:
+      simple:
+        default-requeue-rejected: false
   config:
     import: secrets.yml
