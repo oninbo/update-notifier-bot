@@ -59,5 +59,9 @@ springdoc:
   swagger-ui:
     path: /swagger-ui
 spring:
+  rabbitmq:
+    listener:
+      simple:
+        default-requeue-rejected: false
   config:
     import: secrets.yml

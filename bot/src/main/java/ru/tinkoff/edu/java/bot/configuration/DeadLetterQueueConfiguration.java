@@ -23,7 +23,7 @@ public class DeadLetterQueueConfiguration {
     }
 
     @Bean(name = "dlqBinding")
-    Binding binding(@Qualifier("dlqQueue") Queue queue, DirectExchange exchange) {
+    Binding binding(@Qualifier("dlqQueue") Queue queue, @Qualifier("dlqExchange") DirectExchange exchange) {
         return BindingBuilder.bind(queue).to(exchange).withQueueName();
     }
 }

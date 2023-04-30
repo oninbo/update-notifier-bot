@@ -21,6 +21,7 @@ public class RabbitMQConfiguration {
         return QueueBuilder
                 .durable(applicationConfig.rabbitMQ().queueName())
                 .deadLetterExchange(applicationConfig.rabbitMQ().deadLetterExchangeName())
+                .deadLetterRoutingKey(applicationConfig.rabbitMQ().deadLetterQueueName())
                 .build();
     }
 
