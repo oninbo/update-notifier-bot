@@ -1,10 +1,6 @@
 name: Java CI
 
-
-on:
-  push:
-    paths:
-      - bot/src/**
+on: [push] # TODO: on changes to scrapper src
 
 jobs:
   build:
@@ -18,4 +14,4 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
       - name: Build with Maven
-        run: mvn package -pl bot -am
+        run: mvn package -pl scrapper -am
