@@ -5,6 +5,7 @@ on:
     paths:
       - scrapper/migrations/**
       - scrapper/src/**
+      - .github/workflows/scrapper.yml
 
 jobs:
   build:

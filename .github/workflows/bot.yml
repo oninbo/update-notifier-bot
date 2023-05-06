@@ -4,6 +4,7 @@ on:
   push:
     paths:
       - bot/src/**
+      - .github/workflows/bot.yml
 
 jobs:
   build:
