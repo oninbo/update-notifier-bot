@@ -5,7 +5,27 @@ on: [push] # TODO: on changes to scrapper src
 jobs:
   build:
     runs-on: ubuntu-latest
-
+    services:
+      postgresql:
+        image: postgres:15
+        env:
+          POSTGRES_DB: scrapper
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+      liquibase-migrations:
+        image: liquibase/liquibase:4.18
+        depends_on:
+          - postgresql
+        command:
+          - --hub-mode=off
+          - --changelog-file=master.yml
+          - --driver=org.postgresql.Driver
+          - --url=jdbc:postgresql://postgresql:5432/scrapper
+          - --username=postgres
+          - --password=postgres
+          - update
+        volumes:
+          - ./migrations:/liquibase/changelog
     steps:
       - uses: actions/checkout@v3
       - name: Set up JDK 17
