@@ -14,9 +14,9 @@ jobs:
           POSTGRES_PASSWORD: postgres
       liquibase-migrations:
         image: liquibase/liquibase:4.18
-        depends_on:
+        needs:
           - postgresql
-        command:
+        options:
           - --hub-mode=off
           - --changelog-file=master.yml
           - --driver=org.postgresql.Driver
