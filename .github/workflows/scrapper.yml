@@ -1,6 +1,10 @@
 name: Java CI
 
-on: [push] # TODO: on changes to scrapper src
+on:
+  push:
+    paths:
+      - scrapper/migrations/**
+      - scrapper/src/**
 
 jobs:
   build:
