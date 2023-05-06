@@ -3,8 +3,7 @@ name: Scrapper Java CI
 on:
   push:
     paths:
-      - scrapper/migrations/**
-      - scrapper/src/**
+      - scrapper/**
       - .github/workflows/scrapper.yml
 
 jobs:

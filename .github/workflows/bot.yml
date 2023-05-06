@@ -3,7 +3,7 @@ name: Bot Java CI
 on:
   push:
     paths:
-      - bot/src/**
+      - bot/**
       - .github/workflows/bot.yml
 
 jobs:
