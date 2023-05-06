@@ -1,4 +1,4 @@
 FROM eclipse-temurin:17-jdk-alpine
-COPY scrapper/target/*.jar /target/app.jar
+COPY target/*.jar /target/app.jar
 EXPOSE 8080
 ENTRYPOINT ["java","-jar","/target/app.jar"]
