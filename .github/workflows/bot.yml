@@ -1,4 +1,4 @@
-name: Java CI
+name: Bot Java CI
 
 on:
   push:

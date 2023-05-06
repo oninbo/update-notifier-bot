@@ -1,4 +1,4 @@
-name: Java CI
+name: Scrapper Java CI
 
 on:
   push:
