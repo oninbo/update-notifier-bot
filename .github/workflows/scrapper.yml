@@ -12,22 +12,17 @@ jobs:
           POSTGRES_DB: scrapper
           POSTGRES_USER: postgres
           POSTGRES_PASSWORD: postgres
-      liquibase-migrations:
-        image: liquibase/liquibase:4.18
-        needs:
-          - postgresql
-        options:
-          - --hub-mode=off
-          - --changelog-file=master.yml
-          - --driver=org.postgresql.Driver
-          - --url=jdbc:postgresql://postgresql:5432/scrapper
-          - --username=postgres
-          - --password=postgres
-          - update
-        volumes:
-          - ./migrations:/liquibase/changelog
     steps:
       - uses: actions/checkout@v3
+      - name: Run migrations
+        uses: liquibase/liquibase-github-action@v7
+        with:
+          operation: 'update'
+          classpath: 'scrapper/migrations'
+          changeLogFile: 'master.yml'
+          username: postgres
+          password: postgres
+          url: jdbc:postgresql://postgresql:5432/scrapper
       - name: Set up JDK 17
         uses: actions/setup-java@v3
         with:
