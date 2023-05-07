@@ -13,7 +13,7 @@ import java.net.URI;
 
 @SuppressWarnings("SpellCheckingInspection")
 @Component
-public class UntrackCommandHandler extends LinkCommandHandler {
+public final class UntrackCommandHandler extends LinkCommandHandler {
     public UntrackCommandHandler(
             UserResponseService userResponseService,
             ApplicationConfig applicationConfig,

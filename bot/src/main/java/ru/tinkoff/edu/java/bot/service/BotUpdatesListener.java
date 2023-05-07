@@ -21,7 +21,7 @@ import java.util.Optional;
 @Component
 @RequiredArgsConstructor
 @Slf4j
-public class BotUpdatesListener implements UpdatesListener {
+public final class BotUpdatesListener implements UpdatesListener {
     private final BotCommandService botCommandService;
     private final BotMenuButtonService botMenuButtonService;
     private final UserResponseService userResponseService;

@@ -15,7 +15,7 @@ import java.util.Optional;
 
 @Service
 @Slf4j
-public class UserResponseService {
+public final class UserResponseService {
     private final TgBot telegramBot;
     private final Keyboard defaultKeyboard;
     private final ApplicationConfig applicationConfig;

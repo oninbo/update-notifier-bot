@@ -14,7 +14,7 @@ import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
-public class BotMenuButtonService {
+public final class BotMenuButtonService {
     private final ApplicationConfig applicationConfig;
     private final List<BotCommandHandler> botCommandHandlers;
     private final UserResponseService userResponseService;

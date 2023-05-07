@@ -4,7 +4,7 @@ import org.springframework.stereotype.Component;
 import ru.tinkoff.edu.java.bot.configuration.ApplicationConfig;
 
 @Component
-public non-sealed class StartCommand extends BotCommand {
+public final class StartCommand extends BotCommand {
     @Override
     public String getDescription(ApplicationConfig applicationConfig) {
         return applicationConfig.command().start().description();

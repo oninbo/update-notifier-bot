@@ -11,7 +11,7 @@ import ru.tinkoff.edu.java.link_parser.LinkParserService;
 
 @Service
 @RequiredArgsConstructor
-public class LinkUpdatesService {
+public final class LinkUpdatesService {
     private final LinkParserService linkParserService;
     private final UserResponseService userResponseService;
     private final ApplicationConfig applicationConfig;

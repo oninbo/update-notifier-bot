@@ -12,7 +12,7 @@ import java.util.List;
 
 @Component
 @RequiredArgsConstructor
-public class HelpCommandHandler implements BotCommandHandler {
+public final class HelpCommandHandler implements BotCommandHandler {
     private final UserResponseService userResponseService;
     private final ApplicationConfig applicationConfig;
     private final List<BotCommand> botCommands;
@@ -28,7 +28,7 @@ public class HelpCommandHandler implements BotCommandHandler {
                     i + 1,
                     command.getDescription(applicationConfig),
                     command.getCommandName(),
-                    command.getArguments().map(this::formatCommandArguments).orElse("")
+                    formatCommandArguments(command.getArguments())
             );
             stringBuilder.append(line);
         }
@@ -41,7 +41,7 @@ public class HelpCommandHandler implements BotCommandHandler {
         return botCommand instanceof HelpCommand;
     }
 
-    private String formatCommandArguments(String[] commandArguments) {
+    private String formatCommandArguments(List<String> commandArguments) {
         return String.join(" ", commandArguments);
     }
 }

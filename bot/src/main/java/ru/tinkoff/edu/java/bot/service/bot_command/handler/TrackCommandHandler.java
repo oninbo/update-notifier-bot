@@ -14,7 +14,7 @@ import ru.tinkoff.edu.java.link_parser.base_parser.LinkParserIncorrectLinkExcept
 import java.net.URI;
 
 @Component
-public class TrackCommandHandler extends LinkCommandHandler {
+public final class TrackCommandHandler extends LinkCommandHandler {
 
     public TrackCommandHandler(
             UserResponseService userResponseService,

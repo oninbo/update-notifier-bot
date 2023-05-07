@@ -10,5 +10,4 @@
 
     <!-- TODO: remove -->
     <suppress checks="FinalParameters"/>
-    <suppress checks="DesignForExtension"/>
 </suppressions>

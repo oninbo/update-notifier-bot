@@ -87,15 +87,15 @@ public abstract class LinkCommandHandler implements BotCommandHandler {
         return linkParserService.parse(link);
     }
 
-    protected UserResponseService getUserResponseService() {
+    protected final UserResponseService getUserResponseService() {
         return userResponseService;
     }
 
-    protected ApplicationConfig getApplicationConfig() {
+    protected final ApplicationConfig getApplicationConfig() {
         return applicationConfig;
     }
 
-    protected ScrapperClient getScrapperClient() {
+    protected final ScrapperClient getScrapperClient() {
         return scrapperClient;
     }
 }

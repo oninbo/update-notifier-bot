@@ -9,7 +9,7 @@ import ru.tinkoff.edu.java.bot.service.bot_command.*;
 
 @Service
 @RequiredArgsConstructor
-public class TgKeyboardService {
+public final class TgKeyboardService {
     private final ApplicationConfig config;
     private final ApplicationContext context;
 

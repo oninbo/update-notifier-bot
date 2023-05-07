@@ -18,7 +18,7 @@ import java.util.List;
 
 @Component
 @RequiredArgsConstructor
-public class ListCommandHandler implements BotCommandHandler {
+public final class ListCommandHandler implements BotCommandHandler {
     private final UserResponseService userResponseService;
     private final LinkParserService linkParserService;
 
