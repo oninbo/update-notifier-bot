@@ -5,6 +5,7 @@ on:
     paths:
       - bot/**
       - .github/workflows/bot.yml
+
 env:
   REGISTRY: ghcr.io
   IMAGE_NAME: ${{ github.repository }}
@@ -33,7 +34,7 @@ jobs:
         uses: docker/metadata-action@v4
         with:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}-bot
-      - name: Build Docker image
+      - name: Build and push Docker image
         uses: docker/build-push-action@v4
         with:
           context: bot/
