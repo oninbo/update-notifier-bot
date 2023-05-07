@@ -17,17 +17,17 @@ import java.util.List;
 @PropertySource("classpath:/link-parser.properties")
 public class LinkParserConfig {
     @Bean
-    public LinkParserService getLinkParserService(List<LinkParser> parsers) {
+    public LinkParserService getLinkParserService(final List<LinkParser> parsers) {
         return new LinkParserService(parsers);
     }
 
     @Bean
-    public GitHubParser getGitHubParser(@Value("${github.host}") String gitHubHost) {
+    public GitHubParser getGitHubParser(final @Value("${github.host}") String gitHubHost) {
         return new GitHubParser(gitHubHost);
     }
 
     @Bean
-    public StackOverflowParser getStackOverflowParser(@Value("${stackoverflow.host}") String stackOverflowHost) {
+    public StackOverflowParser getStackOverflowParser(final @Value("${stackoverflow.host}") String stackOverflowHost) {
         return new StackOverflowParser(stackOverflowHost);
     }
 }

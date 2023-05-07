@@ -9,27 +9,27 @@ import java.util.List;
 import java.util.regex.Pattern;
 
 @Component
-public class StackOverflowParser extends LinkParser {
+public final class StackOverflowParser extends LinkParser {
     private final String stackOverflowHost;
     private final Pattern questionIdPattern = Pattern.compile("\\d+");
 
-    public StackOverflowParser(@Value("${stackoverflow.host}") String stackOverflowHost) {
+    public StackOverflowParser(final @Value("${stackoverflow.host}") String stackOverflowHost) {
         this.stackOverflowHost = stackOverflowHost;
     }
 
     @Override
-    protected StackOverflowParserResult createResult(URI uri) {
+    protected StackOverflowParserResult createResult(final URI uri) {
         List<String> segments = getURIPathSegments(uri);
         return new StackOverflowParserResult(Long.parseLong(segments.get(1)));
     }
 
     @Override
-    protected boolean isURISupported(URI uri) {
+    protected boolean isURISupported(final URI uri) {
         return super.isURISupported(uri) && getURIHost(uri).equals(stackOverflowHost);
     }
 
     @Override
-    protected boolean canTakeDataFromURI(URI uri) {
+    protected boolean canTakeDataFromURI(final URI uri) {
         List<String> segments = getURIPathSegments(uri);
         if (!(segments.size() >= 2 && segments.get(0).equals("questions"))) {
             return false;

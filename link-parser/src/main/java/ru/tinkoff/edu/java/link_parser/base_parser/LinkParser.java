@@ -12,7 +12,12 @@ import java.util.stream.Stream;
 public abstract class LinkParser {
     private final List<String> supportedURISchemas = List.of("http", "https");
 
-    public LinkParserResult parse(URI link) {
+    /**
+     * Парсит ссылку.
+     * @param link ссылка
+     * @return результат парсинга или null, если парсер поддерживает переданную ссылку
+     */
+    public LinkParserResult parse(final URI link) {
         checkLink(link);
         if (isURISupported(link)) {
             if (canTakeDataFromURI(link)) {
@@ -24,18 +29,23 @@ public abstract class LinkParser {
         return null;
     }
 
-    protected final List<String> getURIPathSegments(URI uri) {
+    protected final List<String> getURIPathSegments(final URI uri) {
         String path = Optional.ofNullable(uri.getPath())
                 .orElseThrow(LinkParserIncorrectLinkException::new);
         return Arrays.stream(path.split("/")).filter((String s) -> !s.isBlank()).toList();
     }
 
-    protected final String getURIHost(URI uri) {
+    protected final String getURIHost(final URI uri) {
         return Optional.ofNullable(uri.getHost())
                 .orElseThrow(LinkParserIncorrectLinkException::new);
     }
 
-    protected boolean isURISupported(URI uri) {
+    /**
+     * Поддерживает ли парсер ссылку.
+     * @param uri ссылка
+     * @return true если поддерживает, иначе false
+     */
+    protected boolean isURISupported(final URI uri) {
         return supportedURISchemas.stream().anyMatch(s -> s.equals(uri.getScheme()));
     }
 
@@ -43,7 +53,7 @@ public abstract class LinkParser {
 
     protected abstract LinkParserResult createResult(URI uri);
 
-    private void checkLink(URI link) {
+    private void checkLink(final URI link) {
         if (Stream.of(link.getHost(), link.getPath()).anyMatch(Objects::isNull)) {
             throw new LinkParserIncorrectLinkException();
         }
