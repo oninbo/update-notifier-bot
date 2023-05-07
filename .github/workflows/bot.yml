@@ -5,6 +5,7 @@ on:
     paths:
       - bot/**
       - .github/workflows/bot.yml
+      - checkstyle.yml
 
 env:
   REGISTRY: ghcr.io
