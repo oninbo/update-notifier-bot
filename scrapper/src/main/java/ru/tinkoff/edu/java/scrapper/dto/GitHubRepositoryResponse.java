@@ -11,5 +11,5 @@ public record GitHubRepositoryResponse(
         OffsetDateTime pushedAt,
         @JsonProperty("updated_at")
         OffsetDateTime updatedAt
-        ) {
+) {
 }

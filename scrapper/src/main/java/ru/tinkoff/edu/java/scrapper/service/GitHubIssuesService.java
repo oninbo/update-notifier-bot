@@ -8,6 +8,8 @@ import java.util.List;
 
 public interface GitHubIssuesService extends LinksUpdatesService<GitHubRepository> {
     List<GitHubIssueUpdate> getGitHubIssueUpdates(List<GitHubRepository> repositories);
+
     void updateIssuesUpdatedAt(List<GitHubRepository> repositories, OffsetDateTime updatedAt);
+
     List<GitHubRepository> getForIssuesUpdate(int first);
 }

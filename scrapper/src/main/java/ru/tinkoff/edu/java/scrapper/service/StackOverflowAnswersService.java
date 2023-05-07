@@ -12,5 +12,6 @@ public interface StackOverflowAnswersService extends LinksUpdatesService<StackOv
     );
 
     void updateAnswersUpdatedAt(List<StackOverflowQuestion> questions, OffsetDateTime updatedAt);
+
     List<StackOverflowQuestion> getForAnswersUpdate(int first);
 }

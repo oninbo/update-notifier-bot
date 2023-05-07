@@ -99,6 +99,7 @@ public class JpaStackOverflowQuestionsRepositoryTest extends JpaRepositoryTest {
         assertNotNull(result);
         assertTrue(updatedAt.isEqual(result));
     }
+
     @Test
     @Transactional
     @Rollback

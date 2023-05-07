@@ -15,6 +15,9 @@ import java.util.Optional;
 import java.util.function.BiFunction;
 
 public abstract class GitHubRepositoriesService {
+    @SuppressWarnings("FieldCanBeLocal")
+    private final int issuesPerPage = 100;
+
     protected void checkIfGitHubRepositoryExists(
             GitHubRepositoryAddParams addParams,
             ApplicationConfig config,
@@ -26,7 +29,7 @@ public abstract class GitHubRepositoriesService {
     }
 
     /**
-     * Метод для проверки ответа от API в случае, когда запрос вернул код 301 и тело без полей репозитория
+     * Метод для проверки ответа от API в случае, когда запрос вернул код 301 и тело без полей репозитория.
      *
      * @param response ответ от API
      * @return true когда ответ содержит нужные поля, иначе false
@@ -75,16 +78,16 @@ public abstract class GitHubRepositoriesService {
                         }
                         var link = links.get(0);
                         updates.add(
-                            new GitHubIssueUpdate(
-                                    issue.url(),
-                                    new GitHubIssueUpdate.GitHubRepository(
-                                            link.url(),
-                                            repo.name(),
-                                            repo.username()
-                                    ),
-                                    links.stream().map(LinkWithChatId::chatId).toList()
-                            )
-                    );
+                                new GitHubIssueUpdate(
+                                        issue.url(),
+                                        new GitHubIssueUpdate.GitHubRepository(
+                                                link.url(),
+                                                repo.name(),
+                                                repo.username()
+                                        ),
+                                        links.stream().map(LinkWithChatId::chatId).toList()
+                                )
+                        );
                     }
             );
         }
@@ -117,7 +120,6 @@ public abstract class GitHubRepositoriesService {
         List<GitHubIssueResponse> result = new ArrayList<>();
         List<GitHubIssueResponse> issues;
         int page = 1;
-        int perPage = 100;
         do {
             try {
                 issues = gitHubClient.getRepositoryIssues(
@@ -126,7 +128,7 @@ public abstract class GitHubRepositoriesService {
                                 applicationConfig.webClient().github().apiVersion(),
                                 repo.issuesUpdatedAt().toString(),
                                 page,
-                                perPage
+                                issuesPerPage
                         )
                         .stream()
                         .filter(i -> Objects.isNull(i.pullRequest()) && i.createdAt().isAfter(repo.issuesUpdatedAt()))
@@ -136,7 +138,7 @@ public abstract class GitHubRepositoriesService {
             } catch (WebClientResponseException.NotFound exception) {
                 return List.of();
             }
-        } while (issues.size() == perPage);
+        } while (issues.size() == issuesPerPage);
         return result;
     }
 }

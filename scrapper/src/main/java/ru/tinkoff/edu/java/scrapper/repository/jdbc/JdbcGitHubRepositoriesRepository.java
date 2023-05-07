@@ -21,7 +21,7 @@ import java.util.UUID;
 @Repository
 @RequiredArgsConstructor
 public class JdbcGitHubRepositoriesRepository implements BaseRepository<GitHubRepository, GitHubRepositoryAddParams> {
-    public final JdbcTemplate jdbcTemplate;
+    private final JdbcTemplate jdbcTemplate;
 
     @Override
     public GitHubRepository add(GitHubRepositoryAddParams gitHubRepositoryAddParams) {

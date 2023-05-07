@@ -17,6 +17,9 @@ import java.util.function.BiFunction;
 import java.util.function.Function;
 
 public abstract class StackOverflowQuestionsService {
+    @SuppressWarnings("FieldCanBeLocal")
+    private final int updateBatchSize = 100;
+
     protected void checkIfStackOverflowQuestionExists(
             StackOverflowQuestionAddParams stackOverflowQuestion,
             StackOverflowClient stackOverflowClient,
@@ -58,10 +61,9 @@ public abstract class StackOverflowQuestionsService {
             List<StackOverflowQuestion> questions,
             Function<List<StackOverflowQuestion>, List<T>> getUpdates
     ) {
-        int batchSize = 100;
         List<T> result = new ArrayList<>();
-        for (int i = 0; i < questions.size(); i += batchSize) {
-            var batch = questions.subList(i, Math.min(i + batchSize, questions.size()));
+        for (int i = 0; i < questions.size(); i += updateBatchSize) {
+            var batch = questions.subList(i, Math.min(i + updateBatchSize, questions.size()));
             result.addAll(getUpdates.apply(batch));
         }
         return result;

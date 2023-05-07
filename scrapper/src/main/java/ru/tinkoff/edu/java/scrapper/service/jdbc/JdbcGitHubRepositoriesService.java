@@ -8,7 +8,6 @@ import ru.tinkoff.edu.java.scrapper.dto.GitHubIssueUpdate;
 import ru.tinkoff.edu.java.scrapper.dto.GitHubRepository;
 import ru.tinkoff.edu.java.scrapper.dto.GitHubRepositoryAddParams;
 import ru.tinkoff.edu.java.scrapper.dto.LinkUpdate;
-import ru.tinkoff.edu.java.scrapper.exception.GitHubRepositoryNotFoundException;
 import ru.tinkoff.edu.java.scrapper.repository.jdbc.JdbcGitHubRepositoriesRepository;
 import ru.tinkoff.edu.java.scrapper.repository.jdbc.JdbcLinksRepository;
 import ru.tinkoff.edu.java.scrapper.service.FindOrDoService;

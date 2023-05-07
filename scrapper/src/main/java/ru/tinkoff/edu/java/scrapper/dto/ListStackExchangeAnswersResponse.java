@@ -8,5 +8,5 @@ public record ListStackExchangeAnswersResponse(
         List<StackExchangeAnswerResponse> items,
         @JsonProperty("has_more")
         Boolean hasMore
-        ) {
+) {
 }

@@ -21,7 +21,7 @@ public class TransactionConfig {
         return transactionManager;
     }
 
-    @Bean(name="entityManagerFactory")
+    @Bean(name = "entityManagerFactory")
     public SessionFactory sessionFactory(DataSource dataSource) throws HibernateException {
         var configuration = new org.hibernate.cfg.Configuration();
         var serviceRegistryBuilder = new StandardServiceRegistryBuilder();

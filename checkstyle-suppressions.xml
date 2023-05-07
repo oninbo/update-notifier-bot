@@ -6,5 +6,9 @@
 
 <suppressions>
     <suppress checks="HideUtilityClassConstructor"
-              files=".*Application.java"/>
+              files="Application.java"/>
+
+    <!-- TODO: remove -->
+    <suppress checks="FinalParameters"/>
+    <suppress checks="DesignForExtension"/>
 </suppressions>

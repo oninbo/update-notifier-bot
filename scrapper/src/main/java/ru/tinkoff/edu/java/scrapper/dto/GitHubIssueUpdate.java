@@ -7,6 +7,6 @@ public record GitHubIssueUpdate(
         URI issueUrl,
         GitHubRepository repository,
         List<Long> chatIds) {
-    public record GitHubRepository(URI url, String name, String username){
+    public record GitHubRepository(URI url, String name, String username) {
     }
 }
