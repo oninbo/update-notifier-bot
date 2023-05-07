@@ -15,9 +15,9 @@ public class TgKeyboardService {
 
     public ReplyKeyboardMarkup createKeyboard() {
         String[][] rows = {
-                { getCommandDescription(HelpCommand.class), getCommandDescription(TrackCommand.class) },
-                { getCommandDescription(ListCommand.class), getCommandDescription(UntrackCommand.class) },
-                { getCommandDescription(StartCommand.class) }
+                {getCommandDescription(HelpCommand.class), getCommandDescription(TrackCommand.class)},
+                {getCommandDescription(ListCommand.class), getCommandDescription(UntrackCommand.class)},
+                {getCommandDescription(StartCommand.class)}
         };
         return new ReplyKeyboardMarkup(rows);
     }

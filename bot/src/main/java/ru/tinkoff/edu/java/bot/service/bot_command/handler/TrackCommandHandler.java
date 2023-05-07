@@ -30,9 +30,9 @@ public class TrackCommandHandler extends LinkCommandHandler {
         try {
             super.handle(arguments);
         } catch (LinkParserIncorrectLinkException exception) {
-            userResponseService.sendMessage(
+            getUserResponseService().sendMessage(
                     arguments.userId(),
-                    applicationConfig.command().common().message().invalidLink()
+                    getApplicationConfig().command().common().message().invalidLink()
             );
         }
     }
@@ -44,16 +44,16 @@ public class TrackCommandHandler extends LinkCommandHandler {
 
     @Override
     protected void sendLinkToScrapper(URI link, Long userId) {
-        scrapperClient.addLink(userId, new AddLinkRequest(link));
+        getScrapperClient().addLink(userId, new AddLinkRequest(link));
     }
 
     @Override
     protected void sendSuccessMessage(Long userId) {
-        userResponseService.sendMessage(userId, applicationConfig.command().track().message().success());
+        getUserResponseService().sendMessage(userId, getApplicationConfig().command().track().message().success());
     }
 
     @Override
     protected String noLinkMessage() {
-        return applicationConfig.command().track().message().noLink();
+        return getApplicationConfig().command().track().message().noLink();
     }
 }

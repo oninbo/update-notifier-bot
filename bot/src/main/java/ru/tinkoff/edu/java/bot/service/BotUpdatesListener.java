@@ -66,6 +66,7 @@ public class BotUpdatesListener implements UpdatesListener {
         switch (messageEntity.type()) {
             case bot_command -> botCommandService.handleCommandEntity(message, messageEntity);
             case url -> botMenuButtonService.handleMessage(message);
+            default -> { }
         }
     }
 

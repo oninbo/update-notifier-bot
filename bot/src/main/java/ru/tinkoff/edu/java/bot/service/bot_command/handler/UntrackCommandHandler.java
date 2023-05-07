@@ -30,16 +30,16 @@ public class UntrackCommandHandler extends LinkCommandHandler {
 
     @Override
     protected void sendLinkToScrapper(URI link, Long userId) {
-        scrapperClient.deleteLink(userId, new RemoveLinkRequest(link));
+        getScrapperClient().deleteLink(userId, new RemoveLinkRequest(link));
     }
 
     @Override
     protected void sendSuccessMessage(Long userId) {
-        userResponseService.sendMessage(userId, applicationConfig.command().untrack().message().success());
+        getUserResponseService().sendMessage(userId, getApplicationConfig().command().untrack().message().success());
     }
 
     @Override
     protected String noLinkMessage() {
-        return applicationConfig.command().untrack().message().noLink();
+        return getApplicationConfig().command().untrack().message().noLink();
     }
 }

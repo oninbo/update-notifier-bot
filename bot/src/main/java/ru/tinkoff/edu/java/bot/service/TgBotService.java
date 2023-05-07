@@ -25,9 +25,9 @@ public class TgBotService {
         telegramBot.setUpdatesListener(updatesListener);
     }
 
-    private void setCommands(ApplicationConfig applicationConfig) {
+    private void setCommands(ApplicationConfig config) {
         var response = telegramBot.execute(
-                new SetMyCommands(BotCommand.getTgCommands(applicationConfig, botCommands))
+                new SetMyCommands(BotCommand.getTgCommands(config, botCommands))
         );
         if (!response.isOk()) {
             log.error(response.toString());

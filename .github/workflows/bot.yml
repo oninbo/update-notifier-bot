@@ -6,6 +6,7 @@ on:
       - bot/**
       - .github/workflows/bot.yml
       - checkstyle.yml
+      - checkstyle-suppressions.xml
 
 env:
   REGISTRY: ghcr.io
