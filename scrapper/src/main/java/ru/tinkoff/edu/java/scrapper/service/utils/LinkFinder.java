@@ -13,7 +13,7 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 
 @RequiredArgsConstructor
-public class LinkFinder<S, G> {
+public final class LinkFinder<S, G> {
     private final Function<G, Optional<Link>> findGitHubRepositoryLink;
     private final Function<S, Optional<Link>> findStackOverflowQuestionLink;
     private final FindOrDoService<S, StackOverflowParserResult> stackOverflowQuestionsService;

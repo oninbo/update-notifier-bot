@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import ru.tinkoff.edu.java.scrapper.configuration.ApplicationConfig;
 
 @RequiredArgsConstructor
-public class StackOverflowQuestionNotFoundException extends ServiceException {
+public final class StackOverflowQuestionNotFoundException extends ServiceException {
     private final ApplicationConfig applicationConfig;
 
     @Override

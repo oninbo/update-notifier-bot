@@ -5,7 +5,7 @@ import org.springframework.stereotype.Component;
 import java.time.Duration;
 
 @Component
-public class SchedulerConfig {
+public final class SchedulerConfig {
     private final Duration interval;
 
     public SchedulerConfig(ApplicationConfig applicationConfig) {

@@ -12,7 +12,7 @@ import ru.tinkoff.edu.java.scrapper.service.LinksService;
 @RestController
 @RequestMapping("/links")
 @RequiredArgsConstructor
-public class LinksController {
+public final class LinksController {
     private final LinksService linksService;
 
     @GetMapping

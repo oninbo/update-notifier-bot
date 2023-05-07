@@ -7,8 +7,13 @@
 <suppressions>
     <suppress checks="HideUtilityClassConstructor"
               files="Application.java"/>
+    <suppress checks="DesignForExtension"
+              files="scrapper.*service"/>
+    <suppress checks="DesignForExtension"
+              files="scrapper.*repository"/>
+    <suppress checks="DesignForExtension"
+              files="scrapper.*scheduler"/>
 
     <!-- TODO: remove -->
     <suppress checks="FinalParameters"/>
-    <suppress checks="DesignForExtension"/>
 </suppressions>

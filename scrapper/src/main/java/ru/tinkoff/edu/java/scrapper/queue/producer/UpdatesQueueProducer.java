@@ -11,7 +11,7 @@ import ru.tinkoff.edu.java.scrapper.dto.LinkUpdate;
 
 @Service
 @RequiredArgsConstructor
-public class UpdatesQueueProducer {
+public final class UpdatesQueueProducer {
     private final RabbitTemplate rabbitTemplate;
     private final Binding binding;
     private final MessageConverter messageConverter;

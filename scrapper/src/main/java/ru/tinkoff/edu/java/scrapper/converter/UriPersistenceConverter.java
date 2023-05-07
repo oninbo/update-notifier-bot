@@ -10,7 +10,7 @@ import java.net.URI;
  * Взято с <a href="https://stackoverflow.com/a/33785032">ответа на Stack Overflow</a>.
  */
 @Converter
-public class UriPersistenceConverter implements AttributeConverter<URI, String> {
+public final class UriPersistenceConverter implements AttributeConverter<URI, String> {
     @Override
     public String convertToDatabaseColumn(URI entityValue) {
         return (entityValue == null) ? null : entityValue.toString();

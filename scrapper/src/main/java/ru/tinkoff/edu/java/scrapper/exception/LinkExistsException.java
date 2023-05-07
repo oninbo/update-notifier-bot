@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import ru.tinkoff.edu.java.scrapper.configuration.ApplicationConfig;
 
 @RequiredArgsConstructor
-public class LinkExistsException extends ServiceException {
+public final class LinkExistsException extends ServiceException {
     private final ApplicationConfig applicationConfig;
 
     @Override

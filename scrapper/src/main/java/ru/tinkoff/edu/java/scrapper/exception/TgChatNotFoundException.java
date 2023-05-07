@@ -5,7 +5,7 @@ import org.springframework.http.HttpStatus;
 import ru.tinkoff.edu.java.scrapper.configuration.ApplicationConfig;
 
 @RequiredArgsConstructor
-public class TgChatNotFoundException extends ServiceException {
+public final class TgChatNotFoundException extends ServiceException {
     private final ApplicationConfig applicationConfig;
 
     @Override

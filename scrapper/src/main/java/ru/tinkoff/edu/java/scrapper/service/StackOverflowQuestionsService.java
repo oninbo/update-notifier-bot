@@ -20,7 +20,7 @@ public abstract class StackOverflowQuestionsService {
     @SuppressWarnings("FieldCanBeLocal")
     private final int updateBatchSize = 100;
 
-    protected void checkIfStackOverflowQuestionExists(
+    protected final void checkIfStackOverflowQuestionExists(
             StackOverflowQuestionAddParams stackOverflowQuestion,
             StackOverflowClient stackOverflowClient,
             ApplicationConfig applicationConfig
@@ -34,7 +34,7 @@ public abstract class StackOverflowQuestionsService {
         }
     }
 
-    protected List<LinkUpdate> getUpdates(
+    protected final List<LinkUpdate> getUpdates(
             List<StackOverflowQuestion> questions,
             StackOverflowClient stackOverflowClient,
             ApplicationConfig applicationConfig,
@@ -57,7 +57,7 @@ public abstract class StackOverflowQuestionsService {
         );
     }
 
-    protected <T> List<T> getBatchedUpdates(
+    protected final  <T> List<T> getBatchedUpdates(
             List<StackOverflowQuestion> questions,
             Function<List<StackOverflowQuestion>, List<T>> getUpdates
     ) {
@@ -69,7 +69,7 @@ public abstract class StackOverflowQuestionsService {
         return result;
     }
 
-    protected List<StackOverflowAnswerUpdate> getAnswerUpdates(
+    protected final List<StackOverflowAnswerUpdate> getAnswerUpdates(
             List<StackOverflowQuestion> questions,
             BiFunction<StackOverflowQuestion, OffsetDateTime, List<LinkWithChatId>> getLinks,
             StackOverflowClient stackOverflowClient,
@@ -88,7 +88,7 @@ public abstract class StackOverflowQuestionsService {
                 .toList();
     }
 
-    protected List<StackExchangeAnswerResponse> getAnswers(
+    protected final List<StackExchangeAnswerResponse> getAnswers(
             List<StackOverflowQuestion> questions,
             StackOverflowClient stackOverflowClient,
             ApplicationConfig applicationConfig

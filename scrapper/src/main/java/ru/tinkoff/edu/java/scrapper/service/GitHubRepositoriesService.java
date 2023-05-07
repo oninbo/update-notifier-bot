@@ -18,7 +18,7 @@ public abstract class GitHubRepositoriesService {
     @SuppressWarnings("FieldCanBeLocal")
     private final int issuesPerPage = 100;
 
-    protected void checkIfGitHubRepositoryExists(
+    protected final void checkIfGitHubRepositoryExists(
             GitHubRepositoryAddParams addParams,
             ApplicationConfig config,
             GitHubClient gitHubClient
@@ -38,7 +38,7 @@ public abstract class GitHubRepositoriesService {
         return ObjectUtils.allNotNull(response.name(), response.owner());
     }
 
-    protected Optional<GitHubRepositoryResponse> getGitHubRepositoryResponse(
+    protected final Optional<GitHubRepositoryResponse> getGitHubRepositoryResponse(
             String username,
             String name,
             GitHubClient gitHubClient,
@@ -56,7 +56,7 @@ public abstract class GitHubRepositoriesService {
         }
     }
 
-    protected List<GitHubIssueUpdate> getGitHubIssueUpdates(
+    protected final List<GitHubIssueUpdate> getGitHubIssueUpdates(
             List<GitHubRepository> repositories,
             BiFunction<GitHubRepository, OffsetDateTime, List<LinkWithChatId>> getLinks,
             GitHubClient gitHubClient,
@@ -94,7 +94,7 @@ public abstract class GitHubRepositoriesService {
         return updates;
     }
 
-    protected OffsetDateTime fetchedUpdatedAt(
+    protected final OffsetDateTime fetchedUpdatedAt(
             GitHubRepository gitHubRepository,
             GitHubClient gitHubClient,
             ApplicationConfig applicationConfig
