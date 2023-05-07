@@ -13,8 +13,4 @@
               files="scrapper.*repository"/>
     <suppress checks="DesignForExtension"
               files="scrapper.*scheduler"/>
-
-    <!-- TODO: remove -->
-    <suppress checks="FinalParameters"
-              files="scrapper"/>
 </suppressions>
