@@ -29,7 +29,7 @@ public abstract class LinkCommandHandler implements BotCommandHandler {
      * @param arguments данные из сообщения пользователя
      */
     @Override
-    public void handle(BotCommandArguments arguments) {
+    public void handle(final BotCommandArguments arguments) {
         String linkText = arguments.text().trim();
         if (linkText.isBlank()) {
             userResponseService.sendMessage(arguments.userId(), noLinkMessage());
@@ -83,7 +83,7 @@ public abstract class LinkCommandHandler implements BotCommandHandler {
      * @param link ссылка
      * @return результат парсинга ссылки
      */
-    protected Optional<LinkParserResult> tryParseLink(URI link) {
+    protected Optional<LinkParserResult> tryParseLink(final URI link) {
         return linkParserService.parse(link);
     }
 

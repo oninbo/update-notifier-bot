@@ -11,7 +11,7 @@ public record ApiErrorResponse(
         String exceptionMessage,
         List<String> stacktrace
 ) {
-    public ApiErrorResponse(String description, String code, Exception exception) {
+    public ApiErrorResponse(final String description, final String code, final Exception exception) {
         this(
                 description,
                 code,

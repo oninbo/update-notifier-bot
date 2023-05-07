@@ -10,12 +10,12 @@ import java.util.Optional;
 @SuppressWarnings("SpellCheckingInspection")
 public final class UntrackCommand extends BotCommand {
     @Override
-    public String getDescription(ApplicationConfig applicationConfig) {
+    public String getDescription(final ApplicationConfig applicationConfig) {
         return applicationConfig.command().untrack().description();
     }
 
     @Override
-    public Optional<String> getMessageInput(ApplicationConfig applicationConfig) {
+    public Optional<String> getMessageInput(final ApplicationConfig applicationConfig) {
         return Optional.of(applicationConfig.command().untrack().message().input());
     }
 

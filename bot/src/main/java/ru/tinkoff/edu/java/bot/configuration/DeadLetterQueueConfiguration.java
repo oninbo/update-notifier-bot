@@ -13,17 +13,17 @@ import org.springframework.context.annotation.Configuration;
 @EnableRabbit
 public class DeadLetterQueueConfiguration {
     @Bean(name = "dlqQueue")
-    Queue queue(ApplicationConfig applicationConfig) {
+    Queue queue(final ApplicationConfig applicationConfig) {
         return new Queue(applicationConfig.rabbitMQ().deadLetterQueueName());
     }
 
     @Bean(name = "dlqExchange")
-    DirectExchange exchange(ApplicationConfig applicationConfig) {
+    DirectExchange exchange(final ApplicationConfig applicationConfig) {
         return new DirectExchange(applicationConfig.rabbitMQ().deadLetterExchangeName());
     }
 
     @Bean(name = "dlqBinding")
-    Binding binding(@Qualifier("dlqQueue") Queue queue, @Qualifier("dlqExchange") DirectExchange exchange) {
+    Binding binding(final @Qualifier("dlqQueue") Queue queue, final @Qualifier("dlqExchange") DirectExchange exchange) {
         return BindingBuilder.bind(queue).to(exchange).withQueueName();
     }
 }

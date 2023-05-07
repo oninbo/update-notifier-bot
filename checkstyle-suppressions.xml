@@ -6,8 +6,5 @@
 
 <suppressions>
     <suppress checks="HideUtilityClassConstructor"
-              files="BotApplication.java"/>
-
-    <!-- TODO: remove -->
-    <suppress checks="FinalParameters"/>
+              files=".*Application.java"/>
 </suppressions>

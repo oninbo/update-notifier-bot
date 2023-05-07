@@ -20,7 +20,7 @@ public final class BotMenuButtonService {
     private final UserResponseService userResponseService;
     private final List<BotCommand> botCommands;
 
-    public void handleMessage(Message message) {
+    public void handleMessage(final Message message) {
         var replyMessage = Optional.ofNullable(message.replyToMessage());
         var isReplyToBot = replyMessage
                 .map(userResponseService::isMessageFromBot)
@@ -42,7 +42,7 @@ public final class BotMenuButtonService {
                 );
     }
 
-    private void handleCommand(BotCommand botCommand, BotCommandArguments arguments) {
+    private void handleCommand(final BotCommand botCommand, final BotCommandArguments arguments) {
         // Если передали ввод пользователя или он не нужен для выполнения команды,
         // то выполняем команду, иначе запрашиваем ввод пользователя
         if (Objects.nonNull(arguments.text()) || botCommand.getArguments().isEmpty()) {
@@ -57,7 +57,7 @@ public final class BotMenuButtonService {
         }
     }
 
-    private void handleReply(Message message) {
+    private void handleReply(final Message message) {
         String text = message.replyToMessage().text();
         Optional<BotCommand> botCommand = botCommands
                 .stream()

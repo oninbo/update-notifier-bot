@@ -12,7 +12,7 @@ import ru.tinkoff.edu.java.link_parser.configuration.LinkParserConfig;
 @EnableConfigurationProperties(ApplicationConfig.class)
 @Import(LinkParserConfig.class)
 public class BotApplication {
-    public static void main(String[] args) {
+    public static void main(final String[] args) {
         var ctx = SpringApplication.run(BotApplication.class, args);
         ctx.getBean(TgBotService.class).listen();
     }

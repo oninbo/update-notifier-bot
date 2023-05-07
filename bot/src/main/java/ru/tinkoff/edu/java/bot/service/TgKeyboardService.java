@@ -22,7 +22,7 @@ public final class TgKeyboardService {
         return new ReplyKeyboardMarkup(rows);
     }
 
-    private <T extends BotCommand> String getCommandDescription(Class<T> botClass) {
+    private <T extends BotCommand> String getCommandDescription(final Class<T> botClass) {
         return context.getBean(botClass).getDescription(config);
     }
 }

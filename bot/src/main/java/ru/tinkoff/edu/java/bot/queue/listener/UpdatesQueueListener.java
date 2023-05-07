@@ -14,7 +14,7 @@ public final class UpdatesQueueListener {
     private final LinkUpdatesService linkUpdatesService;
 
     @RabbitHandler
-    public void receive(LinkUpdate linkUpdate) {
+    public void receive(final LinkUpdate linkUpdate) {
         linkUpdatesService.sendUpdate(linkUpdate);
     }
 }

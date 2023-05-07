@@ -18,7 +18,7 @@ public abstract sealed class BotCommand permits
      * @param applicationConfig конфигурация приложения
      * @return сообщение для запроса ввода данных от пользователя
      */
-    public Optional<String> getMessageInput(ApplicationConfig applicationConfig) {
+    public Optional<String> getMessageInput(final ApplicationConfig applicationConfig) {
         return Optional.empty();
     }
 
@@ -30,7 +30,7 @@ public abstract sealed class BotCommand permits
         return List.of();
     }
 
-    public final com.pengrad.telegrambot.model.BotCommand toTgCommand(ApplicationConfig applicationConfig) {
+    public final com.pengrad.telegrambot.model.BotCommand toTgCommand(final ApplicationConfig applicationConfig) {
         return new com.pengrad.telegrambot.model.BotCommand(
                 getCommandName(),
                 getDescription(applicationConfig)
@@ -40,8 +40,8 @@ public abstract sealed class BotCommand permits
     public abstract String getCommandName();
 
     public static com.pengrad.telegrambot.model.BotCommand[] getTgCommands(
-            ApplicationConfig applicationConfig,
-            java.util.List<BotCommand> botCommands
+            final ApplicationConfig applicationConfig,
+            final java.util.List<BotCommand> botCommands
     ) {
         return botCommands
                 .stream()

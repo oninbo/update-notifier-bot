@@ -17,16 +17,16 @@ import java.net.URI;
 public final class TrackCommandHandler extends LinkCommandHandler {
 
     public TrackCommandHandler(
-            UserResponseService userResponseService,
-            ApplicationConfig applicationConfig,
-            ScrapperClient scrapperClient,
-            LinkParserService linkParserService
+            final UserResponseService userResponseService,
+            final ApplicationConfig applicationConfig,
+            final ScrapperClient scrapperClient,
+            final LinkParserService linkParserService
     ) {
         super(userResponseService, applicationConfig, scrapperClient, linkParserService);
     }
 
     @Override
-    public void handle(BotCommandArguments arguments) {
+    public void handle(final BotCommandArguments arguments) {
         try {
             super.handle(arguments);
         } catch (LinkParserIncorrectLinkException exception) {
@@ -38,17 +38,17 @@ public final class TrackCommandHandler extends LinkCommandHandler {
     }
 
     @Override
-    public boolean canHandle(BotCommand botCommand) {
+    public boolean canHandle(final BotCommand botCommand) {
         return botCommand instanceof TrackCommand;
     }
 
     @Override
-    protected void sendLinkToScrapper(URI link, Long userId) {
+    protected void sendLinkToScrapper(final URI link, final Long userId) {
         getScrapperClient().addLink(userId, new AddLinkRequest(link));
     }
 
     @Override
-    protected void sendSuccessMessage(Long userId) {
+    protected void sendSuccessMessage(final Long userId) {
         getUserResponseService().sendMessage(userId, getApplicationConfig().command().track().message().success());
     }
 

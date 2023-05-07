@@ -7,7 +7,7 @@ import com.pengrad.telegrambot.model.User;
 import java.util.Arrays;
 
 public record MessageLog(User from, String text, MessageEntity[] entities) {
-    public MessageLog(Message message) {
+    public MessageLog(final Message message) {
         this(message.from(), message.text(), message.entities());
     }
 

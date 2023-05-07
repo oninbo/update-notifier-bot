@@ -15,26 +15,26 @@ import java.net.URI;
 @Component
 public final class UntrackCommandHandler extends LinkCommandHandler {
     public UntrackCommandHandler(
-            UserResponseService userResponseService,
-            ApplicationConfig applicationConfig,
-            ScrapperClient scrapperClient,
-            LinkParserService linkParserService
+            final UserResponseService userResponseService,
+            final ApplicationConfig applicationConfig,
+            final ScrapperClient scrapperClient,
+            final LinkParserService linkParserService
     ) {
         super(userResponseService, applicationConfig, scrapperClient, linkParserService);
     }
 
     @Override
-    public boolean canHandle(BotCommand botCommand) {
+    public boolean canHandle(final BotCommand botCommand) {
         return botCommand instanceof UntrackCommand;
     }
 
     @Override
-    protected void sendLinkToScrapper(URI link, Long userId) {
+    protected void sendLinkToScrapper(final URI link, final Long userId) {
         getScrapperClient().deleteLink(userId, new RemoveLinkRequest(link));
     }
 
     @Override
-    protected void sendSuccessMessage(Long userId) {
+    protected void sendSuccessMessage(final Long userId) {
         getUserResponseService().sendMessage(userId, getApplicationConfig().command().untrack().message().success());
     }
 

@@ -15,7 +15,7 @@ import ru.tinkoff.edu.java.link_parser.base_parser.LinkParserException;
 public final class ControllerExceptionHandler {
     private final ApplicationConfig config;
 
-    public ControllerExceptionHandler(ApplicationConfig config) {
+    public ControllerExceptionHandler(final ApplicationConfig config) {
         this.config = config;
     }
 
@@ -25,7 +25,7 @@ public final class ControllerExceptionHandler {
             HttpMessageNotReadableException.class
     })
     @ResponseStatus(value = HttpStatus.BAD_REQUEST)
-    public ApiErrorResponse apiErrorResponse(Exception ex) {
+    public ApiErrorResponse apiErrorResponse(final Exception ex) {
         return new ApiErrorResponse(
                 config.errorDescription().api(),
                 Integer.toString(HttpStatus.BAD_REQUEST.value()),
@@ -37,7 +37,7 @@ public final class ControllerExceptionHandler {
             LinkNotSupportedException.class
     })
     @ResponseStatus(value = HttpStatus.BAD_REQUEST)
-    public ApiErrorResponse linkNotSupportedResponse(Exception ex) {
+    public ApiErrorResponse linkNotSupportedResponse(final Exception ex) {
         return new ApiErrorResponse(
                 config.message().unsupportedLink(),
                 Integer.toString(HttpStatus.BAD_REQUEST.value()),
@@ -47,7 +47,7 @@ public final class ControllerExceptionHandler {
 
     @ExceptionHandler(value = {Exception.class})
     @ResponseStatus(value = HttpStatus.BAD_REQUEST)
-    public ApiErrorResponse serverErrorResponse(Exception ex) {
+    public ApiErrorResponse serverErrorResponse(final Exception ex) {
         return new ApiErrorResponse(
                 config.errorDescription().server(),
                 Integer.toString(HttpStatus.INTERNAL_SERVER_ERROR.value()),

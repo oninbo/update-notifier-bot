@@ -20,12 +20,12 @@ public final class BotController {
     private final ApplicationConfig applicationConfig;
 
     @PostMapping("/updates")
-    public void linkUpdates(@Valid @RequestBody LinkUpdate linkUpdate) {
+    public void linkUpdates(final @Valid @RequestBody LinkUpdate linkUpdate) {
         linkUpdatesService.sendUpdate(linkUpdate);
     }
 
     @PostMapping("/stackoverflowAnswerUpdates")
-    public void stackOverflowAnswerUpdates(@Valid @RequestBody StackOverflowAnswerUpdate update) {
+    public void stackOverflowAnswerUpdates(final @Valid @RequestBody StackOverflowAnswerUpdate update) {
         var messageText = String.format(
                 applicationConfig.message().stackoverflowAnswerUpdate(),
                 update.answerUrl(),
@@ -35,7 +35,7 @@ public final class BotController {
     }
 
     @PostMapping("/githubIssueUpdates")
-    public void githubIssueUpdates(@Valid @RequestBody GitHubIssueUpdate update) {
+    public void githubIssueUpdates(final @Valid @RequestBody GitHubIssueUpdate update) {
         var messageText = String.format(
                 applicationConfig.message().githubIssueUpdate(),
                 update.issueUrl(),
