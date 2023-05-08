@@ -9,6 +9,7 @@ import ru.tinkoff.edu.java.scrapper.dto.ListStackExchangeQuestionsResponse;
 public interface StackExchangeClient {
     /**
      * Фильтр, чтобы получать ссылку на ответ из API.
+     *
      * @see ru.tinkoff.edu.java.scrapper.dto.StackExchangeAnswerResponse#link()
      * @see <a href="https://api.stackexchange.com/docs/filters">Custom Filters</a>
      */

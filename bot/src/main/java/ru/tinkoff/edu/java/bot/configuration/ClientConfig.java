@@ -15,7 +15,7 @@ public class ClientConfig {
     }
 
     @SuppressWarnings("SameParameterValue")
-    private <T> T createWebClient(Class<T> clientClass,  String baseUrl) {
+    private <T> T createWebClient(Class<T> clientClass, String baseUrl) {
         WebClient client = WebClient.builder().baseUrl(baseUrl).build();
         HttpServiceProxyFactory factory = HttpServiceProxyFactory.builder(WebClientAdapter.forClient(client)).build();
 

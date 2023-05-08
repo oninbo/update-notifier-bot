@@ -17,9 +17,9 @@ import java.net.URI;
 public final class TrackCommandHandler extends LinkCommandHandler {
 
     public TrackCommandHandler(
-             UserResponseService userResponseService,
-             ApplicationConfig applicationConfig,
-             ScrapperClient scrapperClient,
+            UserResponseService userResponseService,
+            ApplicationConfig applicationConfig,
+            ScrapperClient scrapperClient,
             final LinkParserService linkParserService
     ) {
         super(userResponseService, applicationConfig, scrapperClient, linkParserService);
@@ -43,7 +43,7 @@ public final class TrackCommandHandler extends LinkCommandHandler {
     }
 
     @Override
-    protected void sendLinkToScrapper(URI link,  Long userId) {
+    protected void sendLinkToScrapper(URI link, Long userId) {
         getScrapperClient().addLink(userId, new AddLinkRequest(link));
     }
 

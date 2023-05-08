@@ -57,7 +57,7 @@ public abstract class StackOverflowQuestionsService {
         );
     }
 
-    protected final  <T> List<T> getBatchedUpdates(
+    protected final <T> List<T> getBatchedUpdates(
             List<StackOverflowQuestion> questions,
             Function<List<StackOverflowQuestion>, List<T>> getUpdates
     ) {

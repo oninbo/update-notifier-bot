@@ -21,19 +21,19 @@ public final class UserResponseService {
     private final ApplicationConfig applicationConfig;
 
     public UserResponseService(
-             TgBot telegramBot,
-             TgKeyboardService tgKeyboardService,
-             ApplicationConfig config) {
+            TgBot telegramBot,
+            TgKeyboardService tgKeyboardService,
+            ApplicationConfig config) {
         this.telegramBot = telegramBot;
         this.defaultKeyboard = tgKeyboardService.createKeyboard();
         this.applicationConfig = config;
     }
 
-    public void sendMessage(Long userId,  String text) {
+    public void sendMessage(Long userId, String text) {
         sendMessage(userId, text, defaultKeyboard);
     }
 
-    public void sendMessageForceReply(Long userId,  String text) {
+    public void sendMessageForceReply(Long userId, String text) {
         sendMessage(userId, text, new ForceReply());
     }
 
@@ -44,7 +44,7 @@ public final class UserResponseService {
                 .orElse(false);
     }
 
-    private void sendMessage(Long userId,  String text, final Keyboard keyboard) {
+    private void sendMessage(Long userId, String text, final Keyboard keyboard) {
         var request = new SendMessage(userId, text)
                 .disableWebPagePreview(true)
                 .parseMode(ParseMode.Markdown)

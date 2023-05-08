@@ -14,6 +14,7 @@ public abstract class LinkParser {
 
     /**
      * Парсит ссылку.
+     *
      * @param link ссылка
      * @return результат парсинга или null, если парсер поддерживает переданную ссылку
      */
@@ -42,6 +43,7 @@ public abstract class LinkParser {
 
     /**
      * Поддерживает ли парсер ссылку.
+     *
      * @param uri ссылка
      * @return true если поддерживает, иначе false
      */

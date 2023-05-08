@@ -59,14 +59,15 @@ public final class BotUpdatesListener implements UpdatesListener {
         );
     }
 
-    private void processMessageEntity(MessageEntity messageEntity,  Message message) {
+    private void processMessageEntity(MessageEntity messageEntity, Message message) {
         if (Objects.isNull(messageEntity.type())) {
             return;
         }
         switch (messageEntity.type()) {
             case bot_command -> botCommandService.handleCommandEntity(message, messageEntity);
             case url -> botMenuButtonService.handleMessage(message);
-            default -> { }
+            default -> {
+            }
         }
     }
 
@@ -77,7 +78,7 @@ public final class BotUpdatesListener implements UpdatesListener {
         );
     }
 
-    private void handleException(Exception exception,  Update update) {
+    private void handleException(Exception exception, Update update) {
         log.error(exception.toString());
         Optional.ofNullable(update.message())
                 .map(Message::from)

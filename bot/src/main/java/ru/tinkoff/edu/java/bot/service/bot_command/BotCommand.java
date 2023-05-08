@@ -15,6 +15,7 @@ public abstract sealed class BotCommand permits
 
     /**
      * Возвращает сообщение для запроса ввода данных от пользователя.
+     *
      * @param applicationConfig конфигурация приложения
      * @return сообщение для запроса ввода данных от пользователя
      */
@@ -24,6 +25,7 @@ public abstract sealed class BotCommand permits
 
     /**
      * Возвращает список аргументов команды.
+     *
      * @return список аргументов команды
      */
     public List<String> getArguments() {
@@ -40,7 +42,7 @@ public abstract sealed class BotCommand permits
     public abstract String getCommandName();
 
     public static com.pengrad.telegrambot.model.BotCommand[] getTgCommands(
-             ApplicationConfig applicationConfig,
+            ApplicationConfig applicationConfig,
             final java.util.List<BotCommand> botCommands
     ) {
         return botCommands

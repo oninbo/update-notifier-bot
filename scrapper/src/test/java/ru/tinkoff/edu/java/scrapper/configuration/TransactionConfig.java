@@ -16,7 +16,7 @@ import javax.sql.DataSource;
 public class TransactionConfig {
     @Bean
     public PlatformTransactionManager transactionManager(DataSource dataSource) {
-         HibernateTransactionManager transactionManager = new HibernateTransactionManager();
+        HibernateTransactionManager transactionManager = new HibernateTransactionManager();
         transactionManager.setSessionFactory(sessionFactory(dataSource));
         return transactionManager;
     }

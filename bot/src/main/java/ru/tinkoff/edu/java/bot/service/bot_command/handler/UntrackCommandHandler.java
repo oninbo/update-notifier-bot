@@ -15,9 +15,9 @@ import java.net.URI;
 @Component
 public final class UntrackCommandHandler extends LinkCommandHandler {
     public UntrackCommandHandler(
-             UserResponseService userResponseService,
-             ApplicationConfig applicationConfig,
-             ScrapperClient scrapperClient,
+            UserResponseService userResponseService,
+            ApplicationConfig applicationConfig,
+            ScrapperClient scrapperClient,
             final LinkParserService linkParserService
     ) {
         super(userResponseService, applicationConfig, scrapperClient, linkParserService);
@@ -29,7 +29,7 @@ public final class UntrackCommandHandler extends LinkCommandHandler {
     }
 
     @Override
-    protected void sendLinkToScrapper(URI link,  Long userId) {
+    protected void sendLinkToScrapper(URI link, Long userId) {
         getScrapperClient().deleteLink(userId, new RemoveLinkRequest(link));
     }
 

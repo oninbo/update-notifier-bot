@@ -17,9 +17,9 @@ public final class WebClientErrorHandler {
     private final UserResponseService userResponseService;
 
     public void handleWebClientException(
-             WebClientResponseException exception,
-             Update update,
-             Runnable onFailure) {
+            WebClientResponseException exception,
+            Update update,
+            Runnable onFailure) {
         var body = Optional.ofNullable(exception.getResponseBodyAs(ApiErrorResponse.class));
         body.ifPresentOrElse(
                 response -> Optional.ofNullable(update.message())
