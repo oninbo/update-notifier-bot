@@ -16,7 +16,7 @@ public final class LinkUpdatesService {
     private final UserResponseService userResponseService;
     private final ApplicationConfig applicationConfig;
 
-    public void sendUpdate(final LinkUpdate linkUpdate) {
+    public void sendUpdate(LinkUpdate linkUpdate) {
         LinkParserResult result = linkParserService.parse(linkUpdate.url())
                 .orElseThrow(LinkNotSupportedException::new);
 

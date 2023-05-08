@@ -27,7 +27,7 @@ public final class ListCommandHandler implements BotCommandHandler {
     private final ScrapperClient scrapperClient;
 
     @Override
-    public void handle(final BotCommandArguments arguments) {
+    public void handle(BotCommandArguments arguments) {
         List<URI> links = getLinks(arguments.userId());
         if (links.isEmpty()) {
             String noLinksMessage = applicationConfig.command().list().message().noLinks();
@@ -54,11 +54,11 @@ public final class ListCommandHandler implements BotCommandHandler {
     }
 
     @Override
-    public boolean canHandle(final BotCommand botCommand) {
+    public boolean canHandle(BotCommand botCommand) {
         return botCommand instanceof ListCommand;
     }
 
-    private List<URI> getLinks(final Long id) {
+    private List<URI> getLinks(Long id) {
         return scrapperClient.getLinks(id)
                 .links().stream()
                 .map(LinkResponse::url)

@@ -10,12 +10,12 @@ import java.util.Optional;
 @Component
 public final class TrackCommand extends BotCommand {
     @Override
-    public String getDescription(final ApplicationConfig applicationConfig) {
+    public String getDescription(ApplicationConfig applicationConfig) {
         return applicationConfig.command().track().description();
     }
 
     @Override
-    public Optional<String> getMessageInput(final ApplicationConfig applicationConfig) {
+    public Optional<String> getMessageInput(ApplicationConfig applicationConfig) {
         return Optional.of(applicationConfig.command().track().message().input());
     }
 

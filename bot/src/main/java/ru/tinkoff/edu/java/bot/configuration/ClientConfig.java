@@ -10,12 +10,12 @@ import org.springframework.web.reactive.function.client.WebClient;
 @Configuration
 public class ClientConfig {
     @Bean
-    public ScrapperClient getScrapperClient(final ApplicationConfig applicationConfig) {
+    public ScrapperClient getScrapperClient(ApplicationConfig applicationConfig) {
         return createWebClient(ScrapperClient.class, applicationConfig.webClient().scrapper().baseUrl());
     }
 
     @SuppressWarnings("SameParameterValue")
-    private <T> T createWebClient(final Class<T> clientClass, final String baseUrl) {
+    private <T> T createWebClient(Class<T> clientClass,  String baseUrl) {
         WebClient client = WebClient.builder().baseUrl(baseUrl).build();
         HttpServiceProxyFactory factory = HttpServiceProxyFactory.builder(WebClientAdapter.forClient(client)).build();
 

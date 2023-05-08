@@ -17,14 +17,14 @@ public final class StartCommandHandler implements BotCommandHandler {
     private final ScrapperClient scrapperClient;
 
     @Override
-    public void handle(final BotCommandArguments arguments) {
+    public void handle(BotCommandArguments arguments) {
         var message = applicationConfig.command().start().message().userRegistered();
         scrapperClient.addTgChat(arguments.userId());
         userResponseService.sendMessage(arguments.userId(), message);
     }
 
     @Override
-    public boolean canHandle(final BotCommand botCommand) {
+    public boolean canHandle(BotCommand botCommand) {
         return botCommand instanceof StartCommand;
     }
 }

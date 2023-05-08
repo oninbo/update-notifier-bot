@@ -29,7 +29,7 @@ public final class BotUpdatesListener implements UpdatesListener {
     private final WebClientErrorHandler webClientErrorHandler;
 
     @Override
-    public int process(final List<Update> updates) {
+    public int process(List<Update> updates) {
         for (var update : updates) {
             try {
                 processUpdate(update);
@@ -47,7 +47,7 @@ public final class BotUpdatesListener implements UpdatesListener {
         return UpdatesListener.CONFIRMED_UPDATES_ALL;
     }
 
-    private void processUpdate(final Update update) {
+    private void processUpdate(Update update) {
         log.info(new UpdateLog(update).toString());
         var message = Optional.ofNullable(update.message());
 
@@ -59,7 +59,7 @@ public final class BotUpdatesListener implements UpdatesListener {
         );
     }
 
-    private void processMessageEntity(final MessageEntity messageEntity, final Message message) {
+    private void processMessageEntity(MessageEntity messageEntity,  Message message) {
         if (Objects.isNull(messageEntity.type())) {
             return;
         }
@@ -70,14 +70,14 @@ public final class BotUpdatesListener implements UpdatesListener {
         }
     }
 
-    private void sendErrorMessage(final Long userId) {
+    private void sendErrorMessage(Long userId) {
         userResponseService.sendMessage(
                 userId,
                 applicationConfig.message().error()
         );
     }
 
-    private void handleException(final Exception exception, final Update update) {
+    private void handleException(Exception exception,  Update update) {
         log.error(exception.toString());
         Optional.ofNullable(update.message())
                 .map(Message::from)

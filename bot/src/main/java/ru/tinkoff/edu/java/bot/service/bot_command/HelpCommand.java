@@ -6,7 +6,7 @@ import ru.tinkoff.edu.java.bot.configuration.ApplicationConfig;
 @Component
 public final class HelpCommand extends BotCommand {
     @Override
-    public String getDescription(final ApplicationConfig applicationConfig) {
+    public String getDescription(ApplicationConfig applicationConfig) {
         return applicationConfig.command().help().description();
     }
 

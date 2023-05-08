@@ -12,11 +12,11 @@ import java.util.Optional;
 public final class LinkParserService {
     private final List<LinkParser> parsers;
 
-    public LinkParserService(final List<LinkParser> parsers) {
+    public LinkParserService(List<LinkParser> parsers) {
         this.parsers = parsers;
     }
 
-    public Optional<LinkParserResult> parse(final URI link) {
+    public Optional<LinkParserResult> parse(URI link) {
         return parsers.stream()
                 .map((LinkParser p) -> p.parse(link))
                 .filter(Objects::nonNull)

@@ -18,7 +18,7 @@ public final class HelpCommandHandler implements BotCommandHandler {
     private final List<BotCommand> botCommands;
 
     @Override
-    public void handle(final BotCommandArguments arguments) {
+    public void handle(BotCommandArguments arguments) {
         StringBuilder stringBuilder = new StringBuilder(applicationConfig.command().help().header() + ":\n");
         String formatString = "%d. %s /%s %s\n";
         for (int i = 0; i < botCommands.size(); i++) {
@@ -37,11 +37,11 @@ public final class HelpCommandHandler implements BotCommandHandler {
     }
 
     @Override
-    public boolean canHandle(final BotCommand botCommand) {
+    public boolean canHandle(BotCommand botCommand) {
         return botCommand instanceof HelpCommand;
     }
 
-    private String formatCommandArguments(final List<String> commandArguments) {
+    private String formatCommandArguments(List<String> commandArguments) {
         return String.join(" ", commandArguments);
     }
 }

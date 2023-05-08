@@ -11,7 +11,7 @@ import org.springframework.context.annotation.Configuration;
 @EnableRabbit
 public class RabbitMQConfiguration {
     @Bean
-    Queue queue(final ApplicationConfig applicationConfig) {
+    Queue queue(ApplicationConfig applicationConfig) {
         return QueueBuilder
                 .durable(applicationConfig.rabbitMQ().queueName())
                 .deadLetterExchange(applicationConfig.rabbitMQ().deadLetterExchangeName())
@@ -20,12 +20,12 @@ public class RabbitMQConfiguration {
     }
 
     @Bean
-    DirectExchange exchange(final ApplicationConfig applicationConfig) {
+    DirectExchange exchange(ApplicationConfig applicationConfig) {
         return new DirectExchange(applicationConfig.rabbitMQ().exchangeName());
     }
 
     @Bean
-    Binding binding(final Queue queue, final DirectExchange exchange) {
+    Binding binding(Queue queue,  DirectExchange exchange) {
         return BindingBuilder.bind(queue).to(exchange).withQueueName();
     }
 

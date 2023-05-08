@@ -12,13 +12,13 @@ public final class LinkParseResultPresenter {
     private final String link;
     private final Visitor visitor = new Visitor();
 
-    public void present(final LinkParserResult linkParserResult) {
+    public void present(LinkParserResult linkParserResult) {
         linkParserResult.acceptVisitor(visitor);
     }
 
     class Visitor implements LinkParserResultVisitor {
         @Override
-        public void visit(final GitHubParserResult gitHubParserResult) {
+        public void visit(GitHubParserResult gitHubParserResult) {
             stringBuilder.append(
                     String.format(
                             "GitHub [репозиторий %s](%s) пользователя %s",
@@ -30,7 +30,7 @@ public final class LinkParseResultPresenter {
         }
 
         @Override
-        public void visit(final StackOverflowParserResult stackOverflowParserResult) {
+        public void visit(StackOverflowParserResult stackOverflowParserResult) {
             stringBuilder.append(String.format("[Вопрос](%s) на Stack Overflow", link));
         }
     }

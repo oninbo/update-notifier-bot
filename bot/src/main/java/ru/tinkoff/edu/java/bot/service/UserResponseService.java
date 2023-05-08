@@ -21,30 +21,30 @@ public final class UserResponseService {
     private final ApplicationConfig applicationConfig;
 
     public UserResponseService(
-            final TgBot telegramBot,
-            final TgKeyboardService tgKeyboardService,
-            final ApplicationConfig config) {
+             TgBot telegramBot,
+             TgKeyboardService tgKeyboardService,
+             ApplicationConfig config) {
         this.telegramBot = telegramBot;
         this.defaultKeyboard = tgKeyboardService.createKeyboard();
         this.applicationConfig = config;
     }
 
-    public void sendMessage(final Long userId, final String text) {
+    public void sendMessage(Long userId,  String text) {
         sendMessage(userId, text, defaultKeyboard);
     }
 
-    public void sendMessageForceReply(final Long userId, final String text) {
+    public void sendMessageForceReply(Long userId,  String text) {
         sendMessage(userId, text, new ForceReply());
     }
 
-    public boolean isMessageFromBot(final Message message) {
+    public boolean isMessageFromBot(Message message) {
         return Optional.ofNullable(message.from())
                 .map(User::id)
                 .map(id -> id.equals(telegramBot.getBotId()))
                 .orElse(false);
     }
 
-    private void sendMessage(final Long userId, final String text, final Keyboard keyboard) {
+    private void sendMessage(Long userId,  String text, final Keyboard keyboard) {
         var request = new SendMessage(userId, text)
                 .disableWebPagePreview(true)
                 .parseMode(ParseMode.Markdown)

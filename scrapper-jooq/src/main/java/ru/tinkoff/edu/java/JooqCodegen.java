@@ -7,7 +7,7 @@ public final class JooqCodegen {
     private JooqCodegen() {
     }
 
-    public static void main(final String[] args) throws Exception {
+    public static void main(String[] args) throws Exception {
         Configuration configuration = new Configuration()
                 .withJdbc(new Jdbc()
                         .withDriver("org.postgresql.Driver")

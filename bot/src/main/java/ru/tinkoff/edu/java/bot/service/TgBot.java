@@ -13,7 +13,7 @@ import java.util.Optional;
 public final class TgBot extends TelegramBot {
     private final Long botId;
 
-    public TgBot(final ApplicationConfig applicationConfig) {
+    public TgBot(ApplicationConfig applicationConfig) {
         super(applicationConfig.botConfig().token());
         this.botId = fetchBotId().orElseThrow();
     }

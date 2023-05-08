@@ -23,7 +23,7 @@ public final class BotCommandService {
     private final List<BotCommand> botCommands;
     private final HelpCommand helpCommand;
 
-    public void handleCommandEntity(final Message message, final MessageEntity messageEntity) {
+    public void handleCommandEntity(Message message,  MessageEntity messageEntity) {
         String command = message.text().substring(
                 messageEntity.offset(),
                 messageEntity.offset() + messageEntity.length()
@@ -46,7 +46,7 @@ public final class BotCommandService {
                         });
     }
 
-    private void handleCommand(final BotCommand botCommand, final BotCommandArguments arguments) {
+    private void handleCommand(BotCommand botCommand,  BotCommandArguments arguments) {
         botCommandHandlers.stream()
                 .filter(botCommandHandler -> botCommandHandler.canHandle(botCommand))
                 .forEach(botCommandHandler -> botCommandHandler.handle(arguments));
