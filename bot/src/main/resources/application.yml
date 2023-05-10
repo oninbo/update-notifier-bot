@@ -65,3 +65,19 @@ spring:
         default-requeue-rejected: false
   config:
     import: secrets.yml
+management:
+  metrics:
+    tags:
+      application: ${spring.application.name}
+  server:
+    port: 8082
+  endpoints:
+    web:
+      base-path: /
+      exposure:
+        include:
+          - info
+          - health
+          - prometheus
+      path-mapping:
+        prometheus: metrics
