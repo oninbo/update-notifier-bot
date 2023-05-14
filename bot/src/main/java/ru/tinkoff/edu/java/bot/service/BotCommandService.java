@@ -16,7 +16,7 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 @Slf4j
-public class BotCommandService {
+public final class BotCommandService {
     private final List<BotCommandHandler> botCommandHandlers;
     private final UserResponseService userResponseService;
     private final ApplicationConfig applicationConfig;

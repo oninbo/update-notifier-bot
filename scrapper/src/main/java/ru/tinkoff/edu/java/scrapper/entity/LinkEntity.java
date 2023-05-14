@@ -25,17 +25,17 @@ public class LinkEntity {
     private URI url;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name="tg_chat_id")
+    @JoinColumn(name = "tg_chat_id")
     @Setter
     private TgChatEntity tgChat;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name="stackoverflow_question_id")
+    @JoinColumn(name = "stackoverflow_question_id")
     @Setter
     private StackOverflowQuestionEntity stackOverflowQuestion;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name="github_repository_id")
+    @JoinColumn(name = "github_repository_id")
     @Setter
     private GitHubRepositoryEntity gitHubRepository;
 

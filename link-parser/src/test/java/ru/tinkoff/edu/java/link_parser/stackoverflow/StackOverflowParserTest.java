@@ -24,8 +24,8 @@ public class StackOverflowParserTest {
 
     @ParameterizedTest
     @ValueSource(strings = {
-        "https://stackoverflow.com/questions/1642028/what-is-the-operator-in-c",
-        "https://stackoverflow.com/questions/1642028/"
+            "https://stackoverflow.com/questions/1642028/what-is-the-operator-in-c",
+            "https://stackoverflow.com/questions/1642028/"
     })
     public void shouldParseCorrectLinks(String correctLink) throws URISyntaxException {
         var expectedResult = new StackOverflowParserResult(1642028L);

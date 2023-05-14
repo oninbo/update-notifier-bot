@@ -12,7 +12,7 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 
 @RequiredArgsConstructor
-public class LinkBuilder<S, G> {
+public final class LinkBuilder<S, G> {
     private final Function<G, Link> addGitHubRepositoryLink;
     private final Function<S, Link> addStackOverflowQuestionLink;
     private final FindOrDoService<S, StackOverflowParserResult> stackOverflowQuestionsService;

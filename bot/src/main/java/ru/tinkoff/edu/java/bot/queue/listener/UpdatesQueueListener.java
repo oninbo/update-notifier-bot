@@ -10,7 +10,7 @@ import ru.tinkoff.edu.java.bot.service.LinkUpdatesService;
 @Component
 @RabbitListener(queues = "${app.rabbit_mq.queue_name}")
 @RequiredArgsConstructor
-public class UpdatesQueueListener {
+public final class UpdatesQueueListener {
     private final LinkUpdatesService linkUpdatesService;
 
     @RabbitHandler

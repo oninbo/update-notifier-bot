@@ -26,7 +26,9 @@ public class JooqTgChatsService implements TgChatsService {
     public void deleteTgChat(long chatId) {
         tgChatsRepository.find(chatId).ifPresentOrElse(
                 tgChat -> tgChatsRepository.remove(tgChat.id()),
-                () -> { throw new TgChatNotFoundException(applicationConfig); }
+                () -> {
+                    throw new TgChatNotFoundException(applicationConfig);
+                }
         );
     }
 }

@@ -7,7 +7,7 @@ import ru.tinkoff.edu.java.scrapper.service.TgChatsService;
 @RestController
 @RequestMapping("/tg-chat")
 @RequiredArgsConstructor
-public class TgChatsController {
+public final class TgChatsController {
     private final TgChatsService tgChatsService;
 
     @PostMapping("/{id}")

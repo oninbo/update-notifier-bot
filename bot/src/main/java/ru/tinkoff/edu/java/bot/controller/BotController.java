@@ -14,7 +14,7 @@ import ru.tinkoff.edu.java.bot.service.UserResponseService;
 
 @RestController
 @RequiredArgsConstructor
-public class BotController {
+public final class BotController {
     private final LinkUpdatesService linkUpdatesService;
     private final UserResponseService userResponseService;
     private final ApplicationConfig applicationConfig;

@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import ru.tinkoff.edu.java.scrapper.configuration.ApplicationConfig;
 
 @RequiredArgsConstructor
-public class LinkNotSupportedException extends ServiceException {
+public final class LinkNotSupportedException extends ServiceException {
     private final ApplicationConfig applicationConfig;
 
     @Override

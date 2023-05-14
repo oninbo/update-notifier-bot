@@ -11,13 +11,13 @@ public record ApiErrorResponse(
         String exceptionMessage,
         List<String> stacktrace
 ) {
-    public ApiErrorResponse(String description, String code, Exception exception) {
+    public ApiErrorResponse(String description, String code, final Exception exception) {
         this(
-            description,
-            code,
-            exception.getClass().getName(),
-            exception.getMessage(),
-            Arrays.stream(exception.getStackTrace()).map(StackTraceElement::toString).toList()
+                description,
+                code,
+                exception.getClass().getName(),
+                exception.getMessage(),
+                Arrays.stream(exception.getStackTrace()).map(StackTraceElement::toString).toList()
         );
     }
 }

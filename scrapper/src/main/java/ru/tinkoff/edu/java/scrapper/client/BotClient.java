@@ -10,8 +10,10 @@ import ru.tinkoff.edu.java.scrapper.dto.StackOverflowAnswerUpdate;
 public interface BotClient {
     @PostExchange("/updates")
     void sendLinkUpdates(@RequestBody LinkUpdate linkUpdate);
+
     @PostExchange("/stackoverflowAnswerUpdates")
     void sendStackOverflowAnswerUpdates(@RequestBody StackOverflowAnswerUpdate linkUpdate);
+
     @PostExchange("/githubIssueUpdates")
     void sendGithubIssueUpdates(@Valid @RequestBody GitHubIssueUpdate update);
 }

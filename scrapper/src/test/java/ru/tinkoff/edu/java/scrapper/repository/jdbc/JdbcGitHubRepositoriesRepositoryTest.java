@@ -73,6 +73,7 @@ public class JdbcGitHubRepositoriesRepositoryTest {
         var foundIds = jdbcGitHubRepositoriesRepository.findAll().stream().map(GitHubRepository::id).toList();
         assertIterableEquals(List.of(id), foundIds);
     }
+
     @Test
     @Transactional
     @Rollback

@@ -47,11 +47,15 @@ public class JpaLinksRepositoryTest extends JpaRepositoryTest {
     @Random
     URI url;
 
+    @Random
+    Long chatId;
+
     @BeforeEach
     public void setUp() {
         var tgChatId = jdbcTemplate.queryForObject(
-                "INSERT INTO tg_chats (chat_id) VALUES (1) RETURNING id",
-                UUID.class
+                "INSERT INTO tg_chats (chat_id) VALUES (?) RETURNING id",
+                UUID.class,
+                chatId
         );
         when(tgChat.id()).thenReturn(tgChatId);
     }
@@ -89,10 +93,11 @@ public class JpaLinksRepositoryTest extends JpaRepositoryTest {
     @Transactional
     @Rollback
     public void shouldFindAllLinksByTgChat() {
+        when(tgChat.chatId()).thenReturn(chatId);
         insertGitHubRepository();
         var linkId = insertLink();
-        var foundLinks = jpaLinksRepository.findAllByChatId(tgChat.chatId());
-        assertIterableEquals(List.of(new Link(linkId, url)), foundLinks);
+        var foundLinkIds = jpaLinksRepository.findAllByChatId(tgChat.chatId()).stream().map(LinkEntity::getId).toList();
+        assertIterableEquals(List.of(linkId), foundLinkIds);
     }
 
     @Test

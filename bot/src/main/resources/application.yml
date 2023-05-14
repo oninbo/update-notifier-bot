@@ -64,7 +64,7 @@ spring:
       simple:
         default-requeue-rejected: false
   config:
-    import: secrets.yml
+    import: optional:secrets.yml
 management:
   metrics:
     tags:

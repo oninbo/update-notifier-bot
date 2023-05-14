@@ -11,7 +11,7 @@ import ru.tinkoff.edu.java.bot.service.bot_command.StartCommand;
 
 @Component
 @RequiredArgsConstructor
-public class StartCommandHandler implements BotCommandHandler{
+public final class StartCommandHandler implements BotCommandHandler {
     private final UserResponseService userResponseService;
     private final ApplicationConfig applicationConfig;
     private final ScrapperClient scrapperClient;

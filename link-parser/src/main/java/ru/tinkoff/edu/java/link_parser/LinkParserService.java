@@ -9,7 +9,7 @@ import java.util.Objects;
 import java.util.Optional;
 
 @Service
-public class LinkParserService {
+public final class LinkParserService {
     private final List<LinkParser> parsers;
 
     public LinkParserService(List<LinkParser> parsers) {

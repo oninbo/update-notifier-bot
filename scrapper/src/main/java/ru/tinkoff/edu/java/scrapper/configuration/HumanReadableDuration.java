@@ -2,7 +2,7 @@ package ru.tinkoff.edu.java.scrapper.configuration;
 
 import java.time.Duration;
 
-public class HumanReadableDuration {
+public final class HumanReadableDuration {
     private final Duration duration;
 
     public HumanReadableDuration(String text) {

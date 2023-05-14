@@ -16,7 +16,7 @@ import ru.tinkoff.edu.java.scrapper.exception.TgChatNotFoundException;
 @RestControllerAdvice
 @RequiredArgsConstructor
 @Slf4j
-public class ControllerExceptionHandler {
+public final class ControllerExceptionHandler {
     private final ApplicationConfig config;
 
     @ExceptionHandler(value = {

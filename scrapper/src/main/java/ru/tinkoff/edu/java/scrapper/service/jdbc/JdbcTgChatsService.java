@@ -26,7 +26,9 @@ public class JdbcTgChatsService implements TgChatsService {
     public void deleteTgChat(long chatId) {
         jdbcTgChatsRepository.find(chatId).ifPresentOrElse(
                 tgChat -> jdbcTgChatsRepository.remove(tgChat.id()),
-                () -> { throw new TgChatNotFoundException(applicationConfig); }
+                () -> {
+                    throw new TgChatNotFoundException(applicationConfig);
+                }
         );
     }
 }

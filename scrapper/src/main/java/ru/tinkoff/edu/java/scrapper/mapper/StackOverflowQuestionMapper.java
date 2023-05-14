@@ -7,5 +7,6 @@ import ru.tinkoff.edu.java.scrapper.entity.StackOverflowQuestionEntity;
 @Mapper
 public interface StackOverflowQuestionMapper {
     StackOverflowQuestion fromEntity(StackOverflowQuestionEntity entity);
+
     StackOverflowQuestionEntity toEntity(StackOverflowQuestion gitHubRepository);
 }

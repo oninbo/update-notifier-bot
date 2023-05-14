@@ -8,7 +8,7 @@ import java.net.URI;
 import java.util.List;
 
 @Component
-public class GitHubParser extends LinkParser {
+public final class GitHubParser extends LinkParser {
     private final String gitHubHost;
 
     public GitHubParser(@Value("${github.host}") String gitHubHost) {

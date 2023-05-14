@@ -15,33 +15,36 @@ import java.util.Optional;
 
 @Service
 @Slf4j
-public class UserResponseService {
+public final class UserResponseService {
     private final TgBot telegramBot;
-    private final Keyboard keyboard;
+    private final Keyboard defaultKeyboard;
     private final ApplicationConfig applicationConfig;
 
-    public UserResponseService(TgBot telegramBot, TgKeyboardService tgKeyboardService, ApplicationConfig config) {
+    public UserResponseService(
+            TgBot telegramBot,
+            TgKeyboardService tgKeyboardService,
+            ApplicationConfig config) {
         this.telegramBot = telegramBot;
-        this.keyboard = tgKeyboardService.createKeyboard();
+        this.defaultKeyboard = tgKeyboardService.createKeyboard();
         this.applicationConfig = config;
     }
 
     public void sendMessage(Long userId, String text) {
-        sendMessage(userId, text, keyboard);
+        sendMessage(userId, text, defaultKeyboard);
     }
 
     public void sendMessageForceReply(Long userId, String text) {
         sendMessage(userId, text, new ForceReply());
     }
 
-    public boolean isMessageFromBot(Message message){
+    public boolean isMessageFromBot(Message message) {
         return Optional.ofNullable(message.from())
                 .map(User::id)
                 .map(id -> id.equals(telegramBot.getBotId()))
                 .orElse(false);
     }
 
-    private void sendMessage(Long userId, String text, Keyboard keyboard) {
+    private void sendMessage(Long userId, String text, final Keyboard keyboard) {
         var request = new SendMessage(userId, text)
                 .disableWebPagePreview(true)
                 .parseMode(ParseMode.Markdown)
