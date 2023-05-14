@@ -22,6 +22,7 @@ public record ApplicationConfig(
         JPA,
         JOOQ
     }
+
     @Validated
     public record RabbitMQ(@NotBlank String queueName, @NotBlank String exchangeName) {
         private static final String DEAD_LETTER_QUEUE_SUFFIX = ".dlq";

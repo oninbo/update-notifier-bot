@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import ru.tinkoff.edu.java.scrapper.configuration.ApplicationConfig;
 
 @RequiredArgsConstructor
-public class TgChatExistsException extends ServiceException {
+public final class TgChatExistsException extends ServiceException {
     private final ApplicationConfig applicationConfig;
 
     @Override

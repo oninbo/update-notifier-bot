@@ -24,8 +24,8 @@ public class GitHubParserTest {
 
     @ParameterizedTest
     @ValueSource(strings = {
-        "https://github.com/sanyarnd/tinkoff-java-course-2022",
-        "https://github.com/sanyarnd/tinkoff-java-course-2022/"
+            "https://github.com/sanyarnd/tinkoff-java-course-2022",
+            "https://github.com/sanyarnd/tinkoff-java-course-2022/"
     })
     public void shouldParseCorrectLinks(String correctLink) throws URISyntaxException {
         var expectedResult = new GitHubParserResult("sanyarnd", "tinkoff-java-course-2022");

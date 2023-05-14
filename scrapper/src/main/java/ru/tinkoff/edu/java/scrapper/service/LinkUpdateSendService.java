@@ -9,7 +9,7 @@ import ru.tinkoff.edu.java.scrapper.queue.producer.UpdatesQueueProducer;
 
 @Service
 @RequiredArgsConstructor
-public class LinkUpdateSendService {
+public final class LinkUpdateSendService {
     private final BotClient botClient;
     private final UpdatesQueueProducer queueProducer;
     private final ApplicationConfig applicationConfig;

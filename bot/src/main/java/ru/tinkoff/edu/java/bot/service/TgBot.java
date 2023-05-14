@@ -10,7 +10,7 @@ import java.util.Optional;
 
 @Component
 @Slf4j
-public class TgBot extends TelegramBot {
+public final class TgBot extends TelegramBot {
     private final Long botId;
 
     public TgBot(ApplicationConfig applicationConfig) {

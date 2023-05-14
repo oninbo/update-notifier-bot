@@ -3,11 +3,12 @@ package ru.tinkoff.edu.java.bot.service.bot_command;
 import org.springframework.stereotype.Component;
 import ru.tinkoff.edu.java.bot.configuration.ApplicationConfig;
 
+import java.util.List;
 import java.util.Optional;
 
 @Component
 @SuppressWarnings("SpellCheckingInspection")
-public non-sealed class UntrackCommand extends BotCommand {
+public final class UntrackCommand extends BotCommand {
     @Override
     public String getDescription(ApplicationConfig applicationConfig) {
         return applicationConfig.command().untrack().description();
@@ -19,8 +20,8 @@ public non-sealed class UntrackCommand extends BotCommand {
     }
 
     @Override
-    public Optional<String[]> getArguments() {
-        return Optional.of(new String[]{"link"});
+    public List<String> getArguments() {
+        return List.of("link");
     }
 
     @Override

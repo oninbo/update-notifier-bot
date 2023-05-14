@@ -1,0 +1,73 @@
+name: Scrapper Java CI
+
+on:
+  push:
+    paths:
+      - scrapper/**
+      - .github/workflows/scrapper.yml
+
+env:
+  REGISTRY: ghcr.io
+  IMAGE_NAME: ${{ github.repository }}
+  JAVA_VERSION: '17'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    services:
+      postgresql:
+        image: postgres:15
+        env:
+          POSTGRES_DB: scrapper
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+        ports:
+          - 5432:5432
+    steps:
+      - uses: actions/checkout@v3
+      - name: Run migrations
+        uses: liquibase/liquibase-github-action@v7
+        with:
+          operation: 'update'
+          classpath: 'scrapper/migrations'
+          changeLogFile: 'master.yml'
+          username: postgres
+          password: postgres
+          url: jdbc:postgresql://postgresql:5432/scrapper
+      - name: Set up JDK ${{ env.JAVA_VERSION }}
+        uses: actions/setup-java@v3
+        with:
+          java-version: ${{ env.JAVA_VERSION }}
+          distribution: 'temurin'
+      - name: Build with Maven
+        run: mvn package -pl scrapper -am
+      - name: Log in to the Container registry
+        uses: docker/login-action@v2
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Extract metadata (tags, labels) for Docker
+        id: meta
+        uses: docker/metadata-action@v4
+        with:
+          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}-scrapper
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v4
+        with:
+          context: scrapper/
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+  analyze:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up JDK ${{ env.JAVA_VERSION }}
+        uses: actions/setup-java@v3
+        with:
+          java-version: ${{ env.JAVA_VERSION }}
+          distribution: 'temurin'
+      - name: Check code style
+        run: mvn -pl scrapper -am checkstyle:check

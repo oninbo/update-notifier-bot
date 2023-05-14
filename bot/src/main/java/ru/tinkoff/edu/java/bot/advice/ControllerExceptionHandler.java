@@ -12,7 +12,7 @@ import ru.tinkoff.edu.java.bot.exception.LinkNotSupportedException;
 import ru.tinkoff.edu.java.link_parser.base_parser.LinkParserException;
 
 @RestControllerAdvice
-public class ControllerExceptionHandler {
+public final class ControllerExceptionHandler {
     private final ApplicationConfig config;
 
     public ControllerExceptionHandler(ApplicationConfig config) {

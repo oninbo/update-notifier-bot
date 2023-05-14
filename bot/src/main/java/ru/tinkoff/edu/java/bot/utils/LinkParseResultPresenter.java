@@ -7,7 +7,7 @@ import ru.tinkoff.edu.java.link_parser.github.GitHubParserResult;
 import ru.tinkoff.edu.java.link_parser.stackoverflow.StackOverflowParserResult;
 
 @RequiredArgsConstructor
-public class LinkParseResultPresenter {
+public final class LinkParseResultPresenter {
     private final StringBuilder stringBuilder;
     private final String link;
     private final Visitor visitor = new Visitor();

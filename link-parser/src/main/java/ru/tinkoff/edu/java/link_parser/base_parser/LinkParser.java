@@ -12,6 +12,12 @@ import java.util.stream.Stream;
 public abstract class LinkParser {
     private final List<String> supportedURISchemas = List.of("http", "https");
 
+    /**
+     * Парсит ссылку.
+     *
+     * @param link ссылка
+     * @return результат парсинга или null, если парсер поддерживает переданную ссылку
+     */
     public LinkParserResult parse(URI link) {
         checkLink(link);
         if (isURISupported(link)) {
@@ -35,6 +41,12 @@ public abstract class LinkParser {
                 .orElseThrow(LinkParserIncorrectLinkException::new);
     }
 
+    /**
+     * Поддерживает ли парсер ссылку.
+     *
+     * @param uri ссылка
+     * @return true если поддерживает, иначе false
+     */
     protected boolean isURISupported(URI uri) {
         return supportedURISchemas.stream().anyMatch(s -> s.equals(uri.getScheme()));
     }

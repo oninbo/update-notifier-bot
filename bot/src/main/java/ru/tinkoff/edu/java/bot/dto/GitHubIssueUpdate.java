@@ -15,6 +15,6 @@ public record GitHubIssueUpdate(
         @NotNull @Valid GitHubRepository repository,
         @NotEmpty List<@NotNull Long> chatIds) {
     @Validated
-    public record GitHubRepository(@NotNull URI url, @NotBlank String name, @NotBlank String username){
+    public record GitHubRepository(@NotNull URI url, @NotBlank String name, @NotBlank String username) {
     }
 }

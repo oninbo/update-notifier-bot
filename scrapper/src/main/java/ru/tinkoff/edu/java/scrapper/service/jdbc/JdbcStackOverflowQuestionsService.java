@@ -8,7 +8,6 @@ import ru.tinkoff.edu.java.scrapper.dto.LinkUpdate;
 import ru.tinkoff.edu.java.scrapper.dto.StackOverflowAnswerUpdate;
 import ru.tinkoff.edu.java.scrapper.dto.StackOverflowQuestion;
 import ru.tinkoff.edu.java.scrapper.dto.StackOverflowQuestionAddParams;
-import ru.tinkoff.edu.java.scrapper.exception.StackOverflowQuestionNotFoundException;
 import ru.tinkoff.edu.java.scrapper.repository.jdbc.JdbcLinksRepository;
 import ru.tinkoff.edu.java.scrapper.repository.jdbc.JdbcStackOverflowQuestionsRepository;
 import ru.tinkoff.edu.java.scrapper.service.FindOrDoService;

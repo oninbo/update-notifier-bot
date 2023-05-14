@@ -11,7 +11,10 @@ import java.util.Objects;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
-public class LinkUpdateUtils {
+public final class LinkUpdateUtils {
+    private LinkUpdateUtils() {
+    }
+
     public static <T> List<LinkUpdate> getUpdates(
             Iterable<T> trackedObjects,
             Function<T, OffsetDateTime> getFetchedUpdatedAt,

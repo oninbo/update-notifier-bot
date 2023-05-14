@@ -14,7 +14,7 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 @Slf4j
-public class TgBotService {
+public final class TgBotService {
     private final TelegramBot telegramBot;
     private final UpdatesListener updatesListener;
     private final ApplicationConfig applicationConfig;
@@ -25,9 +25,9 @@ public class TgBotService {
         telegramBot.setUpdatesListener(updatesListener);
     }
 
-    private void setCommands(ApplicationConfig applicationConfig) {
+    private void setCommands(ApplicationConfig config) {
         var response = telegramBot.execute(
-                new SetMyCommands(BotCommand.getTgCommands(applicationConfig, botCommands))
+                new SetMyCommands(BotCommand.getTgCommands(config, botCommands))
         );
         if (!response.isOk()) {
             log.error(response.toString());

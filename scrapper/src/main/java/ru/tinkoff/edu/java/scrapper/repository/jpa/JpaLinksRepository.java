@@ -47,7 +47,8 @@ public interface JpaLinksRepository extends JpaRepository<LinkEntity, UUID> {
                 FROM LinkEntity AS l
                 WHERE l.stackOverflowQuestion.id = :#{#stackOverflowQuestion.id} AND l.tgChat.id = :#{#tgChat.id}
             """)
-    Optional<Link> find(@Param("tgChat") TgChat tgChat, @Param("stackOverflowQuestion") StackOverflowQuestion stackOverflowQuestion);
+    Optional<Link> find(@Param("tgChat") TgChat tgChat,
+                        @Param("stackOverflowQuestion") StackOverflowQuestion stackOverflowQuestion);
 
     @Query("""
             SELECT new ru.tinkoff.edu.java.scrapper.dto.LinkWithChatId(l.id, l.url, tc.chatId)

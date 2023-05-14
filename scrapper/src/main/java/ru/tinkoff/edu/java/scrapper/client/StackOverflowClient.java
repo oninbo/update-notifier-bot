@@ -11,7 +11,7 @@ import java.util.stream.Collectors;
 
 @Component
 @RequiredArgsConstructor
-public class StackOverflowClient {
+public final class StackOverflowClient {
     private final StackExchangeClient stackExchangeClient;
 
     public ListStackExchangeQuestionsResponse getStackOverflowQuestions(String version, List<Long> ids) {

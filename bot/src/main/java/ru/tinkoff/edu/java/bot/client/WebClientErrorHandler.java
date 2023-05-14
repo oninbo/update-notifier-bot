@@ -13,7 +13,7 @@ import java.util.Optional;
 
 @Component
 @RequiredArgsConstructor
-public class WebClientErrorHandler {
+public final class WebClientErrorHandler {
     private final UserResponseService userResponseService;
 
     public void handleWebClientException(

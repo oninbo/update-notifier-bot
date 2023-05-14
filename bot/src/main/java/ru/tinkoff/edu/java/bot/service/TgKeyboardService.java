@@ -9,15 +9,15 @@ import ru.tinkoff.edu.java.bot.service.bot_command.*;
 
 @Service
 @RequiredArgsConstructor
-public class TgKeyboardService {
+public final class TgKeyboardService {
     private final ApplicationConfig config;
     private final ApplicationContext context;
 
     public ReplyKeyboardMarkup createKeyboard() {
         String[][] rows = {
-                { getCommandDescription(HelpCommand.class), getCommandDescription(TrackCommand.class) },
-                { getCommandDescription(ListCommand.class), getCommandDescription(UntrackCommand.class) },
-                { getCommandDescription(StartCommand.class) }
+                {getCommandDescription(HelpCommand.class), getCommandDescription(TrackCommand.class)},
+                {getCommandDescription(ListCommand.class), getCommandDescription(UntrackCommand.class)},
+                {getCommandDescription(StartCommand.class)}
         };
         return new ReplyKeyboardMarkup(rows);
     }

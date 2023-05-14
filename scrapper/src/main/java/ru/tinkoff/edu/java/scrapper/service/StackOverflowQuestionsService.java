@@ -17,7 +17,10 @@ import java.util.function.BiFunction;
 import java.util.function.Function;
 
 public abstract class StackOverflowQuestionsService {
-    protected void checkIfStackOverflowQuestionExists(
+    @SuppressWarnings("FieldCanBeLocal")
+    private final int updateBatchSize = 100;
+
+    protected final void checkIfStackOverflowQuestionExists(
             StackOverflowQuestionAddParams stackOverflowQuestion,
             StackOverflowClient stackOverflowClient,
             ApplicationConfig applicationConfig
@@ -31,7 +34,7 @@ public abstract class StackOverflowQuestionsService {
         }
     }
 
-    protected List<LinkUpdate> getUpdates(
+    protected final List<LinkUpdate> getUpdates(
             List<StackOverflowQuestion> questions,
             StackOverflowClient stackOverflowClient,
             ApplicationConfig applicationConfig,
@@ -54,20 +57,19 @@ public abstract class StackOverflowQuestionsService {
         );
     }
 
-    protected <T> List<T> getBatchedUpdates(
+    protected final <T> List<T> getBatchedUpdates(
             List<StackOverflowQuestion> questions,
             Function<List<StackOverflowQuestion>, List<T>> getUpdates
     ) {
-        int batchSize = 100;
         List<T> result = new ArrayList<>();
-        for (int i = 0; i < questions.size(); i += batchSize) {
-            var batch = questions.subList(i, Math.min(i + batchSize, questions.size()));
+        for (int i = 0; i < questions.size(); i += updateBatchSize) {
+            var batch = questions.subList(i, Math.min(i + updateBatchSize, questions.size()));
             result.addAll(getUpdates.apply(batch));
         }
         return result;
     }
 
-    protected List<StackOverflowAnswerUpdate> getAnswerUpdates(
+    protected final List<StackOverflowAnswerUpdate> getAnswerUpdates(
             List<StackOverflowQuestion> questions,
             BiFunction<StackOverflowQuestion, OffsetDateTime, List<LinkWithChatId>> getLinks,
             StackOverflowClient stackOverflowClient,
@@ -86,7 +88,7 @@ public abstract class StackOverflowQuestionsService {
                 .toList();
     }
 
-    protected List<StackExchangeAnswerResponse> getAnswers(
+    protected final List<StackExchangeAnswerResponse> getAnswers(
             List<StackOverflowQuestion> questions,
             StackOverflowClient stackOverflowClient,
             ApplicationConfig applicationConfig

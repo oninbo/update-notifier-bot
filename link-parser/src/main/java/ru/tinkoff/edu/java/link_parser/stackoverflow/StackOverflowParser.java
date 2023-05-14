@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.regex.Pattern;
 
 @Component
-public class StackOverflowParser extends LinkParser {
+public final class StackOverflowParser extends LinkParser {
     private final String stackOverflowHost;
     private final Pattern questionIdPattern = Pattern.compile("\\d+");
 

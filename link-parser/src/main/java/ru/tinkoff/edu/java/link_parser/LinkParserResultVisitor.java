@@ -5,5 +5,6 @@ import ru.tinkoff.edu.java.link_parser.stackoverflow.StackOverflowParserResult;
 
 public interface LinkParserResultVisitor {
     void visit(GitHubParserResult gitHubParserResult);
+
     void visit(StackOverflowParserResult stackOverflowParserResult);
 }

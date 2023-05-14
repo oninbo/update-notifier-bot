@@ -4,7 +4,7 @@ import org.springframework.stereotype.Component;
 import ru.tinkoff.edu.java.bot.configuration.ApplicationConfig;
 
 @Component
-public non-sealed class ListCommand extends BotCommand {
+public final class ListCommand extends BotCommand {
     @Override
     public String getDescription(ApplicationConfig applicationConfig) {
         return applicationConfig.command().list().description();

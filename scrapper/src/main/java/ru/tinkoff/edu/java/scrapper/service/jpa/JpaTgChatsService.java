@@ -26,7 +26,9 @@ public class JpaTgChatsService implements TgChatsService {
     public void deleteTgChat(long chatId) {
         tgChatsRepository.find(chatId).ifPresentOrElse(
                 tgChat -> tgChatsRepository.deleteById(tgChat.id()),
-                () -> { throw new TgChatNotFoundException(applicationConfig); }
+                () -> {
+                    throw new TgChatNotFoundException(applicationConfig);
+                }
         );
     }
 }

@@ -48,7 +48,7 @@ public class JdbcLinksRepository implements BaseRepository<Link, LinkAddParams> 
                         tgChat.id(),
                         gitHubRepository.id()
                 );
-        return result.isEmpty() ? Optional.empty() :  Optional.of(result.get(0));
+        return result.isEmpty() ? Optional.empty() : Optional.of(result.get(0));
     }
 
     public Optional<Link> find(TgChat tgChat, StackOverflowQuestion stackOverflowQuestion) {
@@ -59,7 +59,7 @@ public class JdbcLinksRepository implements BaseRepository<Link, LinkAddParams> 
                         tgChat.id(),
                         stackOverflowQuestion.id()
                 );
-        return result.isEmpty() ? Optional.empty() :  Optional.of(result.get(0));
+        return result.isEmpty() ? Optional.empty() : Optional.of(result.get(0));
     }
 
     @Override
@@ -74,11 +74,11 @@ public class JdbcLinksRepository implements BaseRepository<Link, LinkAddParams> 
     public List<LinkWithChatId> findAllWithChatId(GitHubRepository gitHubRepository, OffsetDateTime createdBefore) {
         return jdbcTemplate.query(
                 """
-                SELECT links.*, tc.chat_id
-                FROM links
-                JOIN tg_chats tc on tc.id = links.tg_chat_id
-                WHERE github_repository_id = ? AND links.created_at < ?
-                """,
+                        SELECT links.*, tc.chat_id
+                        FROM links
+                        JOIN tg_chats tc on tc.id = links.tg_chat_id
+                        WHERE github_repository_id = ? AND links.created_at < ?
+                        """,
                 (rs, n) -> new LinkWithChatId(
                         rs.getObject("id", UUID.class),
                         URI.create(rs.getString("url")),
@@ -92,11 +92,11 @@ public class JdbcLinksRepository implements BaseRepository<Link, LinkAddParams> 
     public List<LinkWithChatId> findAllWithChatId(StackOverflowQuestion question, OffsetDateTime createdBefore) {
         return jdbcTemplate.query(
                 """
-                SELECT links.*, tc.chat_id
-                FROM links
-                JOIN tg_chats tc on tc.id = links.tg_chat_id
-                WHERE stackoverflow_question_id = ? AND links.created_at < ?
-                """,
+                        SELECT links.*, tc.chat_id
+                        FROM links
+                        JOIN tg_chats tc on tc.id = links.tg_chat_id
+                        WHERE stackoverflow_question_id = ? AND links.created_at < ?
+                        """,
                 (rs, n) -> new LinkWithChatId(
                         rs.getObject("id", UUID.class),
                         URI.create(rs.getString("url")),
