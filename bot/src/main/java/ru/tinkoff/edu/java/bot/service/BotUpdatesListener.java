@@ -5,6 +5,7 @@ import com.pengrad.telegrambot.model.Message;
 import com.pengrad.telegrambot.model.MessageEntity;
 import com.pengrad.telegrambot.model.Update;
 import com.pengrad.telegrambot.model.User;
+import io.micrometer.core.instrument.Counter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -27,6 +28,7 @@ public final class BotUpdatesListener implements UpdatesListener {
     private final UserResponseService userResponseService;
     private final ApplicationConfig applicationConfig;
     private final WebClientErrorHandler webClientErrorHandler;
+    private final Counter telegramMessagesHandled;
 
     @Override
     public int process(List<Update> updates) {
@@ -49,18 +51,18 @@ public final class BotUpdatesListener implements UpdatesListener {
 
     private void processUpdate(Update update) {
         log.info(new UpdateLog(update).toString());
-        var message = update.message();
+        Optional.ofNullable(update.message())
+                .ifPresent(this::processMessage);
+    }
 
-        if (Objects.isNull(message)) {
-            return;
-        }
-
+    private void processMessage(Message message) {
         if (Objects.nonNull(message.entities())) {
             Arrays.stream(message.entities())
                     .forEach(entity -> processMessageEntity(entity, message));
         } else {
             botMenuButtonService.handleMessage(message);
         }
+        telegramMessagesHandled.increment();
     }
 
     private void processMessageEntity(MessageEntity messageEntity, Message message) {
