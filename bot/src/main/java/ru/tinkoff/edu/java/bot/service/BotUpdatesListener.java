@@ -49,14 +49,18 @@ public final class BotUpdatesListener implements UpdatesListener {
 
     private void processUpdate(Update update) {
         log.info(new UpdateLog(update).toString());
-        var message = Optional.ofNullable(update.message());
+        var message = update.message();
 
-        message.map(Message::entities).ifPresentOrElse(
-                messageEntities ->
-                        Arrays.stream(messageEntities)
-                                .forEach(entity -> processMessageEntity(entity, update.message())),
-                () -> message.ifPresent(botMenuButtonService::handleMessage)
-        );
+        if (Objects.isNull(message)) {
+            return;
+        }
+
+        if (Objects.nonNull(message.entities())) {
+            Arrays.stream(message.entities())
+                    .forEach(entity -> processMessageEntity(entity, message));
+        } else {
+            botMenuButtonService.handleMessage(message);
+        }
     }
 
     private void processMessageEntity(MessageEntity messageEntity, Message message) {
